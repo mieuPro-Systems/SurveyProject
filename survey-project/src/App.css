@@ -1,38 +1,37 @@
-.App {
-  text-align: center;
+.app {
+  background: url(../src/assests/background2.jpg);
+  background-blend-mode: multiply;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  width: auto;
+  padding: 10px 20px;
+}
+.text1 {
+  margin-top: 30px;
+  margin-left: 90px;
+  font-size: 30px;
+  font-weight: 500;
+  /* padding: 10px; */
+  font-family: "Georgia", Serif;
+  /* font-style: oblique; */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.text2 {
+  margin-top: -20px;
+  margin-left: 90px;
+  font-size: 25px;
+  font-weight: 500;
+  font-family: "Georgia", Serif;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* .textspan {
+  font-size: 40px;
+  font-weight: bold;
+} */
+.text3 {
+  margin-top: -20px;
+  margin-left: 10px;
+  font-size: 30px;
+  font-weight: 500;
+  font-family: "Georgia", Serif;
 }

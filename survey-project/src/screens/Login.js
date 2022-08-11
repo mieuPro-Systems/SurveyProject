@@ -9,6 +9,16 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import validateLoginInput from "../Validation/login";
+import { SET_CURRENT_USER } from "../actions/types";
 
 function Copyright(props) {
   return (
@@ -29,19 +39,26 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
-
-const userDetails = { username: "admin", password: "admin" };
-const errors = {};
-
 export default function SignIn() {
+  const [error, setError] = React.useState({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const userDetails = {
       username: data.get("username"),
       password: data.get("password"),
-    });
+    };
+    const { errors, isValid } = validateLoginInput(userDetails);
+    setError(errors);
+    if (isValid) {
+      dispatch({ type: SET_CURRENT_USER, payload: userDetails });
+      navigate("/dashboard");
+    }
   };
+  const [showPassword, setShowPassword] = React.useState(false);
 
   return (
     <ThemeProvider theme={theme}>
@@ -55,7 +72,7 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: "green" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -76,8 +93,9 @@ export default function SignIn() {
               name="username"
               autoComplete="username"
               autoFocus
-              error={true}
-              helperText="invalid user"
+              color="success"
+              error={error?.username !== undefined}
+              helperText={error.username}
             />
             <TextField
               margin="normal"
@@ -85,18 +103,32 @@ export default function SignIn() {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
-              error={true}
-              helperText="invalid user"
+              color="success"
+              error={error?.password !== undefined}
+              helperText={error.password}
+              InputProps={{
+                // <-- This is where the toggle button is added.
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword((pass) => !pass)}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 2, bgcolor: "green" }}
             >
               Sign In
             </Button>

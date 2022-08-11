@@ -1,0 +1,47 @@
+.cardcontainer {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  position: relative;
+  padding: 10px;
+  margin-left: 180px;
+  margin-top: 60px;
+  /* justify-content: space-evenly; */
+}
+
+.card1 {
+  height: 210px;
+  width: 210px;
+  /* border: 2px solid black; */
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin-right: 60px;
+  /* box-shadow: 1px 5px; */
+}
+
+.card2 {
+  height: 210px;
+  width: 210px;
+  /* border: 2px solid black; */
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+  /* margin-right: 20px; */
+}
+
+.button {
+  margin-top: 10px;
+  /* margin-bottom: 10px; */
+}
+
+.text {
+  text-align: center;
+}
+
+.icon {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

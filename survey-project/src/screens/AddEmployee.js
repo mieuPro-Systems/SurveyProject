@@ -10,6 +10,8 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import validateEmployeeAddInput from "../Validation/EmployeeAdditionForm";
+import PhoneInput from "react-phone-number-input";
+
 import axiosInstance from "../utils/axiosInstance";
 
 const theme = createTheme();
@@ -24,6 +26,7 @@ export default function AddEmployeeScreen() {
       lastName: data.get("lastName"),
       userName: data.get("userName"),
       email: data.get("email"),
+      phoneNumber: data.get("phoneNumber"),
     };
     console.log("employeeDetails", employeeDetails);
     const { errors, isValid } = validateEmployeeAddInput(employeeDetails);
@@ -120,6 +123,18 @@ export default function AddEmployeeScreen() {
                 <TextField
                   required
                   fullWidth
+                  id="phoneNumber"
+                  label="Phone number"
+                  name="phoneNumber"
+                  autoComplete="phoneNumber"
+                  color="success"
+                  error={error?.phoneNumber !== undefined}
+                  helperText={error.phoneNumber}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
                   id="email"
                   label="Email Address"
                   name="email"
@@ -130,6 +145,7 @@ export default function AddEmployeeScreen() {
                 />
               </Grid>
             </Grid>
+
             <Button
               type="submit"
               fullWidth

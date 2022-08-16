@@ -1,4 +1,4 @@
-import { isValidPhoneNumber } from "react-phone-number-input";
+// import { isValidPhoneNumber } from "react-phone-number-input";
 
 const Validators = require("validator");
 const { default: isEmpty } = require("./isEmpty");

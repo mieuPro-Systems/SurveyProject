@@ -13,6 +13,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
+import { green, purple } from '@mui/material/colors';
 
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +39,7 @@ function Copyright(props) {
   );
 }
 
-const theme = createTheme();
+const theme = createTheme()
 export default function SignIn() {
   const [error, setError] = React.useState({});
   const dispatch = useDispatch();
@@ -61,81 +62,83 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = React.useState(false);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "green" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
+    <div style={{ backgroundImage: "url(../assests/cow.jpg)" }}>
+      <ThemeProvider theme={theme} >
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
           <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
+            sx={{
+              marginTop: 8,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
-              autoFocus
-              color="success"
-              error={error?.username !== undefined}
-              helperText={error.username}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              id="password"
-              autoComplete="current-password"
-              color="success"
-              error={error?.password !== undefined}
-              helperText={error.password}
-              InputProps={{
-                // <-- This is where the toggle button is added.
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => setShowPassword((pass) => !pass)}
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, bgcolor: "green" }}
+            <Avatar sx={{ m: 1, bgcolor: "green" }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{ mt: 1 }}
             >
-              Sign In
-            </Button>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                autoFocus
+                color="success"
+                error={error?.username !== undefined}
+                helperText={error.username}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                id="password"
+                autoComplete="current-password"
+                color="success"
+                error={error?.password !== undefined}
+                helperText={error.password}
+                InputProps={{
+                  // <-- This is where the toggle button is added.
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword((pass) => !pass)}
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2, bgcolor: "green" }}
+              >
+                Sign In
+              </Button>
+            </Box>
           </Box>
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
-    </ThemeProvider>
+          <Copyright sx={{ mt: 8, mb: 4 }} />
+        </Container>
+      </ThemeProvider>
+    </div>
   );
 }

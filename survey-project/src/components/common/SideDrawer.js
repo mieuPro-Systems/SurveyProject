@@ -20,6 +20,8 @@ import MailIcon from "@mui/icons-material/Mail";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import PeopleIcon from "@mui/icons-material/People";
 import LogoutIcon from "@mui/icons-material/Logout";
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import GroupsIcon from '@mui/icons-material/Groups';
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SET_CURRENT_USER } from "../../actions/types";
@@ -94,6 +96,7 @@ const Drawer = styled(MuiDrawer, {
 export default function DrawerComponent() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [Color, setColor] = React.useState("");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -106,8 +109,8 @@ export default function DrawerComponent() {
     dispatch({ type: SET_CURRENT_USER, payload: {} });
   };
 
-  const EmployeeIcons = [<GroupAddIcon />, <PeopleIcon />];
-  const EmployeeRoutes = ["addemployee", "viewemployees"];
+  const EmployeeIcons = [<GroupAddIcon />, <PeopleIcon />, <PersonAddAlt1Icon />, <GroupsIcon />];
+  const EmployeeRoutes = ["addemployee", "viewemployees", "addfarmer", "viewfarmer"];
   let navigate = useNavigate();
   const dispatch = useDispatch();
   return (
@@ -156,7 +159,7 @@ export default function DrawerComponent() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Add Employee", "View Employee"].map((text, index) => (
+          {["Add Employee", "View Employee", "Add Farmer", "View Farmer"].map((text, index) => (
             <ListItemButton
               key={text}
               sx={{
@@ -164,13 +167,18 @@ export default function DrawerComponent() {
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
               }}
-              onClick={() => navigate(EmployeeRoutes[index])}
+              onClick={() => {
+                navigate(EmployeeRoutes[index])
+                setColor(index)
+
+              }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
+                  color: (Color === index) ? "green" : ""
                 }}
               >
                 {EmployeeIcons[index]}
@@ -180,7 +188,7 @@ export default function DrawerComponent() {
           ))}
         </List>
         <Divider />
-        <List>
+        {/* <List>
           {["All mail", "Trash", "Spam"].map((text, index) => (
             <ListItemButton
               key={text}
@@ -202,7 +210,7 @@ export default function DrawerComponent() {
               <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           ))}
-        </List>
+        </List> */}
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />

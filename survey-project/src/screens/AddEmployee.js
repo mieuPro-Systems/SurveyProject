@@ -10,7 +10,8 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import validateEmployeeAddInput from "../Validation/EmployeeAdditionForm";
-import PhoneInput from "react-phone-number-input";
+import { useNavigate } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
 
 import axiosInstance from "../utils/axiosInstance";
 
@@ -18,6 +19,22 @@ const theme = createTheme();
 
 export default function AddEmployeeScreen() {
   const [error, setError] = React.useState({});
+  const navigate = useNavigate();
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+    message: "",
+  });
+  const { vertical, horizontal, open } = state;
+
+  const showSnackBar = (newState) => () => {
+    setState({ open: true, ...newState });
+  };
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -37,19 +54,31 @@ export default function AddEmployeeScreen() {
           last_name: employeeDetails.lastName,
           username: employeeDetails.userName,
           email: employeeDetails.email,
+          contact_number: employeeDetails.phoneNumber,
         })
-        .then((res) => console.log("response for adding employee", res))
+        .then((res) => {
+          if (res.status === 201) {
+            console.log("created");
+            showSnackBar({
+              vertical: "top",
+              horizontal: "right",
+              message: "Employee Added",
+            });
+            navigate("/dashboard/viewemployees");
+          }
+        })
         .catch((err) => {
+          console.log(err);
           if (err.response.data) {
             if (err.response.data) {
               setError({
-                ...error,
                 email: err.response.data?.email || undefined,
-                userName: err.response.data?.userName || undefined,
+                userName: err.response.data?.username || undefined,
+                phoneNumber: err.response.data?.contact_number || undefined,
               });
             }
           }
-          console.log(err.response.data);
+          console.log(err.response.data || err);
         });
     }
     setError(errors);
@@ -156,6 +185,13 @@ export default function AddEmployeeScreen() {
             </Button>
           </Box>
         </Box>
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={open}
+          onClose={handleClose}
+          message={state.message}
+          key={vertical + horizontal}
+        />
       </Container>
     </ThemeProvider>
   );

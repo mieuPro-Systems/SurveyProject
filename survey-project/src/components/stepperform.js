@@ -12,10 +12,12 @@ import GardenDetails from '../screens/GardenDetails';
 import LiveStockDetails from '../screens/LiveStockDetails';
 import WorkandMachines from '../screens/WorkandMachines';
 
-const steps = ['Farmer Details', 'Land Details', 'Crop Details', 'Garden Details', 'LiveStock details', 'Work and Machines'];
-const Forms = [<AddFarmer />, <LandDetails />, <CropDetails />, <GardenDetails />, <LiveStockDetails />, <WorkandMachines />]
 
 export default function StepperForm() {
+
+    const steps = ['Farmer Details', 'Land Details', 'Crop Details', 'Garden Details', 'LiveStock details', 'Work and Machines'];
+
+
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
 
@@ -60,6 +62,8 @@ export default function StepperForm() {
     const handleReset = () => {
         setActiveStep(0);
     };
+
+    const Forms = [<AddFarmer handleNext={handleNext} />, <LandDetails />, <CropDetails />, <GardenDetails />, <LiveStockDetails />, <WorkandMachines />]
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -111,9 +115,9 @@ export default function StepperForm() {
                             </Button>
                         )}
 
-                        <Button onClick={handleNext}>
+                        {/* <Button onClick={handleNext}>
                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                        </Button>
+                        </Button> */}
                     </Box>
                 </React.Fragment>
             )}

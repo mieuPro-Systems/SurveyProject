@@ -92,7 +92,7 @@ const LandDetails = () => {
                                         required
                                         fullWidth
                                         id="Area"
-                                        label="Area"
+                                        label="Area/பரப்பளவு"
                                         autoFocus
                                         color="success"
                                     // error={error?.firstName !== undefined}
@@ -103,7 +103,7 @@ const LandDetails = () => {
                                     <TextField
                                         fullWidth
                                         id="ownfarming"
-                                        label="Area for Own Farming"
+                                        label="OwnFarming/சொந்த விவசாயம்"
                                         name="ownfarming"
                                         autoComplete="ownfarming"
                                         color="success"

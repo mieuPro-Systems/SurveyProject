@@ -10,7 +10,7 @@ const Home = () => {
                 <div className='col-11'>
                     <Navbar />
                     <div>
-                        <p className='text1'>Farming is a Profession of Hope..!!</p>
+                        <p className='text1'>உழவுக்கு வந்தனை செய்வோம்...!!!</p>
                         {/* <p className='text2'>Profession of Hope</p> */}
                         {/* <p className='text3'>Hope</p> */}
                     </div>

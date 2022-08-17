@@ -13,7 +13,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-import { green, purple } from '@mui/material/colors';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -63,6 +63,11 @@ export default function SignIn() {
 
   return (
     <div style={{ backgroundImage: "url(../assests/cow.jpg)" }}>
+      <div style={{ padding: "10px" }}>
+        <Button variant="contained" startIcon={<ArrowBackIosNewIcon />} color="success" onClick={() => navigate('/')}>
+          Home
+        </Button>
+      </div>
       <ThemeProvider theme={theme} >
         <Container component="main" maxWidth="xs">
           <CssBaseline />

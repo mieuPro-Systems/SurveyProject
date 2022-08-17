@@ -57,7 +57,7 @@ export default function AddEmployeeScreen() {
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.log('error res', err.response.data);
           if (err.response.data) {
             if (err.response.data) {
               setError({
@@ -146,6 +146,10 @@ export default function AddEmployeeScreen() {
                   name="phoneNumber"
                   autoComplete="phoneNumber"
                   color="success"
+                  type="text"
+                  onInput={(e) => {
+                    e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 11)
+                  }}
                   error={error?.phoneNumber !== undefined}
                   helperText={error.phoneNumber}
                 />
@@ -174,6 +178,16 @@ export default function AddEmployeeScreen() {
             </Button>
           </Box>
         </Box>
+<<<<<<< HEAD
+=======
+        {/* <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={open}
+          onClose={handleClose}
+          message={state.message}
+          key={vertical + horizontal}
+        /> */}
+>>>>>>> 9ca00d883b893115f12383e56f332d4b4b9edf5c
       </Container>
     </ThemeProvider>
   );

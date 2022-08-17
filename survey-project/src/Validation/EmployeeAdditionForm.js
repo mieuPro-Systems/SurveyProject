@@ -1,7 +1,7 @@
-import { isValidPhoneNumber } from "react-phone-number-input";
-
+import isEmpty from "./isEmpty";
+import { isPhoneNumberValid } from "./Common"
 const Validators = require("validator");
-const { default: isEmpty } = require("./isEmpty");
+
 
 export default function validateEmployeeAddInput(data) {
   let errors = {};
@@ -11,7 +11,6 @@ export default function validateEmployeeAddInput(data) {
   data.userName = !isEmpty(data.userName) ? data.userName : "";
   data.email = !isEmpty(data.email) ? data.email : "";
   data.phoneNumber = !isEmpty(data.phoneNumber) ? data.phoneNumber : "";
-
   if (Validators.isEmpty(data.firstName)) {
     errors.firstName = "First name field is required";
   }
@@ -28,8 +27,14 @@ export default function validateEmployeeAddInput(data) {
       errors.email = "Email field is required";
     }
   }
+<<<<<<< HEAD
   if (!isValidPhoneNumber(data.phoneNumber)) {
     errors.phoneNumber = "Phone number is invalid";
+=======
+
+  if (!isPhoneNumberValid(data.phoneNumber)) {
+    errors.phoneNumber = "Phone number is Invalid"
+>>>>>>> 9ca00d883b893115f12383e56f332d4b4b9edf5c
   }
 
   if (Validators.isEmpty(data.phoneNumber)) {
@@ -40,4 +45,8 @@ export default function validateEmployeeAddInput(data) {
     errors,
     isValid: isEmpty(errors),
   };
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 9ca00d883b893115f12383e56f332d4b4b9edf5c

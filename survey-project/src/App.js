@@ -3,6 +3,13 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import LoginScreen from "./screens/Login";
+<<<<<<< HEAD
+
+import DrawerComponent from "./components/common/SideDrawer";
+import AddEmployeeScreen from "./screens/AddEmployee";
+import ViewEmployeesScreen from "./screens/ViewEmployee";
+import HomeScreen from "./screens/Home";
+=======
 import AddEmployeeScreen from "./screens/AddEmployee";
 import ViewEmployeesScreen from "./screens/ViewEmployee";
 import HomeScreen from "./screens/Home";
@@ -12,6 +19,7 @@ import ViewFarmerScreen from "./screens/ViewFarmer";
 import StepperForm from "./components/stepperform";
 import UpdateEmployeeScreen from "./screens/UpdateEmployee";
 
+>>>>>>> 044e0cdf13a5e07ad8d656208e7c45110954d62f
 
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -35,7 +43,11 @@ const App = () => {
         </Route>
       </Routes>
     </BrowserRouter>
+<<<<<<< HEAD
+  );
+=======
   )
+>>>>>>> 044e0cdf13a5e07ad8d656208e7c45110954d62f
 };
 
 export default App;

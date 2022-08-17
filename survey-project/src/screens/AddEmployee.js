@@ -10,10 +10,11 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import validateEmployeeAddInput from "../Validation/EmployeeAdditionForm";
-import PhoneInput from "react-phone-number-input";
 
 import axiosInstance from "../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
+import { Snackbar } from "@mui/material";
 const theme = createTheme();
 
 export default function AddEmployeeScreen() {
@@ -25,15 +26,7 @@ export default function AddEmployeeScreen() {
     horizontal: "center",
     message: "",
   });
-  const { vertical, horizontal, open } = state;
 
-  const showSnackBar = (newState) => () => {
-    setState({ open: true, ...newState });
-  };
-
-  const handleClose = () => {
-    setState({ ...state, open: false });
-  };
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -46,6 +39,7 @@ export default function AddEmployeeScreen() {
     };
     console.log("employeeDetails", employeeDetails);
     const { errors, isValid } = validateEmployeeAddInput(employeeDetails);
+
     if (isValid) {
       axiosInstance
         .post("/employee/create", {
@@ -58,11 +52,7 @@ export default function AddEmployeeScreen() {
         .then((res) => {
           if (res.status === 201) {
             console.log("created");
-            showSnackBar({
-              vertical: "top",
-              horizontal: "right",
-              message: "Employee Added",
-            });
+
             navigate("/dashboard/viewemployees");
           }
         })
@@ -184,13 +174,6 @@ export default function AddEmployeeScreen() {
             </Button>
           </Box>
         </Box>
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={open}
-          onClose={handleClose}
-          message={state.message}
-          key={vertical + horizontal}
-        />
       </Container>
     </ThemeProvider>
   );

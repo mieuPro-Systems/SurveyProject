@@ -10,6 +10,7 @@ import DrawerComponent from "./components/common/SideDrawer";
 import AddFarmerScreen from "./screens/AddFarmer";
 import ViewFarmerScreen from "./screens/ViewFarmer";
 import StepperForm from "./components/stepperform";
+import UpdateEmployeeScreen from "./screens/UpdateEmployee";
 
 
 const App = () => {
@@ -23,11 +24,12 @@ const App = () => {
         <Route
           path="/dashboard"
           element={
-            isAuthenticated ? <DrawerComponent /> : <Navigate to="/login" />
+            isAuthenticated ? <DrawerComponent /> : <Navigate to="/" />
           }
         >
           <Route path="addemployee" element={<AddEmployeeScreen />} />
           <Route path="viewemployees" element={<ViewEmployeesScreen />} />
+          <Route path="updateemployee" element={<UpdateEmployeeScreen />} />
           <Route path="addfarmer" element={<StepperForm />} />
           <Route path="viewfarmer" element={<ViewFarmerScreen />} />
         </Route>

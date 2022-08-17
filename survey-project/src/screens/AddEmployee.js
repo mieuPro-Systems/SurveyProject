@@ -10,9 +10,9 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import validateEmployeeAddInput from "../Validation/EmployeeAdditionForm";
-import PhoneInput from "react-phone-number-input";
 
 import axiosInstance from "../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
@@ -67,7 +67,7 @@ export default function AddEmployeeScreen() {
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.log('error res', err.response.data);
           if (err.response.data) {
             if (err.response.data) {
               setError({
@@ -156,6 +156,10 @@ export default function AddEmployeeScreen() {
                   name="phoneNumber"
                   autoComplete="phoneNumber"
                   color="success"
+                  type="text"
+                  onInput={(e) => {
+                    e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 11)
+                  }}
                   error={error?.phoneNumber !== undefined}
                   helperText={error.phoneNumber}
                 />
@@ -184,13 +188,13 @@ export default function AddEmployeeScreen() {
             </Button>
           </Box>
         </Box>
-        <Snackbar
+        {/* <Snackbar
           anchorOrigin={{ vertical, horizontal }}
           open={open}
           onClose={handleClose}
           message={state.message}
           key={vertical + horizontal}
-        />
+        /> */}
       </Container>
     </ThemeProvider>
   );

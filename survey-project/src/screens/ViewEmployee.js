@@ -13,6 +13,7 @@ import { SET_ADDED_EMPLOYEES } from "../actions/types";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router-dom";
 
 const columns = [
   { id: "slNo", label: "Sl.no", minWidth: 10 },
@@ -31,24 +32,42 @@ const columns = [
 export default function ViewEmployeesScreen() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const navigate = useNavigate();
 
   const { addedEmployees } = useSelector((state) => state.employee);
   const dispatch = useDispatch();
   const employeeData = [];
+
+  const handledelete = (employee) => {
+    console.log("Delete", employee)
+    axiosInstance
+      .delete(`/employee/${employee.userName}`)
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("Deleted Successfully")
+          console.log("Response", res.data);
+          dispatch({
+            type: SET_ADDED_EMPLOYEES,
+            payload: res.data,
+          });
+        }
+      }).catch((err) => console.log("Error while deleting and get response", err));
+  }
+
   addedEmployees.map((employee) =>
     employeeData.push({
       slNo: employee.slNo,
-      name: employee.name,
+      name: employee.firstName + " " + employee.lastName,
       userName: employee.userName,
       email: employee.email,
       phoneNumber: employee.phoneNumber,
       editIcon: (
-        <IconButton>
+        <IconButton onClick={() => navigate('/dashboard/updateemployee', { state: employee })}>
           <EditIcon />
         </IconButton>
       ),
       deleteIcon: (
-        <IconButton>
+        <IconButton onClick={() => handledelete(employee)}>
           <DeleteIcon />
         </IconButton>
       ),

@@ -20,14 +20,16 @@
   font-weight: bold;
   font-size: 22pt;
   font-family: optima;
-  color: black;
+  /* color: black; */
+  color: aliceblue;
   padding: 10px 20px;
 }
 .navLinks > a {
   text-decoration: none;
   border: none;
   font-weight: 500;
-  color: black;
+  /* color: black; */
+  color: white;
 }
 .navLinks > a.hover {
   text-decoration: none;

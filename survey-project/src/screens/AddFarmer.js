@@ -16,47 +16,62 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import axiosInstance from '../utils/axiosInstance';
 import { useDispatch, useSelector } from "react-redux";
 import { SET_FARMER_DETAILS } from '../actions/types';
+import { useNavigate } from 'react-router-dom';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 
 
 const theme = createTheme();
 
-const AddFarmer = (props) => {
-    console.log("props", props)
+const AddFarmer = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     const [States, setStates] = useState([])
     const [District, setDistrict] = useState([])
     const [Union, setUnion] = useState([])
     const [Panchayat, setPanchayat] = useState([])
     const [Village, setVillage] = useState([])
+    const [Organic, setOrganic] = useState(false)
+    const [SingleSeed, setSingleSeed] = useState(false)
+    const [AlternativeCrop, setAlternativeCrop] = useState(false)
+    const [SeedVariety, setSeedVariety] = useState(false)
+    const [LeaseOwnLand, setLeaseOwnLand] = useState(false)
+    const [FarmRentedLand, setFarmRentedLand] = useState(false)
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const farmerDetails = {
-            firstName: data.get("firstName"),
-            lastName: data.get("lastName"),
+            farmerName: data.get("farmerName"),
             nickName: data.get("nickName"),
+            fatherName: data.get("FatherName"),
             age: data.get("age"),
             gender: data.get("gender"),
             phoneNumber: data.get("phoneNumber"),
-            whatsupNumber: data.get("whatsupNumber"),
-            local: data.get("local"),
+            whatsappNumber: data.get("whatsappNumber"),
+            residentialType: data.get("local"),
             state: data.get("state"),
             district: data.get("district"),
             union: data.get("union"),
             panchayat: data.get("panchayat"),
             village: data.get("village"),
-
+            organic: Organic,
+            singleSeed: SingleSeed,
+            altCrop: AlternativeCrop,
+            seedVariety: SeedVariety,
+            leaseOwnLand: LeaseOwnLand,
+            farmRentedLand: FarmRentedLand
         };
         console.log("farmerDetails", farmerDetails);
         dispatch({
             type: SET_FARMER_DETAILS,
             payload: farmerDetails
         })
-        props.handleNext()
+        navigate('/dashboard/farmerinfo')
+
     }
 
     const handleState = (e) => {
@@ -135,31 +150,19 @@ const AddFarmer = (props) => {
                             sx={{ mt: 3 }}
                         >
                             <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12}>
                                     <TextField
-                                        autoComplete="given-name"
-                                        name="firstName"
+                                        autoComplete="farmername"
+                                        name="farmerName"
                                         required
                                         fullWidth
-                                        id="firstName"
-                                        label="First Name/
+                                        id="farmername"
+                                        label="Farmer Name/
                                         முதல் பெயர்"
                                         autoFocus
                                         color="success"
                                     // error={error?.firstName !== undefined}
                                     // helperText={error.firstName}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        fullWidth
-                                        id="lastName"
-                                        label="Last Name/கடைசி பெயர்"
-                                        name="lastName"
-                                        autoComplete="family-name"
-                                        color="success"
-                                    // error={error?.lastName !== undefined}
-                                    // helperText={error.lastName}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -241,10 +244,10 @@ const AddFarmer = (props) => {
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         fullWidth
-                                        id="whatsupNumber"
-                                        label="Whatsup No/வாட்ஸ்அப் எண்"
-                                        name="whatsupNumber"
-                                        autoComplete="whatsupNumber"
+                                        id="whatsappNumber"
+                                        label="Whatsapp No/வாட்ஸ்அப் எண்"
+                                        name="whatsappNumber"
+                                        autoComplete="whatsappNumber"
                                         color="success"
                                         type="number"
                                         onInput={(e) => {
@@ -346,7 +349,74 @@ const AddFarmer = (props) => {
                                     </FormControl>
                                 </Grid>
                             </Grid>
-
+                            <div style={{ marginTop: '10px', fontWeight: '500', fontSize: '17px' }}><p>Interested in :</p></div>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={4}>
+                                    <FormControlLabel
+                                        fullWidth
+                                        checked={Organic}
+                                        onChange={() => setOrganic(!Organic)}
+                                        control={<Checkbox />}
+                                        label="Organic Farming"
+                                        labelPlacement="end"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={4} >
+                                    <FormControlLabel
+                                        fullWidth
+                                        value="end"
+                                        checked={SingleSeed}
+                                        onChange={() => setSingleSeed(!SingleSeed)}
+                                        control={<Checkbox />}
+                                        label="Single Seedling"
+                                        labelPlacement="end"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <FormControlLabel
+                                        fullWidth
+                                        value="end"
+                                        checked={AlternativeCrop}
+                                        onChange={() => setAlternativeCrop(!AlternativeCrop)}
+                                        control={<Checkbox />}
+                                        label="Alternative Crop"
+                                        labelPlacement="end"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <FormControlLabel
+                                        fullWidth
+                                        value="end"
+                                        checked={SeedVariety}
+                                        onChange={() => setSeedVariety(!SeedVariety)}
+                                        control={<Checkbox />}
+                                        label="Seed Variety Advice"
+                                        labelPlacement="end"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <FormControlLabel
+                                        fullWidth
+                                        value="end"
+                                        checked={LeaseOwnLand}
+                                        onChange={() => setLeaseOwnLand(!LeaseOwnLand)}
+                                        control={<Checkbox />}
+                                        label="To Lease own Land"
+                                        labelPlacement="end"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <FormControlLabel
+                                        fullWidth
+                                        value="end"
+                                        checked={FarmRentedLand}
+                                        onChange={() => setFarmRentedLand(!FarmRentedLand)}
+                                        control={<Checkbox />}
+                                        label="To Farm Rented Land"
+                                        labelPlacement="end"
+                                    />
+                                </Grid>
+                            </Grid>
                             <Button
                                 type='submit'
                                 fullWidth

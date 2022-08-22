@@ -3,23 +3,19 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import LoginScreen from "./screens/Login";
-<<<<<<< HEAD
-
-import DrawerComponent from "./components/common/SideDrawer";
-import AddEmployeeScreen from "./screens/AddEmployee";
-import ViewEmployeesScreen from "./screens/ViewEmployee";
-import HomeScreen from "./screens/Home";
-=======
 import AddEmployeeScreen from "./screens/AddEmployee";
 import ViewEmployeesScreen from "./screens/ViewEmployee";
 import HomeScreen from "./screens/Home";
 import DrawerComponent from "./components/common/SideDrawer";
 import AddFarmerScreen from "./screens/AddFarmer";
 import ViewFarmerScreen from "./screens/ViewFarmer";
-import StepperForm from "./components/stepperform";
 import UpdateEmployeeScreen from "./screens/UpdateEmployee";
+import FarmerInfoScreen from "./screens/FarmerInfo";
+import LandDetailScreen from "./screens/LandDetails";
+import LiveStockScreen from "./screens/LiveStockDetails";
+import MachineDetailsScreen from "./screens/MachineDetails";
+import LabourDetailsScreen from "./screens/LabourDetails";
 
->>>>>>> 044e0cdf13a5e07ad8d656208e7c45110954d62f
 
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -38,16 +34,17 @@ const App = () => {
           <Route path="addemployee" element={<AddEmployeeScreen />} />
           <Route path="viewemployees" element={<ViewEmployeesScreen />} />
           <Route path="updateemployee" element={<UpdateEmployeeScreen />} />
-          <Route path="addfarmer" element={<StepperForm />} />
+          <Route path="addfarmer" element={<AddFarmerScreen />} />
+          <Route path="farmerinfo" element={<FarmerInfoScreen />} />
+          <Route path="landdetails" element={<LandDetailScreen />} />
+          <Route path="livestocks" element={<LiveStockScreen />} />
+          <Route path="machines" element={<MachineDetailsScreen />} />
+          <Route path="labour" element={<LabourDetailsScreen />} />
           <Route path="viewfarmer" element={<ViewFarmerScreen />} />
         </Route>
       </Routes>
     </BrowserRouter>
-<<<<<<< HEAD
   );
-=======
-  )
->>>>>>> 044e0cdf13a5e07ad8d656208e7c45110954d62f
 };
 
 export default App;

@@ -1,4 +1,5 @@
-import { SET_FARMER_DETAILS } from "../../actions/types";
+import { act } from "react-dom/test-utils";
+import { SET_FARMER_DETAILS, SET_LIVESTOCK_DETAILS, SET_LABOUR_DETAILS } from "../../actions/types";
 
 
 
@@ -8,8 +9,9 @@ const initialState = {
         landDetails: {},
         cropDetails: {},
         garderDetails: {},
-        livestockDetails: {},
-        workandmachineDetails: {}
+        livestockDetails: [],
+        labourDetails: {},
+        machineDetails: {}
     },
     loading: false,
 };
@@ -18,7 +20,13 @@ const initialState = {
 export default function (state = initialState, action) {
     switch (action.type) {
         case SET_FARMER_DETAILS:
-            return { ...state, farmers: { farmerDetails: action.payload } }
+            return { ...state, farmers: { ...state.farmers, farmerDetails: action.payload } }
+
+        case SET_LIVESTOCK_DETAILS:
+            return { ...state, farmers: { ...state.farmers, livestockDetails: action.payload } }
+
+        case SET_LABOUR_DETAILS:
+            return { ...state, farmers: { ...state.farmers, labourDetails: action.payload } }
         default:
             return state;
     }

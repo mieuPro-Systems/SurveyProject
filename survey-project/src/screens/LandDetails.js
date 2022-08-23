@@ -22,10 +22,37 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { useNavigate } from 'react-router-dom';
+import Chip from '@mui/material/Chip';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+
 
 const theme = createTheme();
 
 const LandDetails = () => {
+
+    const navigate = useNavigate();
+    const [rows, setrows] = useState([]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+    }
+
+    const addtotable = (e) => {
+        e.preventDefault()
+        const data = new FormData(e.currentTarget);
+        const LandData = {
+            area: data.get('Area'),
+            ownfarming: data.get('ownfarming'),
+            toshare: data.get('toshare'),
+            othersfarmland: data.get('othersfarmland'),
+            wasteland: data.get('wasteland'),
+            interestedforclean: data.get('interestedforclean'),
+            cleanup: data.get('CleanUp')
+        }
+        setrows([...rows, LandData])
+        console.log("land", LandData)
+    }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
@@ -48,17 +75,7 @@ const LandDetails = () => {
         },
     }));
 
-    function createData(name, calories, fat, carbs, protein) {
-        return { name, calories, fat, carbs, protein };
-    }
 
-    const rows = [
-        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-        createData('Eclair', 262, 16.0, 24, 6.0),
-        createData('Cupcake', 305, 3.7, 67, 4.3),
-        createData('Gingerbread', 356, 16.0, 49, 3.9),
-    ];
     return (
         <div>
             <ThemeProvider theme={theme}>
@@ -81,7 +98,7 @@ const LandDetails = () => {
                         <Box
                             component="form"
                             noValidate
-                            // onSubmit={handleSubmit}
+                            onSubmit={addtotable}
                             sx={{ mt: 3 }}
                         >
                             <Grid container spacing={2}>
@@ -95,6 +112,8 @@ const LandDetails = () => {
                                         label="Area"
                                         autoFocus
                                         color="success"
+                                        placeholder='in Acres'
+                                        type="number"
                                     // error={error?.firstName !== undefined}
                                     // helperText={error.firstName}
                                     />
@@ -103,10 +122,12 @@ const LandDetails = () => {
                                     <TextField
                                         fullWidth
                                         id="ownfarming"
-                                        label="Area for Own Farming"
+                                        label="Own Farming"
                                         name="ownfarming"
                                         autoComplete="ownfarming"
                                         color="success"
+                                        placeholder='in Acres'
+                                        type="number"
                                     // error={error?.lastName !== undefined}
                                     // helperText={error.lastName}
                                     />
@@ -115,23 +136,26 @@ const LandDetails = () => {
                                     <TextField
                                         fullWidth
                                         name="toshare"
-                                        label="ToShare/பங்குக்கிற்கு விடுவது"
+                                        label="Area To Share"
                                         id="toshare"
                                         autoComplete="toshare"
                                         color="success"
+                                        placeholder='in Acres'
+                                        type="number"
                                     // error={error?.userName !== undefined}
                                     // helperText={error.userName}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
-                                        required
                                         fullWidth
                                         name="othersfarmland"
-                                        label="Others Farmland/பிறர் நில விவசாயம்"
+                                        label="Others Farmland"
                                         id="othersfarmland"
                                         autoComplete="othersfarmland"
                                         color="success"
+                                        placeholder='in Acres'
+                                        type="number"
                                     // error={error?.userName !== undefined}
                                     // helperText={error.userName}
                                     />
@@ -140,37 +164,61 @@ const LandDetails = () => {
                                     <TextField
                                         fullWidth
                                         name="CleanUp"
-                                        label="CleanUp to Farm/சுத்தம் செய்து இம்முறை விவசாயம்"
+                                        label="CleanUp to Farm this time"
                                         id="CleanUp"
                                         autoComplete="CleanUp"
                                         color="success"
+                                        placeholder='in Acres'
+                                        type="number"
                                     // error={error?.userName !== undefined}
                                     // helperText={error.userName}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
-                                        required
                                         fullWidth
                                         name="wasteland"
-                                        label="Wasteland/தரிசு"
+                                        label="Wasteland"
                                         id="wasteland"
                                         autoComplete="wasteland"
                                         color="success"
+                                        placeholder='in Acres'
+                                        type="number"
                                     // error={error?.userName !== undefined}
                                     // helperText={error.userName}
                                     />
                                 </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <TextField
+                                        fullWidth
+                                        name="interestedforclean"
+                                        label="Interested to Clean Land"
+                                        placeholder='in Acres'
+                                        id="interestedforclean"
+                                        autoComplete="interestedforclean"
+                                        color="success"
+                                        type="number"
+                                    // error={error?.userName !== undefined}
+                                    // helperText={error.userName}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
+                                        <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Lands :</p>
+                                        <Chip label={rows.length} />
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} sm={3} className='mx-auto'>
+                                    <Button
+                                        fullWidth
+                                        type='submit'
+                                        variant="contained"
+                                        sx={{ mt: 2, mb: 5, bgcolor: "green" }}
+                                    >
+                                        Add
+                                    </Button>
+                                </Grid>
                             </Grid>
-
-                            <Button
-                                type='submit'
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2, bgcolor: "green" }}
-                            >
-                                Next
-                            </Button>
                         </Box>
                     </Box>
                 </Container>
@@ -180,39 +228,61 @@ const LandDetails = () => {
                             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                                 <TableHead>
                                     <TableRow>
-                                        <StyledTableCell>Area/பரப்பளவு (Acres)</StyledTableCell>
-                                        <StyledTableCell align="right">OwnFarming/சொந்த விவசாயம் (Acres)</StyledTableCell>
-                                        <StyledTableCell align="right">ToShare/பங்குக்கிற்கு விடுவது (Acres)</StyledTableCell>
-                                        <StyledTableCell align="right">Others Farmland/பிறர் நில விவசாயம் (Acres)</StyledTableCell>
-                                        <StyledTableCell align="right">CleanUptoFarm/சுத்தம்செய்து இம்முறை விவசாயம் (Acres)</StyledTableCell>
-                                        <StyledTableCell align="right">Wasteland/தரிசு(Acres)</StyledTableCell>
-                                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
-                                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
-                                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
-                                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
-                                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
-                                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
-                                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
-                                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
-                                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
+                                        <StyledTableCell align='center'>Area (Acres)</StyledTableCell>
+                                        <StyledTableCell align="center">OwnFarming (Acres)</StyledTableCell>
+                                        <StyledTableCell align="center">ToShare (Acres)</StyledTableCell>
+                                        <StyledTableCell align="center">Others Farmland (Acres)</StyledTableCell>
+                                        <StyledTableCell align="center">CleanUptoFarm (Acres)</StyledTableCell>
+                                        <StyledTableCell align="center">Wasteland (Acres)</StyledTableCell>
+                                        <StyledTableCell align="center">Interestedto CleanLand (Acres)</StyledTableCell>
+                                        <StyledTableCell align="center"></StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows.map((row) => (
-                                        <StyledTableRow key={row.name}>
-                                            <StyledTableCell component="th" scope="row">
-                                                {row.name}
-                                            </StyledTableCell>
-                                            <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                                            <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                                            <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                                            <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                                        </StyledTableRow>
-                                    ))}
+
+                                    {rows.length > 0 &&
+                                        rows.map((row, index) => (
+                                            <StyledTableRow key={row.area}>
+                                                <StyledTableCell align="center" component="th" scope="row">
+                                                    {row.area}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">{row.ownfarming}</StyledTableCell>
+                                                <StyledTableCell align="center">{row.toshare}</StyledTableCell>
+                                                <StyledTableCell align="center">{row.othersfarmland}</StyledTableCell>
+                                                <StyledTableCell align="center">{row.interestedforclean}</StyledTableCell>
+                                                <StyledTableCell align="center">{row.wasteland}</StyledTableCell>
+                                                <StyledTableCell align="center">{row.cleanup}</StyledTableCell>
+                                                <StyledTableCell align="left" onClick={() => { setrows(prevValues => prevValues.filter((value, prevIndex) => prevIndex !== index)) }}>
+                                                    {<HighlightOffIcon style={{ cursor: 'pointer' }} />}</StyledTableCell>
+                                            </StyledTableRow>
+                                        ))}
                                 </TableBody>
                             </Table>
+                            {rows.length === 0 && <p style={{ textAlign: 'center' }}>No records  Added</p>}
                         </TableContainer>
                     </div>
+                    <Grid container style={{ justifyContent: "center" }}>
+                        <Grid sm={3} marginRight={10}>
+                            <Button
+                                fullWidth
+                                onClick={() => navigate('/dashboard/farmerinfo')}
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2, bgcolor: "green" }}
+                            >
+                                Back
+                            </Button>
+                        </Grid>
+                        <Grid sm={3} marginLeft={10}>
+                            <Button
+                                type='submit'
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2, bgcolor: "green" }}
+                            >
+                                Next
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </Container>
             </ThemeProvider>
         </div>

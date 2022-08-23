@@ -3,19 +3,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import LoginScreen from "./screens/Login";
-<<<<<<< HEAD
 
 import DrawerComponent from "./components/common/SideDrawer";
 import AddEmployeeScreen from "./screens/AddEmployee";
 import ViewEmployeesScreen from "./screens/ViewEmployee";
 import HomeScreen from "./screens/Home";
 
-=======
-import AddEmployeeScreen from "./screens/AddEmployee";
-import ViewEmployeesScreen from "./screens/ViewEmployee";
-import HomeScreen from "./screens/Home";
-import DrawerComponent from "./components/common/SideDrawer";
->>>>>>> cd00b46c844798a5873ada81da0780171fcc370e
 import AddFarmerScreen from "./screens/AddFarmer";
 import ViewFarmerScreen from "./screens/ViewFarmer";
 import UpdateEmployeeScreen from "./screens/UpdateEmployee";
@@ -24,11 +17,8 @@ import LandDetailScreen from "./screens/LandDetails";
 import LiveStockScreen from "./screens/LiveStockDetails";
 import MachineDetailsScreen from "./screens/MachineDetails";
 import LabourDetailsScreen from "./screens/LabourDetails";
+import FarmerProfile from "./screens/FarmerProfile";
 
-<<<<<<< HEAD
-=======
-
->>>>>>> cd00b46c844798a5873ada81da0780171fcc370e
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
@@ -39,9 +29,7 @@ const App = () => {
         <Route path="/login" element={<LoginScreen />} />
         <Route
           path="/dashboard"
-          element={
-            isAuthenticated ? <DrawerComponent /> : <Navigate to="/" />
-          }
+          element={isAuthenticated ? <DrawerComponent /> : <Navigate to="/" />}
         >
           <Route path="addemployee" element={<AddEmployeeScreen />} />
           <Route path="viewemployees" element={<ViewEmployeesScreen />} />
@@ -53,6 +41,7 @@ const App = () => {
           <Route path="machines" element={<MachineDetailsScreen />} />
           <Route path="labour" element={<LabourDetailsScreen />} />
           <Route path="viewfarmer" element={<ViewFarmerScreen />} />
+          <Route path="viewprofile" element={<FarmerProfile />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -14,6 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
+import AlertDialog from "../components/common/Modal";
 
 const columns = [
   { id: "slNo", label: "Sl.no", minWidth: 10 },
@@ -33,26 +34,16 @@ export default function ViewEmployeesScreen() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const navigate = useNavigate();
-
   const { addedEmployees } = useSelector((state) => state.employee);
   const dispatch = useDispatch();
   const employeeData = [];
+  const [deleteUser, setDeleteUser] = React.useState(null);
 
   const handledelete = (employee) => {
-    console.log("Delete", employee)
-    axiosInstance
-      .delete(`/employee/${employee.userName}`)
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("Deleted Successfully")
-          console.log("Response", res.data);
-          dispatch({
-            type: SET_ADDED_EMPLOYEES,
-            payload: res.data,
-          });
-        }
-      }).catch((err) => console.log("Error while deleting and get response", err));
-  }
+    console.log("Delete", employee);
+    handleModalClickOpen();
+    setDeleteUser(employee);
+  };
 
   addedEmployees.map((employee) =>
     employeeData.push({
@@ -62,7 +53,11 @@ export default function ViewEmployeesScreen() {
       email: employee.email,
       phoneNumber: employee.phoneNumber,
       editIcon: (
-        <IconButton onClick={() => navigate('/dashboard/updateemployee', { state: employee })}>
+        <IconButton
+          onClick={() =>
+            navigate("/dashboard/updateemployee", { state: employee })
+          }
+        >
           <EditIcon />
         </IconButton>
       ),
@@ -93,6 +88,35 @@ export default function ViewEmployeesScreen() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  // modal
+  const [modal, setModal] = React.useState(false);
+
+  const handleModalClickOpen = () => {
+    setModal(true);
+  };
+
+  const handleModalClose = () => {
+    setModal(false);
+  };
+
+  const setConfirm = () => {
+    axiosInstance
+      .delete(`/employee/${deleteUser.userName}`)
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("Deleted Successfully");
+          console.log("Response", res.data);
+          dispatch({
+            type: SET_ADDED_EMPLOYEES,
+            payload: res.data,
+          });
+        }
+      })
+      .catch((err) =>
+        console.log("Error while deleting and get response", err)
+      );
   };
 
   const tableContent =
@@ -152,6 +176,14 @@ export default function ViewEmployeesScreen() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
+        <AlertDialog
+          modal={modal}
+          handleModalClose={handleModalClose}
+          handleModalClickOpen={handleModalClickOpen}
+          modalMessage={"Are you sure want to Logout?"}
+          modalTitle={"Logout"}
+          setConfirm={setConfirm}
+        />
       </div>
     ) : (
       <p className="text-center fs-5">No Employees added...</p>

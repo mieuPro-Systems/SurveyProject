@@ -57,7 +57,7 @@ export default function AddEmployeeScreen() {
           }
         })
         .catch((err) => {
-          console.log('error res', err.response.data);
+          console.log("error res", err.response.data);
           if (err.response.data) {
             if (err.response.data) {
               setError({
@@ -148,7 +148,9 @@ export default function AddEmployeeScreen() {
                   color="success"
                   type="text"
                   onInput={(e) => {
-                    e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 11)
+                    e.target.value = Math.max(0, parseInt(e.target.value))
+                      .toString()
+                      .slice(0, 11);
                   }}
                   error={error?.phoneNumber !== undefined}
                   helperText={error.phoneNumber}
@@ -178,8 +180,6 @@ export default function AddEmployeeScreen() {
             </Button>
           </Box>
         </Box>
-<<<<<<< HEAD
-=======
         {/* <Snackbar
           anchorOrigin={{ vertical, horizontal }}
           open={open}
@@ -187,7 +187,6 @@ export default function AddEmployeeScreen() {
           message={state.message}
           key={vertical + horizontal}
         /> */}
->>>>>>> 9ca00d883b893115f12383e56f332d4b4b9edf5c
       </Container>
     </ThemeProvider>
   );

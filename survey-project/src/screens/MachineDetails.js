@@ -52,11 +52,10 @@ const MachineDetails = () => {
         })
 
         const postData = {
-            farmerDetails: farmers.farmerDetails,
             machineDetails: Machines
         }
         console.log("postData", postData)
-        axiosInstance.post('/application/machineries', postData)
+        axiosInstance.post('/machinery/create', postData)
             .then((res) => {
                 if (res.status === 200) {
                     console.log("Machine Details Uploaded Successfully", res.data)
@@ -71,6 +70,7 @@ const MachineDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const MachinesData = {
+            farmerId: farmers.farmerDetails.farmerId,
             type: data.get('type'),
             subType: data.get('subtype'),
             attachments: data.get('attachments'),

@@ -56,6 +56,7 @@ const LabourDetails = () => {
         for (const work of Selectedwork) {
             Allworkdata[work.key] = true
         }
+        Allworkdata.farmerId = farmers.farmerDetails.farmerId
         return Allworkdata
     }
 
@@ -71,11 +72,10 @@ const LabourDetails = () => {
         })
         console.log("Reduc labour", farmers)
         const postData = {
-            farmerDetails: farmers.farmerDetails,
             labourDetails: ConfiguredData
         }
         console.log("postData", postData)
-        axiosInstance.post('/application/labours', postData)
+        axiosInstance.post('/labour/create', postData)
             .then((res) => {
                 if (res.status === 200) {
                     console.log("Uploaded Successfully(LabourDetails)", res.data)

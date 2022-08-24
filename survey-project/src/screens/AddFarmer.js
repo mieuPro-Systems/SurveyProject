@@ -232,8 +232,8 @@ const AddFarmer = () => {
                     color="success"
                     value={farmerData.nickName}
                     onChange={handleInputChange}
-                    // error={error?.userName !== undefined}
-                    // helperText={error.userName}
+                  // error={error?.userName !== undefined}
+                  // helperText={error.userName}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -246,8 +246,8 @@ const AddFarmer = () => {
                     color="success"
                     value={farmerData.fatherName}
                     onChange={handleInputChange}
-                    // error={error?.userName !== undefined}
-                    // helperText={error.userName}
+                  // error={error?.userName !== undefined}
+                  // helperText={error.userName}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -267,8 +267,8 @@ const AddFarmer = () => {
                     }}
                     value={farmerData.age}
                     onChange={handleInputChange}
-                    // error={error?.userName !== undefined}
-                    // helperText={error.userName}
+                  // error={error?.userName !== undefined}
+                  // helperText={error.userName}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -282,7 +282,7 @@ const AddFarmer = () => {
                       label="Gender/பாலினம்"
                       value={farmerData.gender}
                       onChange={handleInputChange}
-                      // onChange={handleChange}
+                    // onChange={handleChange}
                     >
                       <MenuItem value={"Male"}>Male</MenuItem>
                       <MenuItem value={"Female"}>Female</MenuItem>
@@ -307,8 +307,8 @@ const AddFarmer = () => {
                     }}
                     value={farmerData.phoneNumber}
                     onChange={handleInputChange}
-                    // error={error?.phoneNumber !== undefined}
-                    // helperText={error.phoneNumber}
+                  // error={error?.phoneNumber !== undefined}
+                  // helperText={error.phoneNumber}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -327,8 +327,8 @@ const AddFarmer = () => {
                     }}
                     value={farmerData.whatsappNumber}
                     onChange={handleInputChange}
-                    // error={error?.email !== undefined}
-                    // helperText={error.email}
+                  // error={error?.email !== undefined}
+                  // helperText={error.email}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>

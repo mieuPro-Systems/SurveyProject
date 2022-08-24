@@ -57,7 +57,6 @@ const CropDetails = () => {
         })
         console.log("farmersredux", farmers)
         const postData = {
-            farmerDetails: farmers.farmerDetails,
             cropDetails: CropsDetail
         }
         console.log("postdata", postData)
@@ -78,6 +77,7 @@ const CropDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const CropsData = {
+            farmerId: farmers.farmerDetails.farmerId,
             type: data.get('typeofcrop'),
             name: data.get('cropname'),
             variety: data.get('cropvariety'),

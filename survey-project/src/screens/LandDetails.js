@@ -48,7 +48,7 @@ const LandDetails = () => {
             payload: LandDetail
         })
         const postData = {
-            farmerDetails: farmers.farmerDetails,
+            farmerId: farmers.farmerDetails.farmerId,
             landDetails: LandDetail
         }
         console.log("postdata".postData)

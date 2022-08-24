@@ -13,27 +13,12 @@ import validateEmployeeAddInput from "../Validation/EmployeeAdditionForm";
 
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
-
 const theme = createTheme();
 
 export default function AddEmployeeScreen() {
   const [error, setError] = React.useState({});
   const navigate = useNavigate();
-  const [state, setState] = React.useState({
-    open: false,
-    vertical: "top",
-    horizontal: "center",
-    message: "",
-  });
-  const { vertical, horizontal, open } = state;
 
-  const showSnackBar = (newState) => () => {
-    setState({ open: true, ...newState });
-  };
-
-  const handleClose = () => {
-    setState({ ...state, open: false });
-  };
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -46,6 +31,7 @@ export default function AddEmployeeScreen() {
     };
     console.log("employeeDetails", employeeDetails);
     const { errors, isValid } = validateEmployeeAddInput(employeeDetails);
+
     if (isValid) {
       axiosInstance
         .post("/employee/create", {
@@ -58,16 +44,12 @@ export default function AddEmployeeScreen() {
         .then((res) => {
           if (res.status === 201) {
             console.log("created");
-            showSnackBar({
-              vertical: "top",
-              horizontal: "right",
-              message: "Employee Added",
-            });
+
             navigate("/dashboard/viewemployees");
           }
         })
         .catch((err) => {
-          console.log('error res', err.response.data);
+          console.log("error res", err.response.data);
           if (err.response.data) {
             if (err.response.data) {
               setError({
@@ -158,7 +140,9 @@ export default function AddEmployeeScreen() {
                   color="success"
                   type="text"
                   onInput={(e) => {
-                    e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 11)
+                    e.target.value = Math.max(0, parseInt(e.target.value))
+                      .toString()
+                      .slice(0, 11);
                   }}
                   error={error?.phoneNumber !== undefined}
                   helperText={error.phoneNumber}

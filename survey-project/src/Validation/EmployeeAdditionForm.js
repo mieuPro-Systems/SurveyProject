@@ -1,7 +1,6 @@
 import isEmpty from "./isEmpty";
-import { isPhoneNumberValid } from "./Common"
+import { isPhoneNumberValid } from "./Common";
 const Validators = require("validator");
-
 
 export default function validateEmployeeAddInput(data) {
   let errors = {};
@@ -29,7 +28,7 @@ export default function validateEmployeeAddInput(data) {
   }
 
   if (!isPhoneNumberValid(data.phoneNumber)) {
-    errors.phoneNumber = "Phone number is Invalid"
+    errors.phoneNumber = "Phone number is Invalid";
   }
 
   if (Validators.isEmpty(data.phoneNumber)) {

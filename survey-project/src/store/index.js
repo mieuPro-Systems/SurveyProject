@@ -9,6 +9,6 @@ export default configureStore({
     auth: authReducer,
     error: errorsReducer,
     employee: employeeReducer,
-    farmer: farmerReducer
+    farmer: farmerReducer,
   },
 });

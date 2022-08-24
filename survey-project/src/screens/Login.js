@@ -13,7 +13,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +39,7 @@ function Copyright(props) {
   );
 }
 
-const theme = createTheme()
+const theme = createTheme();
 export default function SignIn() {
   const [error, setError] = React.useState({});
   const dispatch = useDispatch();
@@ -57,6 +57,13 @@ export default function SignIn() {
     if (isValid) {
       dispatch({ type: SET_CURRENT_USER, payload: userDetails });
       navigate("/dashboard");
+      localStorage.setItem(
+        "faFaCoUserDetail",
+        JSON.stringify({
+          isLoggedIn: true,
+          userName: userDetails.username,
+        })
+      );
     }
   };
   const [showPassword, setShowPassword] = React.useState(false);
@@ -64,11 +71,16 @@ export default function SignIn() {
   return (
     <div style={{ backgroundImage: "url(../assests/cow.jpg)" }}>
       <div style={{ padding: "10px" }}>
-        <Button variant="contained" startIcon={<ArrowBackIosNewIcon />} color="success" onClick={() => navigate('/')}>
+        <Button
+          variant="contained"
+          startIcon={<ArrowBackIosNewIcon />}
+          color="success"
+          onClick={() => navigate("/")}
+        >
           Home
         </Button>
       </div>
-      <ThemeProvider theme={theme} >
+      <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box

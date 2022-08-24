@@ -137,6 +137,7 @@ export default function DrawerComponent() {
 
   const setConfirm = () => {
     dispatch({ type: SET_CURRENT_USER, payload: {} });
+    localStorage.removeItem("faFaCoUserDetail");
   };
 
   return (
@@ -195,7 +196,13 @@ export default function DrawerComponent() {
                   px: 2.5,
                 }}
                 onClick={() => {
-                  navigate(EmployeeRoutes[index]);
+                  if (EmployeeRoutes[index] === "addfarmer") {
+                    navigate(EmployeeRoutes[index], {
+                      state: { update: false },
+                    });
+                  } else {
+                    navigate(EmployeeRoutes[index]);
+                  }
                   setColor(index);
                 }}
               >

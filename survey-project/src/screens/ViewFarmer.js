@@ -9,11 +9,12 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import axiosInstance from "../utils/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
-import { SET_ADDED_EMPLOYEES, SET_ALL_FARMERS } from "../actions/types";
+import { SET_ALL_FARMERS } from "../actions/types";
 import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router-dom";
+import AlertDialog from "../components/common/Modal";
 
 const columns = [
   { id: "slNo", label: "Sl.no", minWidth: 10 },
@@ -26,7 +27,8 @@ const columns = [
   },
   { id: "age", label: "Age", minWidth: 100 },
   { id: "gender", label: "Gender", minWidth: 100 },
-  { id: "phoneNumber", label: "Phone number", minWidth: 10 },
+  { id: "phoneNumber", label: "Phone number", minWidth: 100 },
+  { id: "profileIcon", label: "Profile", minWidth: 10 },
   { id: "deleteIcon", label: "Delete", minWidth: 10 },
 ];
 
@@ -40,24 +42,12 @@ export default function ViewFarmerScreen() {
 
   const dispatch = useDispatch();
   const farmerData = [];
+  const [deleteFarmerId, setDeleteFarmmerId] = React.useState(null);
 
-  const handledelete = (employee) => {
-    console.log("Delete", employee);
-    axiosInstance
-      .delete(`/employee/${employee.userName}`)
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("Deleted Successfully");
-          console.log("Response", res.data);
-          dispatch({
-            type: SET_ADDED_EMPLOYEES,
-            payload: res.data,
-          });
-        }
-      })
-      .catch((err) =>
-        console.log("Error while deleting and get response", err)
-      );
+  const handledelete = (farmerId) => {
+    console.log("Delete", farmerId);
+    handleModalClickOpen();
+    setDeleteFarmmerId(farmerId);
   };
 
   addedFarmers.map((farmer, index) => {
@@ -70,17 +60,21 @@ export default function ViewFarmerScreen() {
       age: farmer.farmerDetails.age,
       gender: farmer.farmerDetails.gender,
       phoneNumber: farmer.farmerDetails.phoneNumber,
-      editIcon: (
+      profileIcon: (
         <IconButton
           onClick={() => {
-            navigate("/dashboard/updatefarmer", { state: farmer });
+            handleIndividualFarmerClick(farmer.farmerDetails.id);
           }}
         >
-          <EditIcon />
+          <VisibilityIcon />
         </IconButton>
       ),
       deleteIcon: (
-        <IconButton onClick={() => handledelete(farmer)}>
+        <IconButton
+          onClick={() => {
+            handledelete(farmer.farmerDetails.id);
+          }}
+        >
           <DeleteIcon />
         </IconButton>
       ),
@@ -123,6 +117,35 @@ export default function ViewFarmerScreen() {
     }
   };
 
+  // modal
+  const [modal, setModal] = React.useState(false);
+
+  const handleModalClickOpen = () => {
+    setModal(true);
+  };
+
+  const handleModalClose = () => {
+    setModal(false);
+  };
+
+  const setConfirm = () => {
+    axiosInstance
+      .delete(`/farmer/delete/${deleteFarmerId}`)
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("Farmer Deleted Successfully");
+          console.log("Response", res.data.data);
+          dispatch({
+            type: SET_ALL_FARMERS,
+            payload: res.data.data,
+          });
+        }
+      })
+      .catch((err) =>
+        console.log("Error while deleting farmer and get response", err)
+      );
+  };
+
   const tableContent =
     farmerData.length > 0 ? (
       <div>
@@ -134,7 +157,7 @@ export default function ViewFarmerScreen() {
                 <TableRow>
                   {columns.map((column) => (
                     <TableCell
-                      key={column.id}
+                      key={column.slNo}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
                     >
@@ -153,9 +176,6 @@ export default function ViewFarmerScreen() {
                         role="checkbox"
                         tabIndex={-1}
                         key={row.code}
-                        onClick={() => {
-                          handleIndividualFarmerClick(row.farmerId);
-                        }}
                       >
                         {columns.map((column) => {
                           const value = row[column.id];
@@ -194,5 +214,19 @@ export default function ViewFarmerScreen() {
       <p className="text-center fs-5">No Farmers added...</p>
     );
 
-  return <div>{tableContent}</div>;
+  return (
+    <div>
+      {tableContent}
+      <AlertDialog
+        modal={modal}
+        handleModalClose={handleModalClose}
+        handleModalClickOpen={handleModalClickOpen}
+        modalMessage={
+          "This cannot be undone, Are you sure want to Delete the Farmer?"
+        }
+        modalTitle={"Delete Farmer"}
+        setConfirm={setConfirm}
+      />
+    </div>
+  );
 }

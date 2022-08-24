@@ -5,14 +5,15 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import FarmerProfileAccordion from "../components/Farmer-Profile/FarmerProfileAccordion";
 
 const FarmerProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  //   console.log(location.state);
+  // console.log(location.state);
   const { farmerDetails, labourDetails, livestockDetails, machineDetails } =
     location.state;
-  console.log("farmerDetails", farmerDetails);
+  console.log("labourDetails", labourDetails);
   return (
     <div>
       <div className="col mb-1">Farmer's Profile </div>
@@ -31,7 +32,7 @@ const FarmerProfile = () => {
 
           <div className="row">
             <div className="col-lg-4">
-              <div className="card mb-4">
+              <div className="card mb-3">
                 <div className="card-body text-center">
                   <img
                     src={ProfilePic}
@@ -39,23 +40,31 @@ const FarmerProfile = () => {
                     className="rounded-circle img-fluid"
                     style={{ width: "100px" }}
                   />
-                  <h5 className="my-3">{farmerDetails.farmerName}</h5>
+                  <h5 className="mt-3">{farmerDetails.farmerName}</h5>
                   {farmerDetails.nickName && <h6>{farmerDetails.nickName}</h6>}
                   {farmerDetails.phoneNumber && (
-                    <p className="text-muted mb-4">
+                    <p className="text-muted mb-1">
                       {farmerDetails.phoneNumber}
                     </p>
                   )}
 
-                  <p className="text-muted mb-4">
-                    Farmer ID - {farmerDetails.id}
-                  </p>
+                  <p className="">Farmer ID - {farmerDetails.id}</p>
+                  <button
+                    className="btn btn-sm btn-primary"
+                    onClick={() =>
+                      navigate("/dashboard/addFarmer", {
+                        state: { update: true, farmerDetails: farmerDetails },
+                      })
+                    }
+                  >
+                    Edit details
+                  </button>
                 </div>
               </div>
               <div className="card mb-4 mb-lg-0">
-                <p className="text-center mt-3">Interested In</p>
+                <p className="text-center mt-2">Interested in</p>
                 <div className="card-body p-0">
-                  <Stack className="mb-3 mx-3" spacing={1}>
+                  <Stack className="mb-3 mx-3" spacing={1} direction="row">
                     <Chip
                       icon={
                         farmerDetails.organic ? (
@@ -65,6 +74,8 @@ const FarmerProfile = () => {
                         )
                       }
                       label="Organic Farming"
+                      color={farmerDetails.organic ? "success" : "error"}
+                      variant={farmerDetails.organic ? "" : "outlined"}
                     />
                     <Chip
                       icon={
@@ -75,9 +86,11 @@ const FarmerProfile = () => {
                         )
                       }
                       label="Single Seedling"
-                      variant="outlined"
-                      color="primary"
+                      variant={farmerDetails.singleSeed ? "" : "outlined"}
+                      color={farmerDetails.singleSeed ? "success" : "error"}
                     />
+                  </Stack>
+                  <Stack className="mb-3 mx-3" spacing={1} direction="row">
                     <Chip
                       icon={
                         farmerDetails.altCrop ? (
@@ -87,6 +100,8 @@ const FarmerProfile = () => {
                         )
                       }
                       label="Alternative Crop"
+                      variant={farmerDetails.altCrop ? "" : "outlined"}
+                      color={farmerDetails.altCrop ? "success" : "error"}
                     />
                     <Chip
                       icon={
@@ -97,9 +112,11 @@ const FarmerProfile = () => {
                         )
                       }
                       label="Seed Variety Advice"
-                      variant="outlined"
-                      color="primary"
+                      variant={farmerDetails.seedVariety ? "" : "outlined"}
+                      color={farmerDetails.seedVariety ? "success" : "error"}
                     />
+                  </Stack>
+                  <Stack className="mb-3 mx-3" spacing={1} direction="row">
                     <Chip
                       icon={
                         farmerDetails.leaseOwnLand ? (
@@ -109,7 +126,11 @@ const FarmerProfile = () => {
                         )
                       }
                       label="To lease Own land"
+                      variant={farmerDetails.leaseOwnLand ? "" : "outlined"}
+                      color={farmerDetails.leaseOwnLand ? "success" : "error"}
                     />
+                  </Stack>
+                  <Stack className="mb-3 mx-3" spacing={1} direction="row">
                     <Chip
                       icon={
                         farmerDetails.farmRentedLand ? (
@@ -118,9 +139,10 @@ const FarmerProfile = () => {
                           <CancelOutlinedIcon />
                         )
                       }
-                      label="To Farm Rented Land"
-                      variant="outlined"
-                      color="primary"
+                      label="To Farm Rented 
+                      Land"
+                      variant={farmerDetails.farmRentedLand ? "" : "outlined"}
+                      color={farmerDetails.farmRentedLand ? "success" : "error"}
                     />
                   </Stack>
                 </div>
@@ -137,6 +159,48 @@ const FarmerProfile = () => {
                       <p className="text-muted mb-0">
                         {farmerDetails.farmerName
                           ? farmerDetails.farmerName
+                          : "-"}
+                      </p>
+                    </div>
+                  </div>
+                  <hr />
+
+                  <div className="row">
+                    <div className="col-sm-3">
+                      <p className="mb-0">Father Name</p>
+                    </div>
+                    <div className="col-sm-9">
+                      <p className="text-muted mb-0">
+                        {" "}
+                        {farmerDetails.fatherName
+                          ? farmerDetails.fatherName
+                          : "-"}
+                      </p>
+                    </div>
+                  </div>
+                  <hr />
+
+                  <div className="row">
+                    <div className="col-sm-3">
+                      <p className="mb-0">Age</p>
+                    </div>
+                    <div className="col-sm-9">
+                      <p className="text-muted mb-0">
+                        {farmerDetails.age ? farmerDetails.age : "-"}
+                      </p>
+                    </div>
+                  </div>
+                  <hr />
+
+                  <div className="row">
+                    <div className="col-sm-3">
+                      <p className="mb-0">Gender</p>
+                    </div>
+                    <div className="col-sm-9">
+                      <p className="text-muted mb-0">
+                        {farmerDetails.gender
+                          ? farmerDetails.gender[0].toUpperCase() +
+                            farmerDetails.gender.slice(1).toLowerCase()
                           : "-"}
                       </p>
                     </div>
@@ -171,231 +235,69 @@ const FarmerProfile = () => {
                     </div>
                   </div>
                   <hr />
+
                   <div className="row">
                     <div className="col-sm-3">
-                      <p className="mb-0">Father Name</p>
+                      <p className="mb-0">Residential Type</p>
                     </div>
                     <div className="col-sm-9">
                       <p className="text-muted mb-0">
-                        {" "}
-                        {farmerDetails.fatherName
-                          ? farmerDetails.fatherName
+                        {farmerDetails.residentialType
+                          ? farmerDetails.residentialType[0].toUpperCase() +
+                            farmerDetails.residentialType.slice(1).toLowerCase()
                           : "-"}
                       </p>
                     </div>
                   </div>
                   <hr />
+
                   <div className="row">
                     <div className="col-sm-3">
                       <p className="mb-0">Address</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted mb-0">
-                        {(farmerDetails.village
-                          ? farmerDetails.village + ", "
-                          : "") +
-                          (farmerDetails.panchayat
-                            ? farmerDetails.panchayat + ", "
-                            : "") +
-                          (farmerDetails.union
-                            ? farmerDetails.union + ", "
-                            : "") +
-                          (farmerDetails.district
-                            ? farmerDetails.district + ", "
-                            : "") +
-                          (farmerDetails.state ? farmerDetails.state : "")}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="card mb-4 mb-md-0">
-                    <div className="card-body">
-                      <p className="mb-4">
-                        <span className="text-primary font-italic me-1">
-                          assigment
-                        </span>{" "}
-                        Project Status
-                      </p>
-                      <p className="mb-1" style={{ fontSize: ".77rem" }}>
-                        Web Design
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "80%" }}
-                          aria-valuenow="80"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        Website Markup
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "72%" }}
-                          aria-valuenow="72"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        One Page
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "89%" }}
-                          aria-valuenow="89"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        Mobile Template
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "55%" }}
-                          aria-valuenow="55"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        Backend API
-                      </p>
-                      <div
-                        className="progress rounded mb-2"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "66%" }}
-                          aria-valuenow="66"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="card mb-4 mb-md-0">
-                    <div className="card-body">
-                      <p className="mb-4">
-                        <span className="text-primary font-italic me-1">
-                          assigment
-                        </span>{" "}
-                        Project Status
-                      </p>
-                      <p className="mb-1" style={{ fontSize: ".77rem" }}>
-                        Web Design
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "80%" }}
-                          aria-valuenow="80"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        Website Markup
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "72%" }}
-                          aria-valuenow="72"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        One Page
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "89%" }}
-                          aria-valuenow="89"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        Mobile Template
-                      </p>
-                      <div
-                        className="progress rounded"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "55%" }}
-                          aria-valuenow="55"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                        Backend API
-                      </p>
-                      <div
-                        className="progress rounded mb-2"
-                        style={{ height: "5px" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{ width: "66%" }}
-                          aria-valuenow="66"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
+                      <table className="table table-borderless">
+                        <tbody>
+                          <tr>
+                            <th scope="row">Village:</th>
+                            <td>
+                              {farmerDetails.village
+                                ? farmerDetails.village
+                                : "-"}
+                            </td>
+                            <th>Panchayat:</th>
+                            <td>
+                              {farmerDetails.panchayat
+                                ? farmerDetails.panchayat
+                                : "-"}
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Union:</th>
+                            <td>
+                              {farmerDetails.union ? farmerDetails.union : "-"}
+                            </td>
+                            <th>District:</th>
+                            <td>
+                              {farmerDetails.district
+                                ? farmerDetails.district
+                                : "-"}
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">State:</th>
+                            <td colSpan="2">
+                              {farmerDetails.state ? farmerDetails.state : "-"}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            <FarmerProfileAccordion />
           </div>
         </div>
       </div>

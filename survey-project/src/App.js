@@ -1,6 +1,12 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import LoginScreen from "./screens/Login";
 
@@ -18,9 +24,23 @@ import LiveStockScreen from "./screens/LiveStockDetails";
 import MachineDetailsScreen from "./screens/MachineDetails";
 import LabourDetailsScreen from "./screens/LabourDetails";
 import FarmerProfile from "./screens/FarmerProfile";
+import { SET_CURRENT_USER } from "./actions/types";
 
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getUserDetail = async () => {
+      let storedUserDetail = await localStorage.getItem("faFaCoUserDetail");
+      return JSON.parse(storedUserDetail);
+    };
+    getUserDetail().then((res) => {
+      if (res.isLoggedIn) {
+        dispatch({ type: SET_CURRENT_USER, payload: { res } });
+      }
+    });
+  }, []);
 
   return (
     <BrowserRouter>

@@ -180,8 +180,10 @@ export default function ViewEmployeesScreen() {
           modal={modal}
           handleModalClose={handleModalClose}
           handleModalClickOpen={handleModalClickOpen}
-          modalMessage={"Are you sure want to Logout?"}
-          modalTitle={"Logout"}
+          modalMessage={
+            "This cannot be undone, Are you sure want to Delete the Employee?"
+          }
+          modalTitle={"Delete Employee"}
           setConfirm={setConfirm}
         />
       </div>

@@ -25,17 +25,49 @@ import Paper from '@mui/material/Paper';
 import { useNavigate } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { SET_LAND_DETAILS } from '../actions/types';
+import axiosInstance from '../utils/axiosInstance';
 
 
 const theme = createTheme();
 
 const LandDetails = () => {
 
+    const dispatch = useDispatch()
     const navigate = useNavigate();
-    const [rows, setrows] = useState([]);
+    const { farmers } = useSelector((state) => state.farmer)
+
+    const [LandDetail, setLandDetail] = useState([]);
+
 
     const handleSubmit = (e) => {
         e.preventDefault()
+
+        dispatch({
+            type: SET_LAND_DETAILS,
+            payload: LandDetail
+        })
+        const postData = {
+            farmerDetails: farmers.farmerDetails,
+            landDetails: LandDetail
+        }
+        console.log("postdata".postData)
+        axiosInstance.post('/', postData)
+            .then((res) => {
+                if (res.status == 200) {
+                    console.log("Upload successfully", postData)
+                }
+                if (res.status == 400) {
+                    console.log("Error while uploading", res.data)
+                }
+            }).then(err => console.log(err))
+
+        LandDetail.forEach((data) => {
+            if (data.toshare.length > 0) {
+                navigate('/dashboard/ownerdetails')
+            }
+        })
+        console.log("Landdetails", LandDetail)
     }
 
     const addtotable = (e) => {
@@ -50,7 +82,7 @@ const LandDetails = () => {
             interestedforclean: data.get('interestedforclean'),
             cleanup: data.get('CleanUp')
         }
-        setrows([...rows, LandData])
+        setLandDetail([...LandDetail, LandData])
         console.log("land", LandData)
     }
 
@@ -205,7 +237,7 @@ const LandDetails = () => {
                                 <Grid item xs={12} sm={4}>
                                     <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
                                         <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Lands :</p>
-                                        <Chip label={rows.length} />
+                                        <Chip label={LandDetail.length} />
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} sm={3} className='mx-auto'>
@@ -228,6 +260,7 @@ const LandDetails = () => {
                             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                                 <TableHead>
                                     <TableRow>
+                                        <StyledTableCell align='center'>S.no</StyledTableCell>
                                         <StyledTableCell align='center'>Area (Acres)</StyledTableCell>
                                         <StyledTableCell align="center">OwnFarming (Acres)</StyledTableCell>
                                         <StyledTableCell align="center">ToShare (Acres)</StyledTableCell>
@@ -240,25 +273,26 @@ const LandDetails = () => {
                                 </TableHead>
                                 <TableBody>
 
-                                    {rows.length > 0 &&
-                                        rows.map((row, index) => (
-                                            <StyledTableRow key={row.area}>
+                                    {LandDetail.length > 0 &&
+                                        LandDetail.map((land, index) => (
+                                            <StyledTableRow key={index + 1}>
                                                 <StyledTableCell align="center" component="th" scope="row">
-                                                    {row.area}
+                                                    {index + 1}
                                                 </StyledTableCell>
-                                                <StyledTableCell align="center">{row.ownfarming}</StyledTableCell>
-                                                <StyledTableCell align="center">{row.toshare}</StyledTableCell>
-                                                <StyledTableCell align="center">{row.othersfarmland}</StyledTableCell>
-                                                <StyledTableCell align="center">{row.interestedforclean}</StyledTableCell>
-                                                <StyledTableCell align="center">{row.wasteland}</StyledTableCell>
-                                                <StyledTableCell align="center">{row.cleanup}</StyledTableCell>
-                                                <StyledTableCell align="left" onClick={() => { setrows(prevValues => prevValues.filter((value, prevIndex) => prevIndex !== index)) }}>
+                                                <StyledTableCell align="center">{land.area}</StyledTableCell>
+                                                <StyledTableCell align="center">{land.ownfarming}</StyledTableCell>
+                                                <StyledTableCell align="center">{land.toshare}</StyledTableCell>
+                                                <StyledTableCell align="center">{land.othersfarmland}</StyledTableCell>
+                                                <StyledTableCell align="center">{land.interestedforclean}</StyledTableCell>
+                                                <StyledTableCell align="center">{land.wasteland}</StyledTableCell>
+                                                <StyledTableCell align="center">{land.cleanup}</StyledTableCell>
+                                                <StyledTableCell align="left" onClick={() => { setLandDetail(prevValues => prevValues.filter((value, prevIndex) => prevIndex !== index)) }}>
                                                     {<HighlightOffIcon style={{ cursor: 'pointer' }} />}</StyledTableCell>
                                             </StyledTableRow>
                                         ))}
                                 </TableBody>
                             </Table>
-                            {rows.length === 0 && <p style={{ textAlign: 'center' }}>No records  Added</p>}
+                            {LandDetail.length === 0 && <p style={{ textAlign: 'center' }}>No records  Added</p>}
                         </TableContainer>
                     </div>
                     <Grid container style={{ justifyContent: "center" }}>
@@ -274,7 +308,7 @@ const LandDetails = () => {
                         </Grid>
                         <Grid sm={3} marginLeft={10}>
                             <Button
-                                type='submit'
+                                onClick={handleSubmit}
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}

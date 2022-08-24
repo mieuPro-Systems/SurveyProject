@@ -21,15 +21,22 @@ import LandscapeIcon from '@mui/icons-material/Landscape';
 import PetsIcon from '@mui/icons-material/Pets';
 import AgricultureIcon from '@mui/icons-material/Agriculture';
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import GrassIcon from '@mui/icons-material/Grass';
+import YardIcon from '@mui/icons-material/Yard';
 
 const theme = createTheme();
 
 const FarmerInfo = () => {
 
-    const carddata = [{ icon: <LandscapeIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Land Records', centerText: 'Add your Land details here', bottomText: 'Add Land Details', onclick: '/dashboard/landdetails' },
+    const card1data = [{ icon: <LandscapeIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Land Records', centerText: 'Add your Land details here', bottomText: 'Add Land Details', onclick: '/dashboard/landdetails' },
     { icon: <PetsIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Live Stocks', centerText: 'Mention LiveStocks here', bottomText: 'Add LiveStock', onclick: '/dashboard/livestocks' },
     { icon: <AgricultureIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Machines', centerText: 'Available Machines for rent', bottomText: 'Add Machinery', onclick: '/dashboard/machines' },
     { icon: <EmojiPeopleIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Labour', centerText: 'Available for fields works', bottomText: 'Add Labour', onclick: '/dashboard/labour' }]
+
+    const card2data = [
+        { icon: <GrassIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Crops', centerText: 'Mention your crops details', bottomText: 'Add Crops', onclick: '/dashboard/cropdetails' },
+        { icon: <YardIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Garden', centerText: 'Mention your garden details', bottomText: 'Add Garden', onclick: '/dashboard/gardendetails' },
+    ]
 
     return (
         <div>
@@ -58,8 +65,11 @@ const FarmerInfo = () => {
                     </Box>
                 </Container>
             </ThemeProvider>
+            <div style={{ flexDirection: 'row', display: 'flex', flex: '1', justifyContent: 'space-evenly', marginBottom: '15px' }}>
+                {card1data.map((data, index) => <Cards data={data} />)}
+            </div>
             <div style={{ flexDirection: 'row', display: 'flex', flex: '1', justifyContent: 'space-evenly' }}>
-                {carddata.map((data, index) => <Cards data={data} />)}
+                {card2data.map((data, index) => <Cards data={data} />)}
             </div>
         </div>
 

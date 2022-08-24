@@ -45,20 +45,15 @@ const MachineDetails = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        let MachineData = Machines;
-        MachineData.forEach((data) => {
-            delete data.sno
-        })
-        console.log("Machine", MachineData)
 
         dispatch({
             type: SET_MACHINE_DETAILS,
-            payload: MachineData
+            payload: Machines
         })
 
         const postData = {
             farmerDetails: farmers.farmerDetails,
-            machineDetails: MachineData
+            machineDetails: Machines
         }
         console.log("postData", postData)
         axiosInstance.post('/application/machineries', postData)
@@ -76,7 +71,6 @@ const MachineDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const MachinesData = {
-            sno: Machines.length + 1,
             type: data.get('type'),
             subType: data.get('subtype'),
             attachments: data.get('attachments'),
@@ -299,12 +293,12 @@ const MachineDetails = () => {
                             <TableBody>
                                 {Machines.length > 0 &&
                                     Machines.map((machine, index) => (
-                                        <StyledTableRow key={machine.sno}>
+                                        <StyledTableRow key={index + 1}>
                                             <StyledTableCell align="center" component="th" scope="row">
-                                                {machine.sno}
+                                                {index + 1}
                                             </StyledTableCell>
                                             <StyledTableCell align="center">{machine.type}</StyledTableCell>
-                                            <StyledTableCell align="center">{machine.subtype}</StyledTableCell>
+                                            <StyledTableCell align="center">{machine.subType}</StyledTableCell>
                                             <StyledTableCell align="center">{machine.attachments}</StyledTableCell>
                                             <StyledTableCell align="center">{machine.brand}</StyledTableCell>
                                             <StyledTableCell align="center">{machine.count}</StyledTableCell>

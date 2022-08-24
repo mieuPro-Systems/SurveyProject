@@ -1,4 +1,3 @@
-import { act } from "react-dom/test-utils";
 import { SET_FARMER_DETAILS, SET_LIVESTOCK_DETAILS, SET_LABOUR_DETAILS } from "../../actions/types";
 
 
@@ -8,7 +7,7 @@ const initialState = {
         farmerDetails: {},
         landDetails: {},
         cropDetails: {},
-        garderDetails: {},
+        gardenDetails: {},
         livestockDetails: [],
         labourDetails: {},
         machineDetails: {}
@@ -16,7 +15,7 @@ const initialState = {
     loading: false,
 };
 
-// eslint-disable-next-line import/no-anonymous-default-export
+
 export default function (state = initialState, action) {
     switch (action.type) {
         case SET_FARMER_DETAILS:

@@ -62,7 +62,8 @@ const LabourDetails = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        const ConfiguredData = configureworkdata(worksdata, chipData)
+        let ConfiguredData = []
+        ConfiguredData.push(configureworkdata(worksdata, chipData))
 
         dispatch({
             type: SET_LABOUR_DETAILS,
@@ -73,7 +74,7 @@ const LabourDetails = () => {
             farmerDetails: farmers.farmerDetails,
             labourDetails: ConfiguredData
         }
-        console.log("postDateLabour", postData)
+        console.log("postData", postData)
         axiosInstance.post('/application/labours', postData)
             .then((res) => {
                 if (res.status === 200) {

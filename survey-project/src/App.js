@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import LoginScreen from "./screens/Login";
 import AddEmployeeScreen from "./screens/AddEmployee";
 import ViewEmployeesScreen from "./screens/ViewEmployee";
@@ -15,6 +14,9 @@ import LandDetailScreen from "./screens/LandDetails";
 import LiveStockScreen from "./screens/LiveStockDetails";
 import MachineDetailsScreen from "./screens/MachineDetails";
 import LabourDetailsScreen from "./screens/LabourDetails";
+import CropDetailsScreen from "./screens/CropDetails";
+import GardenDetailsScreen from "./screens/GardenDetails";
+import OwnerDetailsScreen from "./screens/LandSub/OwnerDetails";
 
 
 const App = () => {
@@ -41,6 +43,9 @@ const App = () => {
           <Route path="machines" element={<MachineDetailsScreen />} />
           <Route path="labour" element={<LabourDetailsScreen />} />
           <Route path="viewfarmer" element={<ViewFarmerScreen />} />
+          <Route path="cropdetails" element={<CropDetailsScreen />} />
+          <Route path="gardendetails" element={<GardenDetailsScreen />} />
+          <Route path="ownerdetails" element={<OwnerDetailsScreen />} />
         </Route>
       </Routes>
     </BrowserRouter>

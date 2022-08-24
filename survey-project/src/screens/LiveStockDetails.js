@@ -41,19 +41,14 @@ const LiveStockDetails = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        let LiveStockData = LiveStocks;
-        LiveStockData.forEach((data) => {
-            delete data.sno
-        })
-        console.log("LiveStock Details", LiveStockData);
         dispatch({
             type: SET_LIVESTOCK_DETAILS,
-            payload: LiveStockData
+            payload: LiveStocks
         })
         console.log("farmersredux", farmers)
         const postData = {
             farmerDetails: farmers.farmerDetails,
-            livestockDetails: LiveStockData
+            livestockDetails: LiveStocks
         }
         console.log("postdata", postData)
         axiosInstance.post('/application/livestocks', postData)
@@ -73,7 +68,6 @@ const LiveStockDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const LiveStockData = {
-            sno: LiveStocks.length + 1,
             place: data.get('place'),
             type: data.get('livestocktype'),
             breed: data.get('livestockbreed'),
@@ -255,9 +249,9 @@ const LiveStockDetails = () => {
 
                                     {LiveStocks.length > 0 &&
                                         LiveStocks.map((LiveStock, index) => (
-                                            <StyledTableRow key={LiveStock.sno}>
+                                            <StyledTableRow key={index + 1}>
                                                 <StyledTableCell align="center" component="th" scope="row">
-                                                    {LiveStock.sno}
+                                                    {index + 1}
                                                 </StyledTableCell>
                                                 <StyledTableCell align="center">{LiveStock.place}</StyledTableCell>
                                                 <StyledTableCell align="center">{LiveStock.type}</StyledTableCell>

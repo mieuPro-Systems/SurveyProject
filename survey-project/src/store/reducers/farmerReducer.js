@@ -1,4 +1,3 @@
-import { act } from "react-dom/test-utils";
 import {
   SET_FARMER_DETAILS,
   SET_LIVESTOCK_DETAILS,

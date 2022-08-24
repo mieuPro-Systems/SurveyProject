@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  console.log(isAuthenticated);
+  //   console.log(isAuthenticated);
   const navigate = useNavigate();
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="app">

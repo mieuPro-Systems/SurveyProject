@@ -13,19 +13,11 @@ import validateEmployeeAddInput from "../Validation/EmployeeAdditionForm";
 
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
-
-import { Snackbar } from "@mui/material";
 const theme = createTheme();
 
 export default function AddEmployeeScreen() {
   const [error, setError] = React.useState({});
   const navigate = useNavigate();
-  const [state, setState] = React.useState({
-    open: false,
-    vertical: "top",
-    horizontal: "center",
-    message: "",
-  });
 
   const handleSubmit = (event) => {
     event.preventDefault();

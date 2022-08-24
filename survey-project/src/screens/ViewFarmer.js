@@ -52,7 +52,7 @@ export default function ViewFarmerScreen() {
 
   addedFarmers.map((farmer, index) => {
     // console.log("farmer", farmer);
-    farmerData.push({
+    return farmerData.push({
       slNo: index + 1,
       farmerId: farmer.farmerDetails.id,
       name: farmer.farmerDetails.farmerName,

@@ -36,7 +36,7 @@ const App = () => {
       return JSON.parse(storedUserDetail);
     };
     getUserDetail().then((res) => {
-      if (res.isLoggedIn) {
+      if (res?.isLoggedIn) {
         dispatch({ type: SET_CURRENT_USER, payload: { res } });
       }
     });

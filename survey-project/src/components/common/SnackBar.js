@@ -1,49 +1,42 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_SHOW_SNACKBAR_FALSE } from "../../actions/types";
 
-export default function PositionedSnackbar() {
-  const [state, setState] = React.useState({
-    open: false,
-    vertical: "top",
-    horizontal: "center",
-    message: "",
-  });
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
-  const { vertical, horizontal, open, message } = state;
-
-  const showSnackMessage = (newState) => () => {
-    setState({ open: true, ...newState });
+export default function MessageSnackBar() {
+  const { showSnackBar, snackBarContent } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    dispatch({
+      type: SET_SHOW_SNACKBAR_FALSE,
+    });
   };
-
-  const handleSnackMessageClose = () => {
-    setState({ ...state, open: false });
-  };
-
-  const buttons = (
-    <React.Fragment>
-      <Button
-        onClick={showSnackMessage({
-          vertical: "top",
-          horizontal: "right",
-          message: "Employee Added",
-        })}
-      >
-        Top-Right
-      </Button>
-    </React.Fragment>
-  );
 
   return (
-    <div>
-      {buttons}
+    <Stack spacing={2} sx={{ width: "100%" }}>
       <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={open}
-        onClose={handleSnackMessageClose}
-        message={message}
-        key={vertical + horizontal}
-      />
-    </div>
+        open={showSnackBar}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={snackBarContent.color}
+          sx={{ width: "100%" }}
+        >
+          {snackBarContent.message}
+        </Alert>
+      </Snackbar>
+    </Stack>
   );
 }

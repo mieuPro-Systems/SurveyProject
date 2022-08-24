@@ -9,7 +9,12 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import axiosInstance from "../utils/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
-import { SET_ADDED_EMPLOYEES } from "../actions/types";
+import {
+  SET_ADDED_EMPLOYEES,
+  SET_LOADING_FALSE,
+  SET_LOADING_TRUE,
+  SET_SHOW_SNACKBAR_TRUE,
+} from "../actions/types";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -50,7 +55,7 @@ export default function ViewEmployeesScreen() {
       slNo: employee.slNo,
       name: employee.firstName + " " + employee.lastName,
       userName: employee.userName,
-      email: employee.email,
+      email: employee.email.length > 0 ? employee.email : "-",
       phoneNumber: employee.phoneNumber,
       editIcon: (
         <IconButton
@@ -69,6 +74,9 @@ export default function ViewEmployeesScreen() {
     })
   );
   React.useEffect(() => {
+    dispatch({
+      type: SET_LOADING_TRUE,
+    });
     axiosInstance
       .get("/employee/all")
       .then((res) => {
@@ -77,8 +85,16 @@ export default function ViewEmployeesScreen() {
           type: SET_ADDED_EMPLOYEES,
           payload: res.data,
         });
+        dispatch({
+          type: SET_LOADING_FALSE,
+        });
       })
-      .catch((err) => console.log("Error in getting employee details", err));
+      .catch((err) => {
+        console.log("Error in getting employee details", err);
+        dispatch({
+          type: SET_LOADING_FALSE,
+        });
+      });
   }, [dispatch]);
 
   const handleChangePage = (event, newPage) => {
@@ -102,6 +118,9 @@ export default function ViewEmployeesScreen() {
   };
 
   const setConfirm = () => {
+    dispatch({
+      type: SET_LOADING_TRUE,
+    });
     axiosInstance
       .delete(`/employee/${deleteUser.userName}`)
       .then((res) => {
@@ -112,11 +131,24 @@ export default function ViewEmployeesScreen() {
             type: SET_ADDED_EMPLOYEES,
             payload: res.data,
           });
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
+          dispatch({
+            type: SET_SHOW_SNACKBAR_TRUE,
+            payload: {
+              snackBarMessage: "Employee Deleted Successfully",
+              snackBarColor: "warning",
+            },
+          });
         }
       })
-      .catch((err) =>
-        console.log("Error while deleting and get response", err)
-      );
+      .catch((err) => {
+        console.log("Error while deleting and get response", err);
+        dispatch({
+          type: SET_LOADING_FALSE,
+        });
+      });
   };
 
   const tableContent =

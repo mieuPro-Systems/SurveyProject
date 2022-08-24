@@ -13,11 +13,18 @@ import validateEmployeeAddInput from "../Validation/EmployeeAdditionForm";
 
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  SET_LOADING_FALSE,
+  SET_LOADING_TRUE,
+  SET_SHOW_SNACKBAR_TRUE,
+} from "../actions/types";
 const theme = createTheme();
 
 export default function AddEmployeeScreen() {
   const [error, setError] = React.useState({});
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -33,6 +40,9 @@ export default function AddEmployeeScreen() {
     const { errors, isValid } = validateEmployeeAddInput(employeeDetails);
 
     if (isValid) {
+      dispatch({
+        type: SET_LOADING_TRUE,
+      });
       axiosInstance
         .post("/employee/create", {
           first_name: employeeDetails.firstName,
@@ -44,8 +54,17 @@ export default function AddEmployeeScreen() {
         .then((res) => {
           if (res.status === 201) {
             console.log("created");
-
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
             navigate("/dashboard/viewemployees");
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Employee added Successfully",
+                snackBarColor: "success",
+              },
+            });
           }
         })
         .catch((err) => {
@@ -60,6 +79,9 @@ export default function AddEmployeeScreen() {
             }
           }
           console.log(err.response.data || err);
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
         });
     }
     setError(errors);
@@ -138,7 +160,7 @@ export default function AddEmployeeScreen() {
                   name="phoneNumber"
                   autoComplete="phoneNumber"
                   color="success"
-                  type="text"
+                  type="number"
                   onInput={(e) => {
                     e.target.value = Math.max(0, parseInt(e.target.value))
                       .toString()

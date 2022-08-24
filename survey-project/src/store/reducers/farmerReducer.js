@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-import { SET_FARMER_DETAILS, SET_LIVESTOCK_DETAILS, SET_LABOUR_DETAILS } from "../../actions/types";
-
-
-
-const initialState = {
-    farmers: {
-        farmerDetails: {},
-        landDetails: {},
-        cropDetails: {},
-        gardenDetails: {},
-        livestockDetails: [],
-        labourDetails: {},
-        machineDetails: {}
-    },
-    loading: false,
-=======
 import {
   SET_FARMER_DETAILS,
   SET_LIVESTOCK_DETAILS,
@@ -34,7 +17,7 @@ const initialState = {
   },
   loading: false,
   addedFarmers: [],
->>>>>>> e87b86272489b14935af210e3d7f794f7098c8c1
+
 };
 
 

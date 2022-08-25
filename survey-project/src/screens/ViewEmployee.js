@@ -199,7 +199,8 @@ export default function ViewEmployeesScreen() {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            // rowsPerPageOptions={[10, 25, 100]}
+            rowsPerPageOptions={[10, 50, { value: -1, label: "All" }]}
             component="div"
             count={employeeData.length}
             rowsPerPage={rowsPerPage}

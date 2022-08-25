@@ -26,10 +26,10 @@ import LabourDetailsScreen from "./screens/LabourDetails";
 
 import CropDetailsScreen from "./screens/CropDetails";
 import GardenDetailsScreen from "./screens/GardenDetails";
-import OwnerDetailsScreen from "./screens/LandSub/OwnerDetails";
+import OwnerDetailsScreen from "./screens/LandSub/SearchFarmers";
 
 import FarmerProfile from "./screens/FarmerProfile";
-import { SET_CURRENT_USER, SET_SHOW_SNACKBAR_TRUE } from "./actions/types";
+import { SET_CURRENT_USER } from "./actions/types";
 import LoadingBackdrop from "./components/common/Backdrop";
 import MessageSnackBar from "./components/common/SnackBar";
 

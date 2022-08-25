@@ -590,6 +590,14 @@ const AddFarmer = () => {
               >
                 Next
               </Button>
+              <Button
+                onClick={() => navigate("/dashboard/farmerinfo")}
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2, bgcolor: "green" }}
+              >
+                skip
+              </Button>
             </Box>
           </Box>
         </Container>

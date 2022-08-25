@@ -4,15 +4,13 @@ import { Button, Input, Space, Table } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux/es/exports";
-import { SET_ALL_FARMERS, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
-import AlertDialog from "../components/common/Modal";
+import { SET_ALL_FARMERS } from "../../actions/types";
 
-const ViewFarmers = () => {
+const SearchFarmers = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
@@ -20,7 +18,6 @@ const ViewFarmers = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { addedFarmers } = useSelector((state) => state.farmer);
-  const [deleteFarmerId, setDeleteFarmmerId] = React.useState(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -177,15 +174,16 @@ const ViewFarmers = () => {
       ...getColumnSearchProps("phoneNumber"),
     },
     {
+      title: "Village",
+      dataIndex: "village",
+      key: "village",
+      width: "20%",
+      ...getColumnSearchProps("village"),
+    },
+    {
       title: "Profile",
       dataIndex: "profile",
       key: "profile",
-      width: "10%",
-    },
-    {
-      title: "Delete",
-      dataIndex: "delete",
-      key: "delete",
       width: "10%",
     },
   ];
@@ -206,48 +204,6 @@ const ViewFarmers = () => {
     }
   };
 
-  // modal
-  const [modal, setModal] = React.useState(false);
-
-  const handleModalClickOpen = () => {
-    setModal(true);
-  };
-
-  const handleModalClose = () => {
-    setModal(false);
-  };
-
-  const setConfirm = () => {
-    axiosInstance
-      .delete(`/farmer/delete/${deleteFarmerId}`)
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("Farmer Deleted Successfully");
-          console.log("Response", res.data.data);
-          dispatch({
-            type: SET_ALL_FARMERS,
-            payload: res.data.data,
-          });
-          dispatch({
-            type: SET_SHOW_SNACKBAR_TRUE,
-            payload: {
-              snackBarMessage: "Farmer Deleted Successfully",
-              snackBarColor: "warning",
-            },
-          });
-        }
-      })
-      .catch((err) => {
-        console.log("Error while deleting farmer and get response", err);
-      });
-  };
-
-  const handledelete = (farmerId) => {
-    console.log("Delete", farmerId);
-    handleModalClickOpen();
-    setDeleteFarmmerId(farmerId);
-  };
-
   const setFarmersDataToRender = (datas) => {
     let temp = [];
     datas.map((data, index) =>
@@ -260,6 +216,7 @@ const ViewFarmers = () => {
         age: data.farmerDetails.age,
         gender: data.farmerDetails.gender,
         phoneNumber: data.farmerDetails.phoneNumber,
+        village: data.farmerDetails.village,
         profile: (
           <IconButton
             onClick={() => {
@@ -269,16 +226,6 @@ const ViewFarmers = () => {
             }}
           >
             <VisibilityIcon />
-          </IconButton>
-        ),
-        delete: (
-          <IconButton
-            onClick={() => {
-              handledelete(data.farmerDetails.id);
-              return true;
-            }}
-          >
-            <DeleteIcon />
           </IconButton>
         ),
       })
@@ -310,27 +257,47 @@ const ViewFarmers = () => {
     setFarmersDataToRender(addedFarmers);
   }, [addedFarmers]);
 
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows
+      );
+      let selectedFarmersId = selectedRows.map((entry) => entry.farmerId);
+      // console.log("selectedFarmersId", selectedFarmersId);
+      addedFarmers.map((farmerDetail) => {
+        // console.log(farmerDetail);
+        if (selectedFarmersId.includes(farmerDetail.farmerDetails.id)) {
+          return console.log("found match details", farmerDetail);
+        } else {
+          return console.log("no match found");
+        }
+      });
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.name === "Disabled User",
+      // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
+
   return (
     <>
+      <p className="fw-bold ">Search Farmers</p>
       <Table
         columns={columns}
         dataSource={farmersData}
         scroll={{
           y: 460,
         }}
-      />
-      <AlertDialog
-        modal={modal}
-        handleModalClose={handleModalClose}
-        handleModalClickOpen={handleModalClickOpen}
-        modalMessage={
-          "This cannot be undone, Are you sure want to Delete the Farmer?"
-        }
-        modalTitle={"Delete Farmer"}
-        setConfirm={setConfirm}
+        rowSelection={{
+          type: "radio",
+          ...rowSelection,
+        }}
       />
     </>
   );
 };
 
-export default ViewFarmers;
+export default SearchFarmers;

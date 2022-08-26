@@ -1,129 +1,202 @@
-import * as React from "react";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import axiosInstance from "../utils/axiosInstance";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  SET_ALL_FARMERS,
-  SET_LOADING_FALSE,
-  SET_LOADING_TRUE,
-  SET_SHOW_SNACKBAR_TRUE,
-} from "../actions/types";
+import "antd/dist/antd.min.css";
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Space, Table } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import Highlighter from "react-highlight-words";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux/es/exports";
+import { SET_ALL_FARMERS, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import AlertDialog from "../components/common/Modal";
 
-const columns = [
-  { id: "slNo", label: "Sl.no", minWidth: 10 },
-  { id: "farmerId", label: "Farmer ID", minWidth: 100 },
-  { id: "name", label: "Name", minWidth: 100 },
-  {
-    id: "fatherName",
-    label: "Father Name",
-    minWidth: 100,
-  },
-  { id: "age", label: "Age", minWidth: 100 },
-  { id: "gender", label: "Gender", minWidth: 100 },
-  { id: "phoneNumber", label: "Phone number", minWidth: 100 },
-  { id: "profileIcon", label: "Profile", minWidth: 10 },
-  { id: "deleteIcon", label: "Delete", minWidth: 10 },
-];
-
-export default function ViewFarmerScreen() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+const ViewFarmers = () => {
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
+  const [farmersData, setFarmersData] = useState([]);
   const navigate = useNavigate();
-
-  const { addedFarmers } = useSelector((state) => state.farmer);
-  //   console.log("added farmer", addedFarmers);
-
   const dispatch = useDispatch();
-  const farmerData = [];
+  const { addedFarmers } = useSelector((state) => state.farmer);
   const [deleteFarmerId, setDeleteFarmmerId] = React.useState(null);
 
-  const handledelete = (farmerId) => {
-    console.log("Delete", farmerId);
-    handleModalClickOpen();
-    setDeleteFarmmerId(farmerId);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
   };
 
-  addedFarmers.map((farmer, index) => {
-    // console.log("farmer", farmer);
-    return farmerData.push({
-      slNo: index + 1,
-      farmerId: farmer.farmerDetails.id,
-      name: farmer.farmerDetails.farmerName,
-      fatherName: farmer.farmerDetails.fatherName,
-      age: farmer.farmerDetails.age,
-      gender: farmer.farmerDetails.gender,
-      phoneNumber: farmer.farmerDetails.phoneNumber,
-      profileIcon: (
-        <IconButton
-          onClick={() => {
-            handleIndividualFarmerClick(farmer.farmerDetails.id);
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: "block",
           }}
-        >
-          <VisibilityIcon />
-        </IconButton>
-      ),
-      deleteIcon: (
-        <IconButton
-          onClick={() => {
-            handledelete(farmer.farmerDetails.id);
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1890ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
           }}
-        >
-          <DeleteIcon />
-        </IconButton>
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
       ),
-    });
   });
 
-  React.useEffect(() => {
-    dispatch({
-      type: SET_LOADING_TRUE,
-    });
-    axiosInstance
-      .get("/farmer/all")
-      .then((res) => {
-        dispatch({
-          type: SET_ALL_FARMERS,
-          payload: res.data,
-        });
-        dispatch({
-          type: SET_LOADING_FALSE,
-        });
-      })
-      .catch((err) => {
-        console.log("Error in getting all farmer details", err);
-        dispatch({
-          type: SET_LOADING_FALSE,
-        });
-      });
-  }, []);
+  const columns = [
+    {
+      title: "Sl.no",
+      dataIndex: "slNo",
+      key: "slNo",
+      width: "10%",
+    },
+    {
+      title: "Farmer ID",
+      dataIndex: "farmerId",
+      key: "farmerId",
+      width: "10%",
+      ...getColumnSearchProps("farmerId"),
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Name",
+      dataIndex: "farmerName",
+      key: "farmerName",
+      width: "20%",
+      sorter: (a, b) => a.farmerName.length - b.farmerName.length,
+      ...getColumnSearchProps("farmerName"),
+    },
+    {
+      title: "Father name",
+      dataIndex: "fatherName",
+      key: "fatherName",
+      width: "20%",
+      ...getColumnSearchProps("fatherName"),
+    },
+    {
+      title: "Age",
+      dataIndex: "age",
+      key: "age",
+      width: "10%",
+      ...getColumnSearchProps("age"),
+    },
+    {
+      title: "Gender",
+      dataIndex: "gender",
+      key: "gender",
+      width: "10%",
+    },
+    {
+      title: "Phone number",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+      width: "20%",
+      ...getColumnSearchProps("phoneNumber"),
+    },
+    {
+      title: "Profile",
+      dataIndex: "profile",
+      key: "profile",
+      width: "10%",
+    },
+    {
+      title: "Delete",
+      dataIndex: "delete",
+      key: "delete",
+      width: "10%",
+    },
+  ];
 
   const handleIndividualFarmerClick = (farmerId) => {
     // console.log("indFarmerDetail", farmerId);
+    // console.log(addedFarmers);
     let individualFarmerChoosen = addedFarmers.filter(
       (farmerDetail) => farmerDetail.farmerDetails.id === farmerId
     );
-    // console.log("farmer choosen", individualFarmerChoosen.length);
+    // console.log("farmer choosen", individualFarmerChoosen);
     if (individualFarmerChoosen.length > 0) {
       navigate("/dashboard/viewprofile", {
         state: individualFarmerChoosen[0],
@@ -146,14 +219,14 @@ export default function ViewFarmerScreen() {
 
   const setConfirm = () => {
     axiosInstance
-      .delete(`/farmer/delete/${deleteFarmerId}`)
+      .delete(`/farmer/id/${deleteFarmerId}`)
       .then((res) => {
         if (res.status === 200) {
           console.log("Farmer Deleted Successfully");
-          console.log("Response", res.data.data);
+          console.log("Response", res.data);
           dispatch({
             type: SET_ALL_FARMERS,
-            payload: res.data.data,
+            payload: res.data,
           });
           dispatch({
             type: SET_SHOW_SNACKBAR_TRUE,
@@ -164,82 +237,88 @@ export default function ViewFarmerScreen() {
           });
         }
       })
-      .catch((err) =>
-        console.log("Error while deleting farmer and get response", err)
-      );
+      .catch((err) => {
+        console.log("Error while deleting farmer and get response", err);
+      });
   };
 
-  const tableContent =
-    farmerData.length > 0 ? (
-      <div>
-        <p className="ml-3  fs-5">Added Farmers</p>
-        <Paper sx={{ width: "100%", overflow: "hidden" }}>
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.slNo}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {farmerData
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.code}
-                      >
-                        {columns.map((column) => {
-                          const value = row[column.id];
+  const handledelete = (farmerId) => {
+    console.log("Delete", farmerId);
+    handleModalClickOpen();
+    setDeleteFarmmerId(farmerId);
+  };
 
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === "number"
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            style={{
-              textAlign: "center",
-              align: "center",
-              alignItems: "center",
+  const setFarmersDataToRender = (datas) => {
+    let temp = [];
+    datas.map((data, index) =>
+      temp.push({
+        key: index + 1,
+        slNo: index + 1,
+        farmerId: data.farmerDetails.id,
+        farmerName: data.farmerDetails.farmerName,
+        fatherName: data.farmerDetails.fatherName,
+        age: data.farmerDetails.age,
+        gender: data.farmerDetails.gender,
+        phoneNumber: data.farmerDetails.phoneNumber,
+        profile: (
+          <IconButton
+            onClick={() => {
+              // console.log(data.farmerDetails.id);
+              handleIndividualFarmerClick(data.farmerDetails.id);
+              return true;
             }}
-            count={farmerData.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </div>
-    ) : (
-      <p className="text-center fs-5">No Farmers added...</p>
+          >
+            <VisibilityIcon />
+          </IconButton>
+        ),
+        delete: (
+          <IconButton
+            onClick={() => {
+              handledelete(data.farmerDetails.id);
+              return true;
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        ),
+      })
     );
+    // console.log(temp, "temp");
+    setFarmersData(temp);
+  };
+
+  useEffect(() => {
+    const fetchUser = () => {
+      axiosInstance
+        .get("/farmer/all")
+        .then((res) => {
+          // console.log("Response for getting farmers", res);
+          dispatch({
+            type: SET_ALL_FARMERS,
+            payload: res.data,
+          });
+          setFarmersDataToRender(addedFarmers);
+        })
+        .catch((err) =>
+          console.error("Error in getting farmer", err.response.data)
+        );
+    };
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    setFarmersDataToRender(addedFarmers);
+  }, [addedFarmers]);
 
   return (
-    <div>
-      {tableContent}
+    <>
+      <Table
+        columns={columns}
+        dataSource={farmersData}
+        scroll={{
+          y: 460,
+        }}
+      />
       <AlertDialog
         modal={modal}
         handleModalClose={handleModalClose}
@@ -250,6 +329,8 @@ export default function ViewFarmerScreen() {
         modalTitle={"Delete Farmer"}
         setConfirm={setConfirm}
       />
-    </div>
+    </>
   );
-}
+};
+
+export default ViewFarmers;

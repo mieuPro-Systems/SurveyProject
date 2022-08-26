@@ -4,28 +4,21 @@ import { Button, Input, Space, Table } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux/es/exports";
-import {
-  SET_ADDED_EMPLOYEES,
-  SET_ALL_FARMERS,
-  SET_SHOW_SNACKBAR_TRUE,
-} from "../actions/types";
-import AlertDialog from "../components/common/Modal";
+import { SET_ALL_FARMERS } from "../../actions/types";
 
-const ViewFarmers = () => {
+const SearchFarmers = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
   const [farmersData, setFarmersData] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { addedEmployees } = useSelector((state) => state.employee);
-  const [deleteUser, setDeleteUser] = React.useState(null);
+  const { addedFarmers } = useSelector((state) => state.farmer);
+  const [selectedRow, setSelectedRow] = useState([]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -138,28 +131,41 @@ const ViewFarmers = () => {
       width: "10%",
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Farmer ID",
+      dataIndex: "farmerId",
+      key: "farmerId",
       width: "10%",
-      ...getColumnSearchProps("name"),
+      ...getColumnSearchProps("farmerId"),
 
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Username",
-      dataIndex: "userName",
-      key: "userName",
+      title: "Name",
+      dataIndex: "farmerName",
+      key: "farmerName",
       width: "20%",
-      sorter: (a, b) => a.userName.length - b.userName.length,
-      ...getColumnSearchProps("userName"),
+      sorter: (a, b) => a.farmerName.length - b.farmerName.length,
+      ...getColumnSearchProps("farmerName"),
     },
     {
-      title: "Email ID",
-      dataIndex: "email",
-      key: "email",
+      title: "Father name",
+      dataIndex: "fatherName",
+      key: "fatherName",
       width: "20%",
-      ...getColumnSearchProps("email"),
+      ...getColumnSearchProps("fatherName"),
+    },
+    {
+      title: "Age",
+      dataIndex: "age",
+      key: "age",
+      width: "10%",
+      ...getColumnSearchProps("age"),
+    },
+    {
+      title: "Gender",
+      dataIndex: "gender",
+      key: "gender",
+      width: "10%",
     },
     {
       title: "Phone number",
@@ -168,61 +174,35 @@ const ViewFarmers = () => {
       width: "20%",
       ...getColumnSearchProps("phoneNumber"),
     },
-
     {
-      title: "Edit",
-      dataIndex: "editIcon",
-      key: "editIcon",
-      width: "10%",
+      title: "Village",
+      dataIndex: "village",
+      key: "village",
+      width: "20%",
+      ...getColumnSearchProps("village"),
     },
     {
-      title: "Delete",
-      dataIndex: "deleteIcon",
-      key: "deleteIcon",
+      title: "Profile",
+      dataIndex: "profile",
+      key: "profile",
       width: "10%",
     },
   ];
 
-  // modal
-  const [modal, setModal] = React.useState(false);
-
-  const handleModalClickOpen = () => {
-    setModal(true);
-  };
-
-  const handleModalClose = () => {
-    setModal(false);
-  };
-
-  const setConfirm = () => {
-    axiosInstance
-      .delete(`/employee/${deleteUser.userName}`)
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("Employee Deleted Successfully");
-          console.log("Response", res.data);
-          dispatch({
-            type: SET_ADDED_EMPLOYEES,
-            payload: res.data,
-          });
-          dispatch({
-            type: SET_SHOW_SNACKBAR_TRUE,
-            payload: {
-              snackBarMessage: "Farmer Deleted Successfully",
-              snackBarColor: "warning",
-            },
-          });
-        }
-      })
-      .catch((err) => {
-        console.log("Error while deleting farmer and get response", err);
+  const handleIndividualFarmerClick = (farmerId) => {
+    // console.log("indFarmerDetail", farmerId);
+    // console.log(addedFarmers);
+    let individualFarmerChoosen = addedFarmers.filter(
+      (farmerDetail) => farmerDetail.farmerDetails.id === farmerId
+    );
+    // console.log("farmer choosen", individualFarmerChoosen);
+    if (individualFarmerChoosen.length > 0) {
+      navigate("/dashboard/viewprofile", {
+        state: individualFarmerChoosen[0],
       });
-  };
-
-  const handledelete = (employeeData) => {
-    console.log("Delete", employeeData);
-    handleModalClickOpen();
-    setDeleteUser(employeeData);
+    } else {
+      console.error("Error in finding match for individual farmer");
+    }
   };
 
   const setFarmersDataToRender = (datas) => {
@@ -231,22 +211,22 @@ const ViewFarmers = () => {
       temp.push({
         key: index + 1,
         slNo: index + 1,
-        name: data.firstName + " " + data.lastName,
-        userName: data.userName,
-        email: data.email.length > 0 ? data.email : "-",
-        phoneNumber: data.phoneNumber,
-        editIcon: (
+        farmerId: data.farmerDetails.id,
+        farmerName: data.farmerDetails.farmerName,
+        fatherName: data.farmerDetails.fatherName,
+        age: data.farmerDetails.age,
+        gender: data.farmerDetails.gender,
+        phoneNumber: data.farmerDetails.phoneNumber,
+        village: data.farmerDetails.village,
+        profile: (
           <IconButton
-            onClick={() =>
-              navigate("/dashboard/updateemployee", { state: data })
-            }
+            onClick={() => {
+              // console.log(data.farmerDetails.id);
+              handleIndividualFarmerClick(data.farmerDetails.id);
+              return true;
+            }}
           >
-            <EditIcon />
-          </IconButton>
-        ),
-        deleteIcon: (
-          <IconButton onClick={() => handledelete(data)}>
-            <DeleteIcon />
+            <VisibilityIcon />
           </IconButton>
         ),
       })
@@ -258,14 +238,14 @@ const ViewFarmers = () => {
   useEffect(() => {
     const fetchUser = () => {
       axiosInstance
-        .get("/employee/all")
+        .get("/farmer/all")
         .then((res) => {
           // console.log("Response for getting farmers", res);
           dispatch({
-            type: SET_ADDED_EMPLOYEES,
+            type: SET_ALL_FARMERS,
             payload: res.data,
           });
-          setFarmersDataToRender(addedEmployees);
+          setFarmersDataToRender(addedFarmers);
         })
         .catch((err) =>
           console.error("Error in getting farmer", err.response.data)
@@ -275,30 +255,60 @@ const ViewFarmers = () => {
   }, []);
 
   useEffect(() => {
-    setFarmersDataToRender(addedEmployees);
-  }, [addedEmployees]);
+    setFarmersDataToRender(addedFarmers);
+  }, [addedFarmers]);
+
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows
+      );
+      setSelectedRow(selectedRows);
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.name === "Disabled User",
+      // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
+
+  const handleAddClick = () => {
+    let selectedFarmersId = selectedRow.map((entry) => entry.farmerId);
+    // console.log("selectedFarmersId", selectedFarmersId);
+    addedFarmers.map((farmerDetail) => {
+      // console.log(farmerDetail);
+      if (selectedFarmersId.includes(farmerDetail.farmerDetails.id)) {
+        return console.log("found match details", farmerDetail);
+      } else {
+        return;
+      }
+    });
+  };
 
   return (
     <>
+      <p className="fw-bold ">Search Farmers</p>
       <Table
         columns={columns}
         dataSource={farmersData}
         scroll={{
-          y: 460,
+          y: 400,
+        }}
+        rowSelection={{
+          type: "radio",
+          ...rowSelection,
         }}
       />
-      <AlertDialog
-        modal={modal}
-        handleModalClose={handleModalClose}
-        handleModalClickOpen={handleModalClickOpen}
-        modalMessage={
-          "This cannot be undone, Are you sure want to Delete the Farmer?"
-        }
-        modalTitle={"Delete Farmer"}
-        setConfirm={setConfirm}
-      />
+      <button
+        onClick={handleAddClick}
+        className="btn btn-sm btn-primary float-end mx-3"
+      >
+        Add
+      </button>
     </>
   );
 };
 
-export default ViewFarmers;
+export default SearchFarmers;

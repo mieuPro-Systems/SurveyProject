@@ -109,7 +109,7 @@ const AddFarmer = () => {
         });
     } else {
       axiosInstance
-        .put(`/farmer/${farmerDetails.id}`, {
+        .put(`/farmer/id/${farmerDetails.id}`, {
           farmerDetails: farmerData,
         })
         .then((res) => {
@@ -180,7 +180,7 @@ const AddFarmer = () => {
     });
   };
 
-  useEffect(() => {
+  const getState = () => {
     axiosInstance
       .get("/farmer/states")
       .then((res) => {
@@ -190,9 +190,27 @@ const AddFarmer = () => {
         }
       })
       .catch((err) => console.log("err", err));
-  }, []);
+  };
+
+  // useEffect(() => {
+  //   axiosInstance
+  //     .get("/farmer/states")
+  //     .then((res) => {
+  //       if (res.status === 200) {
+  //         console.log("StatesDropdown", res.data);
+  //         setStates(res.data).then(
+  //           setFarmerData({
+  //             ...farmerData,
+  //             state: update ? farmerDetails.state : "",
+  //           })
+  //         );
+  //       }
+  //     })
+  //     .catch((err) => console.log("err", err));
+  // }, []);
 
   useEffect(() => {
+    getState();
     if (update) {
       handleState(farmerDetails.state);
       handleDistrict(farmerDetails.district);
@@ -589,6 +607,14 @@ const AddFarmer = () => {
                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
               >
                 Next
+              </Button>
+              <Button
+                onClick={() => navigate("/dashboard/farmerinfo")}
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2, bgcolor: "green" }}
+              >
+                skip
               </Button>
             </Box>
             <Button

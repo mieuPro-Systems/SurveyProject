@@ -1,0 +1,83 @@
+[
+  {
+    "farmerDetails": {
+      "residentialType": "Local",
+      "id": "HAN0002",
+      "nickName": "Han",
+      "farmerName": "Hanish",
+      "age": 22,
+      "gender": "Male",
+      "fatherName": "Subramanian",
+      "phoneNumber": 7397358157,
+      "whatsappNumber": 7397358157,
+      "state": "TamilNadu",
+      "district": "Ramanathapuram",
+      "union": "Mandapam",
+      "panchayat": "Pudumadam",
+      "village": "Ammapattinam",
+      "organic": true,
+      "singleSeed": true,
+      "altCrop": true,
+      "seedVariety": true,
+      "leaseOwnLand": false,
+      "farmRentedLand": false
+    },
+    "livestockDetails": {},
+    "labourDetails": {},
+    "machineDetails": {}
+  },
+  {
+    "farmerDetails": {
+      "residentialType": "Local",
+      "id": "HAN0003",
+      "nickName": "Hanish",
+      "farmerName": "Hanish Kumar",
+      "age": 11,
+      "gender": "Male",
+      "fatherName": "Hanish Kumar",
+      "phoneNumber": 9212620591,
+      "whatsappNumber": null,
+      "state": "Tamilnadu",
+      "district": "Ramanathapuram",
+      "union": "Mandapam",
+      "panchayat": "pudhumadam",
+      "village": "Ammapattinam",
+      "organic": false,
+      "singleSeed": false,
+      "altCrop": false,
+      "seedVariety": false,
+      "leaseOwnLand": false,
+      "farmRentedLand": false
+    },
+    "livestockDetails": {},
+    "labourDetails": {},
+    "machineDetails": {}
+  },
+  {
+    "farmerDetails": {
+      "residentialType": "Local",
+      "id": "JEY0001",
+      "nickName": "Jey",
+      "farmerName": "Jeyendran",
+      "age": 22,
+      "gender": "Male",
+      "fatherName": "Karuppaiah",
+      "phoneNumber": 7092660353,
+      "whatsappNumber": 7092660353,
+      "state": "TamilNadu",
+      "district": "Ramanathapuram",
+      "union": "Mandapam",
+      "panchayat": "Pudumadam",
+      "village": "Ammapattinam",
+      "organic": false,
+      "singleSeed": true,
+      "altCrop": true,
+      "seedVariety": true,
+      "leaseOwnLand": true,
+      "farmRentedLand": true
+    },
+    "livestockDetails": {},
+    "labourDetails": {},
+    "machineDetails": {}
+  }
+]

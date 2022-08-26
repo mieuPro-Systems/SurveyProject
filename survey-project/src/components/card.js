@@ -14,7 +14,9 @@ const Card = () => {
           <AdminPanelSettingsIcon style={{ width: "80px", height: "80px" }} />
           <button
             type="button"
-            onClick={() => navigate("/login")}
+            onClick={() =>
+              navigate("/login", { state: { loggedInAs: "admin" } })
+            }
             className="btn btn-outline-success button "
           >
             Sign in
@@ -25,7 +27,13 @@ const Card = () => {
         <div className="text">Login as Employee</div>
         <div className="icon">
           <SupervisorAccountIcon style={{ width: "80px", height: "80px" }} />
-          <button type="button" className="btn btn-outline-success button ">
+          <button
+            type="button"
+            onClick={() =>
+              navigate("/login", { state: { loggedInAs: "employee" } })
+            }
+            className="btn btn-outline-success button "
+          >
             Sign in
           </button>
         </div>

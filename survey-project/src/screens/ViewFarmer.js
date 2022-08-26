@@ -219,14 +219,14 @@ const ViewFarmers = () => {
 
   const setConfirm = () => {
     axiosInstance
-      .delete(`/farmer/delete/${deleteFarmerId}`)
+      .delete(`/farmer/id/${deleteFarmerId}`)
       .then((res) => {
         if (res.status === 200) {
           console.log("Farmer Deleted Successfully");
-          console.log("Response", res.data.data);
+          console.log("Response", res.data);
           dispatch({
             type: SET_ALL_FARMERS,
-            payload: res.data.data,
+            payload: res.data,
           });
           dispatch({
             type: SET_SHOW_SNACKBAR_TRUE,
@@ -290,7 +290,7 @@ const ViewFarmers = () => {
   useEffect(() => {
     const fetchUser = () => {
       axiosInstance
-        .get("/api/posts/test")
+        .get("/farmer/all")
         .then((res) => {
           // console.log("Response for getting farmers", res);
           dispatch({

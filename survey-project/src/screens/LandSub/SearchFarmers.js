@@ -18,6 +18,7 @@ const SearchFarmers = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { addedFarmers } = useSelector((state) => state.farmer);
+  const [selectedRow, setSelectedRow] = useState([]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -237,7 +238,7 @@ const SearchFarmers = () => {
   useEffect(() => {
     const fetchUser = () => {
       axiosInstance
-        .get("/api/posts/test")
+        .get("/farmer/all")
         .then((res) => {
           // console.log("Response for getting farmers", res);
           dispatch({
@@ -264,22 +265,26 @@ const SearchFarmers = () => {
         "selectedRows: ",
         selectedRows
       );
-      let selectedFarmersId = selectedRows.map((entry) => entry.farmerId);
-      // console.log("selectedFarmersId", selectedFarmersId);
-      addedFarmers.map((farmerDetail) => {
-        // console.log(farmerDetail);
-        if (selectedFarmersId.includes(farmerDetail.farmerDetails.id)) {
-          return console.log("found match details", farmerDetail);
-        } else {
-          return console.log("no match found");
-        }
-      });
+      setSelectedRow(selectedRows);
     },
     getCheckboxProps: (record) => ({
       disabled: record.name === "Disabled User",
       // Column configuration not to be checked
       name: record.name,
     }),
+  };
+
+  const handleAddClick = () => {
+    let selectedFarmersId = selectedRow.map((entry) => entry.farmerId);
+    // console.log("selectedFarmersId", selectedFarmersId);
+    addedFarmers.map((farmerDetail) => {
+      // console.log(farmerDetail);
+      if (selectedFarmersId.includes(farmerDetail.farmerDetails.id)) {
+        return console.log("found match details", farmerDetail);
+      } else {
+        return;
+      }
+    });
   };
 
   return (
@@ -289,13 +294,19 @@ const SearchFarmers = () => {
         columns={columns}
         dataSource={farmersData}
         scroll={{
-          y: 460,
+          y: 400,
         }}
         rowSelection={{
           type: "radio",
           ...rowSelection,
         }}
       />
+      <button
+        onClick={handleAddClick}
+        className="btn btn-sm btn-primary float-end mx-3"
+      >
+        Add
+      </button>
     </>
   );
 };

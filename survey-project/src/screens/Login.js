@@ -16,7 +16,7 @@ import IconButton from "@mui/material/IconButton";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import validateLoginInput from "../Validation/login";
 import {
@@ -49,6 +49,10 @@ export default function SignIn() {
   const [error, setError] = React.useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { state } = location;
+  console.log("state", state);
 
   const handleSubmit = (event) => {
     dispatch({
@@ -63,7 +67,10 @@ export default function SignIn() {
     const { errors, isValid } = validateLoginInput(userDetails);
     setError(errors);
     if (isValid) {
-      dispatch({ type: SET_CURRENT_USER, payload: userDetails });
+      dispatch({
+        type: SET_CURRENT_USER,
+        payload: { userDetails, loggedInAs: state.loggedInAs },
+      });
       dispatch({
         type: SET_LOADING_FALSE,
       });

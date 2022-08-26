@@ -109,7 +109,7 @@ const LandDetails = () => {
   const addtotable = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    if (data.get("category") === "ownFarming" || "wasteLand") {
+    if (["ownFarming", "wasteLand"].includes(data.get("category"))) {
       const LandData = {
         farmerId: "HAN0001",
         category: data.get("category"),

@@ -6,7 +6,7 @@ import Highlighter from "react-highlight-words";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import axiosInstance from "../../utils/axiosInstance";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import { SET_ALL_FARMERS } from "../../actions/types";
 
@@ -19,6 +19,7 @@ const SearchFarmers = () => {
   const dispatch = useDispatch();
   const { addedFarmers } = useSelector((state) => state.farmer);
   const [selectedRow, setSelectedRow] = useState([]);
+  const location = useLocation()
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();

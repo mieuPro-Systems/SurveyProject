@@ -26,7 +26,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAuthenticated: !isEmpty(action.payload.userDetails),
-        user: action.payload,
+        user: action.payload.userDetails,
+        loggedInAs: action.payload.loggedInAs,
       };
 
     case SET_LOADING_TRUE:

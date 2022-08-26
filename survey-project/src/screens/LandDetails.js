@@ -25,7 +25,7 @@ import Paper from '@mui/material/Paper';
 import { useNavigate } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { SET_LAND_DETAILS } from '../actions/types';
+import { SET_LAND_DETAILS, SET_UPDATED_LAND_DETAILS } from '../actions/types';
 import axiosInstance from '../utils/axiosInstance';
 
 
@@ -36,54 +36,125 @@ const LandDetails = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const { farmers } = useSelector((state) => state.farmer)
+    const { landDetails } = farmers;
+    const landIds = {
+        ownFarming: ['13231',],
+        wasteLand: []
+    }
 
     const [LandDetail, setLandDetail] = useState([]);
 
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-
-        dispatch({
-            type: SET_LAND_DETAILS,
-            payload: LandDetail
-        })
-        const postData = {
-            farmerId: farmers.farmerDetails.farmerId,
-            landDetails: LandDetail
+    const getTotalArea = () => {
+        var area = 0
+        for (const data of landDetails) {
+            area += parseInt(data.area)
+            // console.log('area1', parseInt(data.area))
         }
-        console.log("postdata".postData)
-        axiosInstance.post('/', postData)
-            .then((res) => {
-                if (res.status == 200) {
-                    console.log("Upload successfully", postData)
-                }
-                if (res.status == 400) {
-                    console.log("Error while uploading", res.data)
-                }
-            }).then(err => console.log(err))
-
-        LandDetail.forEach((data) => {
-            if (data.toshare.length > 0) {
-                navigate('/dashboard/ownerdetails')
-            }
-        })
-        console.log("Landdetails", LandDetail)
+        // console.log("area", area)
+        return area
     }
+
+    const deletelandDetail = (index) => {
+        const id = landDetails[index]
+
+        axiosInstance.delete(`/land/id/${id.landId}`).then(
+            (res) => {
+                if (res.status === 200) {
+                    console.log("Land Details deleted Successfully", res.data)
+                    const UpdatedLandDetails = landDetails.filter((value, prevIndex) => prevIndex !== index)
+                    console.log('updated land details', UpdatedLandDetails)
+                    dispatch({
+                        type: SET_UPDATED_LAND_DETAILS,
+                        payload: UpdatedLandDetails
+                    })
+                }
+                if (res.status === 400) {
+                    console.log("error while deleting landdetails", res.data)
+                }
+            }
+        ).catch(err => console.log(err))
+
+    }
+
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault()
+
+    //     dispatch({
+    //         type: SET_LAND_DETAILS,
+    //         payload: LandDetail
+    //     })
+    //     const postData = {
+    //         farmerId: farmers.farmerDetails.farmerId,
+    //         landDetails: LandDetail
+    //     }
+    //     console.log("postdata".postData)
+    //     axiosInstance.post('/', postData)
+    //         .then((res) => {
+    //             if (res.status === 200) {
+    //                 console.log("Upload successfully", postData)
+    //             }
+    //             if (res.status === 400) {
+    //                 console.log("Error while uploading", res.data)
+    //             }
+    //         }).then(err => console.log(err))
+
+    //     LandDetail.forEach((data) => {
+    //         if (data.toshare.length > 0) {
+    //             navigate('/dashboard/ownerdetails')
+    //         }
+    //     })
+    //     console.log("Landdetails", LandDetail)
+    // }
 
     const addtotable = (e) => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
-        const LandData = {
-            area: data.get('Area'),
-            ownfarming: data.get('ownfarming'),
-            toshare: data.get('toshare'),
-            othersfarmland: data.get('othersfarmland'),
-            wasteland: data.get('wasteland'),
-            interestedforclean: data.get('interestedforclean'),
-            cleanup: data.get('CleanUp')
+        if (data.get('category') === 'ownFarming' || 'wasteLand') {
+            const LandData = {
+                farmerId: 'HAN0001',
+                category: data.get('category'),
+                area: data.get('area'),
+                addons: data.get('addons'),
+                supervisorId: '',
+                ownerId: ''
+            }
+            const LandDataArray = []
+            LandDataArray.push(LandData)
+            const postData = {
+                landDetails: LandDataArray
+            }
+            console.log("postData", postData)
+            axiosInstance.post('/land/create', postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log('Successfully get LandId', res.data)
+                        LandData['landId'] = res.data.landId
+                        LandData['ownerId'] = farmers.farmerDetails.farmerId
+                        LandData['supervisorId'] = 'None'
+                        // setLandDetail([...LandDetail, LandData])
+                        dispatch({
+                            type: SET_LAND_DETAILS,
+                            payload: LandData
+                        })
+                    }
+                    if (res.status === 400) {
+                        console.log("Error while getting Land Id", res.data)
+                    }
+                })
         }
-        setLandDetail([...LandDetail, LandData])
-        console.log("land", LandData)
+
+        if (data.get('category' === 'leasedLand')) {
+            const Data = {
+                farmerId: farmers.farmerDetails.farmerId,
+                category: data.get('category'),
+                area: data.get('area'),
+                addons: data.get('addons'),
+                supervisorId: '',
+                ownerId: ''
+            }
+        }
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -135,9 +206,28 @@ const LandDetails = () => {
                         >
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={4}>
+                                    <FormControl fullWidth style={{ minWidth: "180px" }}>
+                                        <InputLabel id="category">Category</InputLabel>
+                                        <Select
+                                            required
+                                            name="category"
+                                            labelId="category"
+                                            id="category"
+                                            label="Category"
+                                        // onChange={handleChange}
+                                        >
+                                            <MenuItem value={"ownFarming"}>Own Farming</MenuItem>
+                                            <MenuItem value={"wasteLand"}>Waste Land</MenuItem>
+                                            <MenuItem value={"leasedLand"}>Leased Land</MenuItem>
+                                            <MenuItem value={"takenLease"}>Taken Lease</MenuItem>
+                                            <MenuItem value={"takenLease"}>Available For Lease</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
                                     <TextField
                                         autoComplete="Area"
-                                        name="Area"
+                                        name="area"
                                         required
                                         fullWidth
                                         id="Area"
@@ -151,93 +241,32 @@ const LandDetails = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        id="ownfarming"
-                                        label="Own Farming"
-                                        name="ownfarming"
-                                        autoComplete="ownfarming"
-                                        color="success"
-                                        placeholder='in Acres'
-                                        type="number"
-                                    // error={error?.lastName !== undefined}
-                                    // helperText={error.lastName}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        name="toshare"
-                                        label="Area To Share"
-                                        id="toshare"
-                                        autoComplete="toshare"
-                                        color="success"
-                                        placeholder='in Acres'
-                                        type="number"
-                                    // error={error?.userName !== undefined}
-                                    // helperText={error.userName}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        name="othersfarmland"
-                                        label="Others Farmland"
-                                        id="othersfarmland"
-                                        autoComplete="othersfarmland"
-                                        color="success"
-                                        placeholder='in Acres'
-                                        type="number"
-                                    // error={error?.userName !== undefined}
-                                    // helperText={error.userName}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        name="CleanUp"
-                                        label="CleanUp to Farm this time"
-                                        id="CleanUp"
-                                        autoComplete="CleanUp"
-                                        color="success"
-                                        placeholder='in Acres'
-                                        type="number"
-                                    // error={error?.userName !== undefined}
-                                    // helperText={error.userName}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        name="wasteland"
-                                        label="Wasteland"
-                                        id="wasteland"
-                                        autoComplete="wasteland"
-                                        color="success"
-                                        placeholder='in Acres'
-                                        type="number"
-                                    // error={error?.userName !== undefined}
-                                    // helperText={error.userName}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        name="interestedforclean"
-                                        label="Interested to Clean Land"
-                                        placeholder='in Acres'
-                                        id="interestedforclean"
-                                        autoComplete="interestedforclean"
-                                        color="success"
-                                        type="number"
-                                    // error={error?.userName !== undefined}
-                                    // helperText={error.userName}
-                                    />
+                                    <FormControl fullWidth style={{ minWidth: "180px" }}>
+                                        <InputLabel id="addons">Add-ons</InputLabel>
+                                        <Select
+                                            required
+                                            name="addons"
+                                            labelId="addons"
+                                            id="addons"
+                                            label="Add-ons"
+                                        // onChange={handleChange}
+                                        >
+                                            <MenuItem value={"interestedToClean"}>Interested to Clean</MenuItem>
+                                            <MenuItem value={"cleanupTOFarm"}>Cleanup to Farm</MenuItem>
+                                            <MenuItem value={"None"}>None</MenuItem>
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
                                         <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Lands :</p>
-                                        <Chip label={LandDetail.length} />
+                                        <Chip label={landDetails.length} />
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
+                                        <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Area :</p>
+                                        <Chip label={getTotalArea()} />
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} sm={3} className='mx-auto'>
@@ -261,38 +290,36 @@ const LandDetails = () => {
                                 <TableHead>
                                     <TableRow>
                                         <StyledTableCell align='center'>S.no</StyledTableCell>
+                                        <StyledTableCell align="center">Owner ID</StyledTableCell>
+                                        <StyledTableCell align="center">Supervisor ID</StyledTableCell>
+                                        <StyledTableCell align="center">Land ID</StyledTableCell>
+                                        <StyledTableCell align="center">Category</StyledTableCell>
                                         <StyledTableCell align='center'>Area (Acres)</StyledTableCell>
-                                        <StyledTableCell align="center">OwnFarming (Acres)</StyledTableCell>
-                                        <StyledTableCell align="center">ToShare (Acres)</StyledTableCell>
-                                        <StyledTableCell align="center">Others Farmland (Acres)</StyledTableCell>
-                                        <StyledTableCell align="center">CleanUptoFarm (Acres)</StyledTableCell>
-                                        <StyledTableCell align="center">Wasteland (Acres)</StyledTableCell>
-                                        <StyledTableCell align="center">Interestedto CleanLand (Acres)</StyledTableCell>
+                                        <StyledTableCell align="center">Add-ons</StyledTableCell>
                                         <StyledTableCell align="center"></StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
 
-                                    {LandDetail.length > 0 &&
-                                        LandDetail.map((land, index) => (
+                                    {landDetails.length > 0 &&
+                                        landDetails.map((land, index) => (
                                             <StyledTableRow key={index + 1}>
                                                 <StyledTableCell align="center" component="th" scope="row">
                                                     {index + 1}
                                                 </StyledTableCell>
+                                                <StyledTableCell align="center">{land.ownerId}</StyledTableCell>
+                                                <StyledTableCell align="center">{land.supervisorId}</StyledTableCell>
+                                                <StyledTableCell align="center">{land.landId}</StyledTableCell>
+                                                <StyledTableCell align="center">{land.category}</StyledTableCell>
                                                 <StyledTableCell align="center">{land.area}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.ownfarming}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.toshare}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.othersfarmland}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.interestedforclean}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.wasteland}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.cleanup}</StyledTableCell>
-                                                <StyledTableCell align="left" onClick={() => { setLandDetail(prevValues => prevValues.filter((value, prevIndex) => prevIndex !== index)) }}>
+                                                <StyledTableCell align="center">{land.addons}</StyledTableCell>
+                                                <StyledTableCell align="left" onClick={() => deletelandDetail(index)}>
                                                     {<HighlightOffIcon style={{ cursor: 'pointer' }} />}</StyledTableCell>
                                             </StyledTableRow>
                                         ))}
                                 </TableBody>
                             </Table>
-                            {LandDetail.length === 0 && <p style={{ textAlign: 'center' }}>No records  Added</p>}
+                            {landDetails.length === 0 && <p style={{ textAlign: 'center' }}>No records  Added</p>}
                         </TableContainer>
                     </div>
                     <Grid container style={{ justifyContent: "center" }}>
@@ -308,7 +335,7 @@ const LandDetails = () => {
                         </Grid>
                         <Grid sm={3} marginLeft={10}>
                             <Button
-                                onClick={handleSubmit}
+                                // onClick={handleSubmit}
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}

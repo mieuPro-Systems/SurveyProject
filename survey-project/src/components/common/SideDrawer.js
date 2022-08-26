@@ -23,7 +23,12 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { SET_CURRENT_USER } from "../../actions/types";
+import {
+  SET_CURRENT_USER,
+  SET_LOADING_FALSE,
+  SET_LOADING_TRUE,
+  SET_SHOW_SNACKBAR_TRUE,
+} from "../../actions/types";
 import AlertDialog from "./Modal";
 
 const drawerWidth = 240;
@@ -136,8 +141,21 @@ export default function DrawerComponent() {
   };
 
   const setConfirm = () => {
+    dispatch({
+      type: SET_LOADING_TRUE,
+    });
     dispatch({ type: SET_CURRENT_USER, payload: {} });
     localStorage.removeItem("faFaCoUserDetail");
+    dispatch({
+      type: SET_LOADING_FALSE,
+    });
+    dispatch({
+      type: SET_SHOW_SNACKBAR_TRUE,
+      payload: {
+        snackBarMessage: "Logged out Successfully",
+        snackBarColor: "success",
+      },
+    });
   };
 
   return (

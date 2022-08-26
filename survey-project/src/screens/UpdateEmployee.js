@@ -13,6 +13,8 @@ import validateEmployeeAddInput from "../Validation/EmployeeAdditionForm";
 
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate, useLocation } from "react-router-dom";
+import { SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
+import { useDispatch } from "react-redux";
 
 const theme = createTheme();
 
@@ -20,6 +22,7 @@ export default function UpdateEmployeeScreen() {
   const [error, setError] = React.useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const employee = location.state;
   console.log("Employee Details params", employee);
 
@@ -54,6 +57,13 @@ export default function UpdateEmployeeScreen() {
           if (res.status === 200) {
             console.log("Updated");
             navigate("/dashboard/viewemployees");
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Employee detail updated successfully",
+                snackBarColor: "success",
+              },
+            });
           }
         })
         .catch((err) => {

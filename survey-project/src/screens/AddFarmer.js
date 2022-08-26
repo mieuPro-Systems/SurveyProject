@@ -15,7 +15,12 @@ import { FormControl } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import axiosInstance from "../utils/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
-import { SET_FARMER_DETAILS } from "../actions/types";
+import {
+  SET_FARMER_DETAILS,
+  SET_LOADING_FALSE,
+  SET_LOADING_TRUE,
+  SET_SHOW_SNACKBAR_TRUE,
+} from "../actions/types";
 import { useLocation, useNavigate } from "react-router-dom";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -62,6 +67,9 @@ const AddFarmer = () => {
   };
 
   const handleSubmit = (event) => {
+    dispatch({
+      type: SET_LOADING_TRUE,
+    });
     console.log("farmerData", farmerData);
     event.preventDefault();
 
@@ -69,13 +77,7 @@ const AddFarmer = () => {
     if (!update) {
       axiosInstance
         .post("/farmer/create", {
-          farmerDetails: {
-            ...farmerData,
-            whatsappNumber:
-              farmerData.whatsappNumber.length > 0
-                ? farmerData.whatsappNumber
-                : "null",
-          },
+          farmerDetails: farmerData,
         })
         .then((res) => {
           if (res.status === 200) {
@@ -84,24 +86,31 @@ const AddFarmer = () => {
               type: SET_FARMER_DETAILS,
               payload: { ...farmerData, farmerId: res.data.farmerId },
             });
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
             navigate("/dashboard/farmerinfo");
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: `Farmer Added Successfully`,
+                snackBarColor: "success",
+              },
+            });
           } else {
             console.error("Error in adding new farmer");
           }
         })
-        .catch((err) =>
-          console.log("error in create new user", err.response.data)
-        );
+        .catch((err) => {
+          console.log("error in create new user", err.response.data);
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
+        });
     } else {
       axiosInstance
         .put(`/farmer/${farmerDetails.id}`, {
-          farmerDetails: {
-            ...farmerData,
-            whatsappNumber:
-              farmerData.whatsappNumber.length > 0
-                ? farmerData.whatsappNumber
-                : "null",
-          },
+          farmerDetails: farmerData,
         })
         .then((res) => {
           if (res.status === 200) {
@@ -111,13 +120,26 @@ const AddFarmer = () => {
               payload: { ...farmerData, farmerId: res.data.farmerId },
             });
             navigate("/dashboard/farmerinfo");
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: `Farmer Updated Successfully`,
+                snackBarColor: "success",
+              },
+            });
           } else {
             console.error("Error in adding updating farmer");
           }
         })
-        .catch((err) =>
-          console.log("error in create new user", err.response.data)
-        );
+        .catch((err) => {
+          console.log("error in create new user", err.response.data);
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
+        });
     }
   };
 
@@ -569,6 +591,14 @@ const AddFarmer = () => {
                 Next
               </Button>
             </Box>
+            <Button
+              onClick={() => navigate('/dashboard/farmerinfo')}
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, bgcolor: "green" }}
+            >
+              Skip
+            </Button>
           </Box>
         </Container>
       </ThemeProvider>

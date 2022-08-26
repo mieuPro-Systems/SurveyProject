@@ -9,7 +9,12 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import axiosInstance from "../utils/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
-import { SET_ALL_FARMERS } from "../actions/types";
+import {
+  SET_ALL_FARMERS,
+  SET_LOADING_FALSE,
+  SET_LOADING_TRUE,
+  SET_SHOW_SNACKBAR_TRUE,
+} from "../actions/types";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -82,6 +87,9 @@ export default function ViewFarmerScreen() {
   });
 
   React.useEffect(() => {
+    dispatch({
+      type: SET_LOADING_TRUE,
+    });
     axiosInstance
       .get("/farmer/all")
       .then((res) => {
@@ -89,9 +97,17 @@ export default function ViewFarmerScreen() {
           type: SET_ALL_FARMERS,
           payload: res.data,
         });
+        dispatch({
+          type: SET_LOADING_FALSE,
+        });
       })
-      .catch((err) => console.log("Error in getting all farmer details", err));
-  }, [dispatch]);
+      .catch((err) => {
+        console.log("Error in getting all farmer details", err);
+        dispatch({
+          type: SET_LOADING_FALSE,
+        });
+      });
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -138,6 +154,13 @@ export default function ViewFarmerScreen() {
           dispatch({
             type: SET_ALL_FARMERS,
             payload: res.data.data,
+          });
+          dispatch({
+            type: SET_SHOW_SNACKBAR_TRUE,
+            payload: {
+              snackBarMessage: "Farmer Deleted Successfully",
+              snackBarColor: "warning",
+            },
           });
         }
       })

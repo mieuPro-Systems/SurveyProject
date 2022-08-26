@@ -50,7 +50,7 @@ const FarmerProfile = () => {
 
                   <p className="">Farmer ID - {farmerDetails.id}</p>
                   <button
-                    className="btn btn-sm btn-primary"
+                    className="btn btn-sm btn-success"
                     onClick={() =>
                       navigate("/dashboard/addFarmer", {
                         state: { update: true, farmerDetails: farmerDetails },

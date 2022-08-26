@@ -19,7 +19,12 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import validateLoginInput from "../Validation/login";
-import { SET_CURRENT_USER } from "../actions/types";
+import {
+  SET_CURRENT_USER,
+  SET_LOADING_FALSE,
+  SET_LOADING_TRUE,
+  SET_SHOW_SNACKBAR_TRUE,
+} from "../actions/types";
 
 function Copyright(props) {
   return (
@@ -46,6 +51,9 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
+    dispatch({
+      type: SET_LOADING_TRUE,
+    });
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userDetails = {
@@ -56,6 +64,16 @@ export default function SignIn() {
     setError(errors);
     if (isValid) {
       dispatch({ type: SET_CURRENT_USER, payload: userDetails });
+      dispatch({
+        type: SET_LOADING_FALSE,
+      });
+      dispatch({
+        type: SET_SHOW_SNACKBAR_TRUE,
+        payload: {
+          snackBarMessage: "Logged in Successfully",
+          snackBarColor: "success",
+        },
+      });
       navigate("/dashboard");
       localStorage.setItem(
         "faFaCoUserDetail",
@@ -64,6 +82,10 @@ export default function SignIn() {
           userName: userDetails.username,
         })
       );
+    } else {
+      dispatch({
+        type: SET_LOADING_FALSE,
+      });
     }
   };
   const [showPassword, setShowPassword] = React.useState(false);

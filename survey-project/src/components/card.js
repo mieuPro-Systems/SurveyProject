@@ -15,7 +15,7 @@ const Card = () => {
           <button
             type="button"
             onClick={() =>
-              navigate("/login", { state: { loggedInAs: "admin" } })
+              navigate("/login", { state: { loggedInAs: "Admin" } })
             }
             className="btn btn-outline-success button "
           >
@@ -30,7 +30,7 @@ const Card = () => {
           <button
             type="button"
             onClick={() =>
-              navigate("/login", { state: { loggedInAs: "employee" } })
+              navigate("/login", { state: { loggedInAs: "Employee" } })
             }
             className="btn btn-outline-success button "
           >

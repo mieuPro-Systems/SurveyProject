@@ -126,6 +126,7 @@ export default function SignIn() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
+            <p className="mt-3 text-success fw-bold">{state.loggedInAs}</p>
             <Box
               component="form"
               onSubmit={handleSubmit}

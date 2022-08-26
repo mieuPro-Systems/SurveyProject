@@ -111,7 +111,8 @@ const LandDetails = () => {
     const addtotable = (e) => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
-        if (data.get('category') === 'ownFarming' || 'wasteLand') {
+        console.log("category", data.get('category'))
+        if (['ownFarming', 'wasteLand'].includes(data.get('category'))) {
             const LandData = {
                 farmerId: 'HAN0001',
                 category: data.get('category'),
@@ -145,15 +146,16 @@ const LandDetails = () => {
                 })
         }
 
-        if (data.get('category' === 'leasedLand')) {
+        if (data.get('category') === 'leasedLand') {
             const Data = {
-                farmerId: farmers.farmerDetails.farmerId,
+                farmerId: 'HAN0001',
                 category: data.get('category'),
                 area: data.get('area'),
                 addons: data.get('addons'),
                 supervisorId: '',
-                ownerId: ''
+                ownerId: 'HAN0001'
             }
+            navigate('/dashboard/searchfarmer', { state: Data })
         }
     }
 

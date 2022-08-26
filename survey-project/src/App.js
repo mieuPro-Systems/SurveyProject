@@ -26,7 +26,7 @@ import LabourDetailsScreen from "./screens/LabourDetails";
 
 import CropDetailsScreen from "./screens/CropDetails";
 import GardenDetailsScreen from "./screens/GardenDetails";
-import OwnerDetailsScreen from "./screens/LandSub/SearchFarmers";
+import SearchFarmerScreen from "./screens/LandSub/SearchFarmers";
 
 import FarmerProfile from "./screens/FarmerProfile";
 import { SET_CURRENT_USER } from "./actions/types";
@@ -70,7 +70,7 @@ const App = () => {
           <Route path="viewfarmer" element={<ViewFarmerScreen />} />
           <Route path="cropdetails" element={<CropDetailsScreen />} />
           <Route path="gardendetails" element={<GardenDetailsScreen />} />
-          <Route path="ownerdetails" element={<OwnerDetailsScreen />} />
+          <Route path="searchfarmer" element={<SearchFarmerScreen />} />
           <Route path="viewprofile" element={<FarmerProfile />} />
         </Route>
       </Routes>

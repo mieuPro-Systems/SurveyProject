@@ -27,15 +27,26 @@ const Card = () => {
         <div className="text">Login as Employee</div>
         <div className="icon">
           <SupervisorAccountIcon style={{ width: "80px", height: "80px" }} />
-          <button
-            type="button"
-            onClick={() =>
-              navigate("/login", { state: { loggedInAs: "Employee" } })
-            }
-            className="btn btn-outline-success button "
-          >
-            Sign in
-          </button>
+          <div className="flex-row">
+            <button
+              type="button"
+              onClick={() =>
+                navigate("/login", { state: { loggedInAs: "Employee" } })
+              }
+              className="btn btn-outline-success button btn-sm"
+            >
+              Sign in
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                navigate("/login", { state: { loggedInAs: "Employee" } })
+              }
+              className="btn btn-outline-success button btn-sm ms-1"
+            >
+              Sign in
+            </button>
+          </div>
         </div>
       </div>
     </div>

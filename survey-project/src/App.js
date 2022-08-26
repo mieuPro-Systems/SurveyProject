@@ -68,11 +68,9 @@ const App = () => {
           <Route path="machines" element={<MachineDetailsScreen />} />
           <Route path="labour" element={<LabourDetailsScreen />} />
           <Route path="viewfarmer" element={<ViewFarmerScreen />} />
-
           <Route path="cropdetails" element={<CropDetailsScreen />} />
           <Route path="gardendetails" element={<GardenDetailsScreen />} />
           <Route path="ownerdetails" element={<OwnerDetailsScreen />} />
-
           <Route path="viewprofile" element={<FarmerProfile />} />
         </Route>
       </Routes>

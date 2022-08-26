@@ -47,11 +47,10 @@ const LiveStockDetails = () => {
         })
         console.log("farmersredux", farmers)
         const postData = {
-            farmerDetails: farmers.farmerDetails,
             livestockDetails: LiveStocks
         }
         console.log("postdata", postData)
-        axiosInstance.post('/application/livestocks', postData)
+        axiosInstance.post('/livestock/create', postData)
             .then((res) => {
                 if (res.status === 200) {
                     console.log("Uploaded Successfully", res.data)
@@ -68,6 +67,7 @@ const LiveStockDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const LiveStockData = {
+            farmerId: farmers.farmerDetails.farmerId,
             place: data.get('place'),
             type: data.get('livestocktype'),
             breed: data.get('livestockbreed'),

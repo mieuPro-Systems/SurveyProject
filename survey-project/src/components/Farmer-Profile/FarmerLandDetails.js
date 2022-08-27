@@ -1,84 +1,67 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CommonTable from "../common/Table";
 
 const columns = [
   {
-    title: "Name",
-    dataIndex: "name",
-    render: (text) => <a>{text}</a>,
+    title: "Sl no.",
+    dataIndex: "slNo",
+    width: "10%",
   },
   {
-    title: "Age",
-    dataIndex: "age",
+    title: "Supervisor ID",
+    dataIndex: "supervisorId",
   },
   {
-    title: "Address",
-    dataIndex: "address",
+    title: "Owner ID",
+    dataIndex: "ownerId",
   },
   {
-    title: "Age",
-    dataIndex: "age",
+    title: "Land ID",
+    dataIndex: "landId",
   },
   {
-    title: "Address",
-    dataIndex: "address",
-  },
-];
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
+    title: "Category",
+    dataIndex: "category",
+    width: "20%",
   },
   {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
+    title: "Area (acres)",
+    dataIndex: "area",
   },
   {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-  },
-  {
-    key: "4",
-    name: "Disabled User",
-    age: 99,
-    address: "Sidney No. 1 Lake Park",
-  },
-  {
-    key: "5",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "6",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "7",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-  },
-  {
-    key: "8",
-    name: "Disabled User",
-    age: 99,
-    address: "Sidney No. 1 Lake Park",
+    title: "Add ons",
+    dataIndex: "addons",
   },
 ];
 
-const FarmerLandDetails = () => {
+const FarmerLandDetails = (props) => {
+  const [data, setData] = useState([]);
   const tableProps = {
     rowSelection: false,
   };
+
+  useEffect(() => {
+    if (props.landDetails.length > 1) {
+      let modalContent = [];
+      props.landDetails.map((landDetail, index) => {
+        modalContent.push({
+          key: index + 1,
+          slNo: index + 1,
+          supervisorId:
+            landDetail.supervisorId.length > 1 ? landDetail.supervisorId : "NA",
+          ownerId: landDetail.ownerId.length > 1 ? landDetail.ownerId : "NA",
+          landId: landDetail.landId,
+          category: landDetail.category,
+          area: landDetail.area,
+          addons: landDetail.addons === "None" ? "NA" : landDetail.addons,
+        });
+      });
+      setData(modalContent);
+    } else {
+      setData([]);
+    }
+  }, [props.landDetails]);
+
   return (
     <div>
       <CommonTable columns={columns} data={data} tableProps={tableProps} />

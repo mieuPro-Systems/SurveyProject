@@ -11,9 +11,14 @@ const FarmerProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
   // console.log(location.state);
-  const { farmerDetails, labourDetails, livestockDetails, machineDetails } =
-    location.state;
-  console.log("labourDetails", labourDetails);
+  const {
+    farmerDetails,
+    landDetails,
+    labourDetails,
+    livestockDetails,
+    machineDetails,
+  } = location.state;
+  console.log("landDetails", landDetails);
   return (
     <div>
       <div className="col mb-1 fw-bold">Farmer's Profile </div>
@@ -297,7 +302,7 @@ const FarmerProfile = () => {
                 </div>
               </div>
             </div>
-            <FarmerProfileAccordion />
+            <FarmerProfileAccordion landDetails={landDetails} />
           </div>
         </div>
       </div>

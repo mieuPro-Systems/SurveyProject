@@ -7,7 +7,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 import FarmerLandDetails from "./FarmerLandDetails";
 
-export default function FarmerProfileAccordion() {
+export default function FarmerProfileAccordion(props) {
   const navigate = useNavigate();
   return (
     <div>
@@ -17,16 +17,16 @@ export default function FarmerProfileAccordion() {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography className="fw-bold">Land Details</Typography>
+          <Typography className="fw-bold ms-3">Land Details</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <button
             onClick={() => navigate("/dashboard/landdetails")}
-            className="btn btn-success btn-sm float-end"
+            className="btn btn-success btn-sm float-end mb-3"
           >
             Edit
           </button>
-          <FarmerLandDetails />
+          <FarmerLandDetails landDetails={props.landDetails} />
         </AccordionDetails>
       </Accordion>
       <Accordion>

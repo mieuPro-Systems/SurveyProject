@@ -1,6 +1,6 @@
 import "antd/dist/antd.min.css";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Input, Space, Table, Modal } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import IconButton from "@mui/material/IconButton";
@@ -9,6 +9,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import { SET_ALL_FARMERS } from "../../actions/types";
+import ModalLandDetailsContent from "./ModalLandDetailsContent";
 
 const SearchFarmers = () => {
   const [searchText, setSearchText] = useState("");
@@ -19,7 +20,10 @@ const SearchFarmers = () => {
   const dispatch = useDispatch();
   const { addedFarmers } = useSelector((state) => state.farmer);
   const [selectedRow, setSelectedRow] = useState([]);
-  const location = useLocation()
+  const location = useLocation();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [landDetailsForModal, setLandDetailsForModal] = useState([]);
+  const [selectedLandDetail, setSelectedLandDetails] = useState([]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -183,27 +187,30 @@ const SearchFarmers = () => {
       ...getColumnSearchProps("village"),
     },
     {
-      title: "Profile",
-      dataIndex: "profile",
-      key: "profile",
+      title: "Land Details",
+      dataIndex: "landDetails",
+      key: "landDetails",
       width: "10%",
     },
   ];
 
-  const handleIndividualFarmerClick = (farmerId) => {
-    // console.log("indFarmerDetail", farmerId);
-    // console.log(addedFarmers);
-    let individualFarmerChoosen = addedFarmers.filter(
-      (farmerDetail) => farmerDetail.farmerDetails.id === farmerId
-    );
-    // console.log("farmer choosen", individualFarmerChoosen);
-    if (individualFarmerChoosen.length > 0) {
-      navigate("/dashboard/viewprofile", {
-        state: individualFarmerChoosen[0],
-      });
-    } else {
-      console.error("Error in finding match for individual farmer");
-    }
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    // console.log("land details selected", selectedLandDetail);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleIndividualFarmerLandDetailsClick = (farmerData) => {
+    // console.log("land Details", farmerData.landDetails);
+    setLandDetailsForModal(farmerData.landDetails);
+    showModal();
   };
 
   const setFarmersDataToRender = (datas) => {
@@ -219,11 +226,11 @@ const SearchFarmers = () => {
         gender: data.farmerDetails.gender,
         phoneNumber: data.farmerDetails.phoneNumber,
         village: data.farmerDetails.village,
-        profile: (
+        landDetails: (
           <IconButton
             onClick={() => {
               // console.log(data.farmerDetails.id);
-              handleIndividualFarmerClick(data.farmerDetails.id);
+              handleIndividualFarmerLandDetailsClick(data);
               return true;
             }}
           >
@@ -261,11 +268,11 @@ const SearchFarmers = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
+      // console.log(
+      //   `selectedRowKeys: ${selectedRowKeys}`,
+      //   "selectedRows: ",
+      //   selectedRows
+      // );
       setSelectedRow(selectedRows);
     },
     getCheckboxProps: (record) => ({
@@ -308,6 +315,20 @@ const SearchFarmers = () => {
       >
         Add
       </button>
+      <Modal
+        title="Land Details"
+        visible={isModalVisible}
+        onOk={handleOk}
+        okText="Add"
+        onCancel={handleCancel}
+        width={1000}
+        centered
+      >
+        <ModalLandDetailsContent
+          landDetailsForModal={landDetailsForModal}
+          setSelectedLandDetails={setSelectedLandDetails}
+        />
+      </Modal>
     </>
   );
 };

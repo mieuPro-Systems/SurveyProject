@@ -16,7 +16,7 @@ const FarmerProfile = () => {
   console.log("labourDetails", labourDetails);
   return (
     <div>
-      <div className="col mb-1">Farmer's Profile </div>
+      <div className="col mb-1 fw-bold">Farmer's Profile </div>
       <div style={{ float: "right" }}>
         <button
           type="button"

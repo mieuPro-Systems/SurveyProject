@@ -5,6 +5,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
+import FarmerLandDetails from "./FarmerLandDetails";
 
 export default function FarmerProfileAccordion() {
   const navigate = useNavigate();
@@ -25,10 +26,7 @@ export default function FarmerProfileAccordion() {
           >
             Edit
           </button>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
+          <FarmerLandDetails />
         </AccordionDetails>
       </Accordion>
       <Accordion>

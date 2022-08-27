@@ -392,7 +392,7 @@ const LandDetails = () => {
             </Grid>
             <Grid sm={3} marginLeft={10}>
               <Button
-                onClick={() => navigate("/dashboard/searchfarmers")}
+                onClick={() => navigate("/dashboard/searchfarmer")}
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}

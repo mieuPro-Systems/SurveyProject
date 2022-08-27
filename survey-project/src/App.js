@@ -32,6 +32,7 @@ import FarmerProfile from "./screens/FarmerProfile";
 import { SET_CURRENT_USER } from "./actions/types";
 import LoadingBackdrop from "./components/common/Backdrop";
 import MessageSnackBar from "./components/common/SnackBar";
+import NoRouteFound from "./components/common/NoRouteFound";
 
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -73,6 +74,7 @@ const App = () => {
           <Route path="searchfarmer" element={<SearchFarmerScreen />} />
           <Route path="viewprofile" element={<FarmerProfile />} />
         </Route>
+        <Route path="*" exact={true} element={<NoRouteFound />} />
       </Routes>
       <LoadingBackdrop />
       <MessageSnackBar />

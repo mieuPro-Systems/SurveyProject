@@ -18,13 +18,18 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import validateLoginInput from "../Validation/login";
+import {
+  validateLoginInput,
+  validateLoginInputEmployee,
+} from "../Validation/login";
+
 import {
   SET_CURRENT_USER,
   SET_LOADING_FALSE,
   SET_LOADING_TRUE,
   SET_SHOW_SNACKBAR_TRUE,
 } from "../actions/types";
+import axiosInstance from "../utils/axiosInstance";
 
 function Copyright(props) {
   return (
@@ -52,7 +57,7 @@ export default function SignIn() {
   const location = useLocation();
 
   const { state } = location;
-  console.log("state", state);
+  // console.log("state", state);
 
   const handleSubmit = (event) => {
     dispatch({
@@ -64,35 +69,107 @@ export default function SignIn() {
       username: data.get("username"),
       password: data.get("password"),
     };
-    const { errors, isValid } = validateLoginInput(userDetails);
-    setError(errors);
-    if (isValid) {
-      dispatch({
-        type: SET_CURRENT_USER,
-        payload: { userDetails, loggedInAs: state.loggedInAs },
-      });
+
+    if (state.loggedInAs === "Admin") {
+      const { errors, isValid } = validateLoginInput(userDetails);
+      setError(errors);
+      if (isValid) {
+        dispatch({
+          type: SET_CURRENT_USER,
+          payload: {
+            userDetails,
+            loggedInAs: state.loggedInAs,
+            isAuthenticated: true,
+          },
+        });
+        dispatch({
+          type: SET_LOADING_FALSE,
+        });
+        dispatch({
+          type: SET_SHOW_SNACKBAR_TRUE,
+          payload: {
+            snackBarMessage: "Logged in Successfully",
+            snackBarColor: "success",
+          },
+        });
+        navigate("/dashboard");
+        localStorage.setItem(
+          "faFaCoUserDetail",
+          JSON.stringify({
+            isLoggedIn: true,
+            userName: userDetails.username,
+          })
+        );
+      } else {
+        dispatch({
+          type: SET_LOADING_FALSE,
+        });
+      }
+    } else if (state.loggedInAs === "Employee") {
       dispatch({
         type: SET_LOADING_FALSE,
       });
-      dispatch({
-        type: SET_SHOW_SNACKBAR_TRUE,
-        payload: {
-          snackBarMessage: "Logged in Successfully",
-          snackBarColor: "success",
-        },
-      });
-      navigate("/dashboard");
-      localStorage.setItem(
-        "faFaCoUserDetail",
-        JSON.stringify({
-          isLoggedIn: true,
-          userName: userDetails.username,
-        })
-      );
-    } else {
-      dispatch({
-        type: SET_LOADING_FALSE,
-      });
+      const { errors, isValid } = validateLoginInputEmployee(userDetails);
+      setError(errors);
+      if (isValid) {
+        dispatch({
+          type: SET_LOADING_TRUE,
+        });
+        axiosInstance
+          .post("/employee/login", {
+            userName: userDetails.username,
+            password: userDetails.password,
+          })
+          .then((res) => {
+            // console.log("response for employee login", res);
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+
+            if (res.data.login === true) {
+              dispatch({
+                type: SET_CURRENT_USER,
+                payload: {
+                  userDetails,
+                  loggedInAs: state.loggedInAs,
+                  isAuthenticated: true,
+                },
+              });
+              dispatch({
+                type: SET_SHOW_SNACKBAR_TRUE,
+                payload: {
+                  snackBarMessage: "Signed In Successfully",
+                  snackBarColor: "success",
+                },
+              });
+              navigate("/dashboard");
+              localStorage.setItem(
+                "faFaCoUserDetail",
+                JSON.stringify({
+                  isLoggedIn: true,
+                  userName: userDetails.username,
+                })
+              );
+            } else if (res.data.login === false) {
+              console.error("login fail");
+            }
+          })
+          .catch((err) => {
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+
+            setError({
+              username: err.response.data.userName || undefined,
+              password: err.response.data.password || undefined,
+            });
+
+            console.error(
+              "Error occured while updating employee password",
+              err.response.data
+            );
+          });
+      }
     }
   };
   const [showPassword, setShowPassword] = React.useState(false);
@@ -126,7 +203,7 @@ export default function SignIn() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <p className="mt-3 text-success fw-bold">{state.loggedInAs}</p>
+            <p className="mt-3 text-primary fw-bold">{state.loggedInAs}</p>
             <Box
               component="form"
               onSubmit={handleSubmit}
@@ -159,7 +236,6 @@ export default function SignIn() {
                 error={error?.password !== undefined}
                 helperText={error.password}
                 InputProps={{
-                  // <-- This is where the toggle button is added.
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton

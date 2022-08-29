@@ -17,6 +17,7 @@
   /* font-style: oblique; */
   font-weight: bold;
   color: white;
+  text-shadow: rgb(0, 255, 21) 1px 0 10px;
 }
 
 .text2 {

@@ -9,6 +9,17 @@ import FarmerLandDetails from "./FarmerLandDetails";
 
 export default function FarmerProfileAccordion(props) {
   const navigate = useNavigate();
+  const LandDetailCategory = {
+    ownFarming: "Own Farming",
+    wasteLand: "Waste Land",
+    leasedLand: "Leased Land",
+    takenLease: "Taken Lease",
+    availableForLease: "Available For Lease",
+  };
+  const updatedLandDetails = props.landDetails.map((detail) => {
+    return { ...detail, category: LandDetailCategory[detail.category] };
+  });
+  console.log("landDetail", props.landDetails);
   return (
     <div>
       <Accordion className="mt-1">
@@ -21,12 +32,14 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() => navigate("/dashboard/landdetails")}
+            onClick={() =>
+              navigate("/dashboard/landdetails", { state: props.landDetails })
+            }
             className="btn btn-success btn-sm float-end mb-3"
           >
             Edit
           </button>
-          <FarmerLandDetails landDetails={props.landDetails} />
+          <FarmerLandDetails landDetails={updatedLandDetails} />
         </AccordionDetails>
       </Accordion>
       <Accordion>
@@ -35,7 +48,7 @@ export default function FarmerProfileAccordion(props) {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography className="fw-bold">Labour Details</Typography>
+          <Typography className="fw-bold ms-3">Labour Details</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <button
@@ -56,7 +69,7 @@ export default function FarmerProfileAccordion(props) {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography className="fw-bold">Machine Details</Typography>
+          <Typography className="fw-bold ms-3">Machine Details</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <button
@@ -78,7 +91,7 @@ export default function FarmerProfileAccordion(props) {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography className="fw-bold">Live Stock Detailss</Typography>
+          <Typography className="fw-bold ms-3">Live Stock Detailss</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <button

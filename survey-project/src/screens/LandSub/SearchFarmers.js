@@ -200,7 +200,7 @@ const SearchFarmers = () => {
 
   const handleOk = () => {
     setIsModalVisible(false);
-    // console.log("land details selected", selectedLandDetail);
+    console.log("land details selected", selectedLandDetail);
   };
 
   const handleCancel = () => {

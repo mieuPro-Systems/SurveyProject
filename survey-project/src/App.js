@@ -33,6 +33,7 @@ import { SET_CURRENT_USER } from "./actions/types";
 import LoadingBackdrop from "./components/common/Backdrop";
 import MessageSnackBar from "./components/common/SnackBar";
 import NoRouteFound from "./components/common/NoRouteFound";
+import EmployeeSignUp from "./screens/EmployeeSignup";
 
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -44,6 +45,7 @@ const App = () => {
       return JSON.parse(storedUserDetail);
     };
     getUserDetail().then((res) => {
+      console.log(res, "ls");
       if (res?.isLoggedIn) {
         dispatch({ type: SET_CURRENT_USER, payload: { res } });
       }
@@ -55,6 +57,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomeScreen />} />
         <Route path="/login" element={<LoginScreen />} />
+        <Route path="/employeesignup" element={<EmployeeSignUp />} />
         <Route
           path="/dashboard"
           element={isAuthenticated ? <DrawerComponent /> : <Navigate to="/" />}

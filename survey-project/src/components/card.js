@@ -42,7 +42,7 @@ const Card = () => {
             <button
               type="button"
               onClick={() =>
-                navigate("/login", {
+                navigate("/employeesignup", {
                   state: { loggedInAs: "Employee", type: "signUp" },
                 })
               }

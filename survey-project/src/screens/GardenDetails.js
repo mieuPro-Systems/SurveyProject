@@ -48,11 +48,10 @@ const GardenDetails = () => {
         })
         console.log("farmersredux", farmers)
         const postData = {
-            farmerDetails: farmers.farmerDetails,
             gardenDetails: GardenDetail
         }
         console.log("postdata", postData)
-        axiosInstance.post('/application/livestocks', postData)
+        axiosInstance.post('/garden/create', postData)
             .then((res) => {
                 if (res.status === 200) {
                     console.log("Uploaded Successfully", res.data)
@@ -69,6 +68,7 @@ const GardenDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const GardenData = {
+            farmerId: "HAN0001",
             type: data.get('gardentype'),
             name: data.get('gardenname'),
             variety: data.get('gardenvariety'),
@@ -260,7 +260,7 @@ const GardenDetails = () => {
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
-                                    <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Crops :</p>
+                                    <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Entries :</p>
                                     <Chip label={GardenDetail.length} />
                                 </div>
                             </Grid>

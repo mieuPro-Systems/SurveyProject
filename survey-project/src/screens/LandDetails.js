@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -22,7 +22,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { SET_LAND_DETAILS, SET_UPDATED_LAND_DETAILS } from '../actions/types';
@@ -33,17 +33,15 @@ const theme = createTheme();
 
 const LandDetails = () => {
 
+
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const { farmers } = useSelector((state) => state.farmer)
     const { landDetails } = farmers;
-    const landIds = {
-        ownFarming: ['13231',],
-        wasteLand: []
-    }
+    const location = useLocation()
+
 
     const [LandDetail, setLandDetail] = useState([]);
-
 
     const getTotalArea = () => {
         var area = 0
@@ -112,9 +110,9 @@ const LandDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         console.log("category", data.get('category'))
-        if (['ownFarming', 'wasteLand'].includes(data.get('category'))) {
+        if (['ownFarming', 'wasteLand', 'availableForLease'].includes(data.get('category'))) {
             const LandData = {
-                farmerId: 'HAN0001',
+                farmerId: 'MAN0002',
                 category: data.get('category'),
                 area: data.get('area'),
                 addons: data.get('addons'),
@@ -132,7 +130,7 @@ const LandDetails = () => {
                     if (res.status === 200) {
                         console.log('Successfully get LandId', res.data)
                         LandData['landId'] = res.data.landId
-                        LandData['ownerId'] = farmers.farmerDetails.farmerId
+                        LandData['ownerId'] = 'MAN0002'
                         LandData['supervisorId'] = 'None'
                         // setLandDetail([...LandDetail, LandData])
                         dispatch({
@@ -143,7 +141,7 @@ const LandDetails = () => {
                     if (res.status === 400) {
                         console.log("Error while getting Land Id", res.data)
                     }
-                })
+                }).catch(err => console.log(err))
         }
 
         if (data.get('category') === 'leasedLand') {
@@ -222,7 +220,7 @@ const LandDetails = () => {
                                             <MenuItem value={"wasteLand"}>Waste Land</MenuItem>
                                             <MenuItem value={"leasedLand"}>Leased Land</MenuItem>
                                             <MenuItem value={"takenLease"}>Taken Lease</MenuItem>
-                                            <MenuItem value={"takenLease"}>Available For Lease</MenuItem>
+                                            <MenuItem value={"availableForLease"}>Available For Lease</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>

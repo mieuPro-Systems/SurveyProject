@@ -60,7 +60,7 @@ const CropDetails = () => {
             cropDetails: CropsDetail
         }
         console.log("postdata", postData)
-        axiosInstance.post('/application/livestocks', postData)
+        axiosInstance.post('/crop/create', postData)
             .then((res) => {
                 if (res.status === 200) {
                     console.log("Uploaded Successfully", res.data)
@@ -77,7 +77,7 @@ const CropDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const CropsData = {
-            farmerId: farmers.farmerDetails.farmerId,
+            farmerId: "HAN0001",
             type: data.get('typeofcrop'),
             name: data.get('cropname'),
             variety: data.get('cropvariety'),
@@ -87,6 +87,11 @@ const CropDetails = () => {
             organic: data.get('organic'),
             seedingType: data.get('seedingtype'),
             harvestPeriod: data.get('harvestperiod')
+        }
+        const cropsarray = []
+        cropsarray.push(CropsData)
+        const postData = {
+            cropDetails: cropsarray
         }
         setCropsDetail([...CropsDetail, CropsData])
         console.log("land", CropsData)

@@ -8,7 +8,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux/es/exports";
-import { SET_ALL_FARMERS } from "../../actions/types";
+import { SET_ALL_FARMERS, SET_LAND_DETAILS } from "../../actions/types";
 
 const SearchFarmers = () => {
   const [searchText, setSearchText] = useState("");
@@ -281,6 +281,30 @@ const SearchFarmers = () => {
     addedFarmers.map((farmerDetail) => {
       // console.log(farmerDetail);
       if (selectedFarmersId.includes(farmerDetail.farmerDetails.id)) {
+        console.log("propscheck", location.state)
+        const data = location.state
+        data.supervisorId = farmerDetail.farmerDetails.id
+        console.log("Updateprops", data)
+        const dataarray = []
+        dataarray.push(data)
+        const postData = {
+          landDetails: dataarray
+        }
+        console.log("postData", postData)
+        axiosInstance.post('/land/create', postData).then(
+          (res) => {
+            if (res.status === 200) {
+              console.log("Land Id created Successfully", res.data)
+              data['landId'] = res.data.landId
+              console.log("afterpost", data)
+              dispatch({
+                type: SET_LAND_DETAILS,
+                payload: data
+              })
+            }
+          }
+        )
+        navigate('/dashboard/landdetails')
         return console.log("found match details", farmerDetail);
       } else {
         return;

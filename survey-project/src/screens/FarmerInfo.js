@@ -36,6 +36,8 @@ const FarmerInfo = () => {
     const card2data = [
         { icon: <GrassIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Crops', centerText: 'Mention your crops details', bottomText: 'Add Crops', onclick: '/dashboard/cropdetails' },
         { icon: <YardIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Garden', centerText: 'Mention your garden details', bottomText: 'Add Garden', onclick: '/dashboard/gardendetails' },
+        { icon: <YardIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Garden', centerText: 'Mention your garden details', bottomText: 'Add Garden', onclick: '/dashboard/gardendetails' },
+        { icon: <YardIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Garden', centerText: 'Mention your garden details', bottomText: 'Add Garden', onclick: '/dashboard/gardendetails' },
     ]
 
     return (

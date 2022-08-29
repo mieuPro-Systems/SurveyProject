@@ -8,11 +8,11 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import LandscapeIcon from '@mui/icons-material/Landscape';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { FormControl } from '@mui/material';
+import LandscapeIcon from "@mui/icons-material/Landscape";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { FormControl } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -40,8 +40,9 @@ const LandDetails = () => {
     const { landDetails } = farmers;
     const location = useLocation()
 
-
     const [LandDetail, setLandDetail] = useState([]);
+
+
 
     const getTotalArea = () => {
         var area = 0
@@ -142,212 +143,270 @@ const LandDetails = () => {
                         console.log("Error while getting Land Id", res.data)
                     }
                 }).catch(err => console.log(err))
-        }
 
-        if (data.get('category') === 'leasedLand') {
-            const Data = {
-                farmerId: 'HAN0001',
-                category: data.get('category'),
-                area: data.get('area'),
-                addons: data.get('addons'),
-                supervisorId: '',
-                ownerId: 'HAN0001'
+            if (data.get("category" === "leasedLand")) {
+                const Data = {
+                    farmerId: farmers.farmerDetails.farmerId,
+                    category: data.get("category"),
+                    area: data.get("area"),
+                    addons: data.get("addons"),
+                    supervisorId: "",
+                    ownerId: "",
+                };
             }
-            navigate('/dashboard/searchfarmer', { state: Data })
-        }
-    }
+        };
 
-    const StyledTableCell = styled(TableCell)(({ theme }) => ({
-        [`&.${tableCellClasses.head}`]: {
-            backgroundColor: theme.palette.common.black,
-            color: theme.palette.common.white,
-            fontSize: 13
-        },
-        [`&.${tableCellClasses.body}`]: {
-            fontSize: 14,
-        },
-    }));
+        const StyledTableCell = styled(TableCell)(({ theme }) => ({
+            [`&.${tableCellClasses.head}`]: {
+                backgroundColor: theme.palette.common.black,
+                color: theme.palette.common.white,
+                fontSize: 13,
+            },
+            [`&.${tableCellClasses.body}`]: {
+                fontSize: 14,
+            },
+        }));
 
-    const StyledTableRow = styled(TableRow)(({ theme }) => ({
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-        // hide last border
-        '&:last-child td, &:last-child th': {
-            border: 0,
-        },
-    }));
+        const StyledTableRow = styled(TableRow)(({ theme }) => ({
+            "&:nth-of-type(odd)": {
+                backgroundColor: theme.palette.action.hover,
+            },
+            // hide last border
+            "&:last-child td, &:last-child th": {
+                border: 0,
+            },
+        }));
 
-
-    return (
-        <div>
-            <ThemeProvider theme={theme}>
-                <Container component="main" maxWidth="lg">
-                    <CssBaseline />
-                    <Box
-                        sx={{
-                            marginTop: 0,
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: "green" }}>
-                            <LandscapeIcon />
-                        </Avatar>
-                        <Typography component="h1" variant="h5">
-                            Add Land Details
-                        </Typography>
+        return (
+            <div>
+                <ThemeProvider theme={theme}>
+                    <Container component="main" maxWidth="lg">
+                        <CssBaseline />
                         <Box
-                            component="form"
-                            noValidate
-                            onSubmit={addtotable}
-                            sx={{ mt: 3 }}
+                            sx={{
+                                marginTop: 0,
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                            }}
                         >
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={4}>
-                                    <FormControl fullWidth style={{ minWidth: "180px" }}>
-                                        <InputLabel id="category">Category</InputLabel>
-                                        <Select
+                            <Avatar sx={{ m: 1, bgcolor: "green" }}>
+                                <LandscapeIcon />
+                            </Avatar>
+                            <Typography component="h1" variant="h5">
+                                Add Land Details
+                            </Typography>
+                            <Box
+                                component="form"
+                                noValidate
+                                onSubmit={addtotable}
+                                sx={{ mt: 3 }}
+                            >
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={4}>
+                                        <FormControl fullWidth style={{ minWidth: "180px" }}>
+                                            <InputLabel id="category">Category</InputLabel>
+                                            <Select
+                                                required
+                                                name="category"
+                                                labelId="category"
+                                                id="category"
+                                                label="Category"
+                                            // onChange={handleChange}
+                                            >
+                                                <MenuItem value={"ownFarming"}>Own Farming</MenuItem>
+                                                <MenuItem value={"wasteLand"}>Waste Land</MenuItem>
+                                                <MenuItem value={"leasedLand"}>Leased Land</MenuItem>
+                                                <MenuItem value={"takenLease"}>Taken Lease</MenuItem>
+                                                <MenuItem value={"takenLease"}>
+                                                    Available For Lease
+                                                </MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <TextField
+                                            autoComplete="Area"
+                                            name="area"
                                             required
-                                            name="category"
-                                            labelId="category"
-                                            id="category"
-                                            label="Category"
-                                        // onChange={handleChange}
+                                            fullWidth
+                                            id="Area"
+                                            label="Area"
+                                            autoFocus
+                                            color="success"
+                                            placeholder="in Acres"
+                                            type="number"
+                                        // error={error?.firstName !== undefined}
+                                        // helperText={error.firstName}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <FormControl fullWidth style={{ minWidth: "180px" }}>
+                                            <InputLabel id="addons">Add-ons</InputLabel>
+                                            <Select
+                                                required
+                                                name="addons"
+                                                labelId="addons"
+                                                id="addons"
+                                                label="Add-ons"
+                                            // onChange={handleChange}
+                                            >
+                                                <MenuItem value={"interestedToClean"}>
+                                                    Interested to Clean
+                                                </MenuItem>
+                                                <MenuItem value={"cleanupTOFarm"}>
+                                                    Cleanup to Farm
+                                                </MenuItem>
+                                                <MenuItem value={"None"}>None</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <div
+                                            style={{
+                                                flexDirection: "row",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                marginTop: "14px",
+                                            }}
                                         >
-                                            <MenuItem value={"ownFarming"}>Own Farming</MenuItem>
-                                            <MenuItem value={"wasteLand"}>Waste Land</MenuItem>
-                                            <MenuItem value={"leasedLand"}>Leased Land</MenuItem>
-                                            <MenuItem value={"takenLease"}>Taken Lease</MenuItem>
-                                            <MenuItem value={"availableForLease"}>Available For Lease</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        autoComplete="Area"
-                                        name="area"
-                                        required
-                                        fullWidth
-                                        id="Area"
-                                        label="Area"
-                                        autoFocus
-                                        color="success"
-                                        placeholder='in Acres'
-                                        type="number"
-                                    // error={error?.firstName !== undefined}
-                                    // helperText={error.firstName}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <FormControl fullWidth style={{ minWidth: "180px" }}>
-                                        <InputLabel id="addons">Add-ons</InputLabel>
-                                        <Select
-                                            required
-                                            name="addons"
-                                            labelId="addons"
-                                            id="addons"
-                                            label="Add-ons"
-                                        // onChange={handleChange}
+                                            <p
+                                                style={{
+                                                    marginTop: "1px",
+                                                    marginRight: "7px",
+                                                    fontSize: "20px",
+                                                }}
+                                            >
+                                                Total Lands :
+                                            </p>
+                                            <Chip label={landDetails.length} />
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <div
+                                            style={{
+                                                flexDirection: "row",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                marginTop: "14px",
+                                            }}
                                         >
-                                            <MenuItem value={"interestedToClean"}>Interested to Clean</MenuItem>
-                                            <MenuItem value={"cleanupTOFarm"}>Cleanup to Farm</MenuItem>
-                                            <MenuItem value={"None"}>None</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                            <p
+                                                style={{
+                                                    marginTop: "1px",
+                                                    marginRight: "7px",
+                                                    fontSize: "20px",
+                                                }}
+                                            >
+                                                Total Area :
+                                            </p>
+                                            <Chip label={getTotalArea()} />
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} sm={3} className="mx-auto">
+                                        <Button
+                                            fullWidth
+                                            type="submit"
+                                            variant="contained"
+                                            sx={{ mt: 2, mb: 5, bgcolor: "green" }}
+                                        >
+                                            Add
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
-                                        <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Lands :</p>
-                                        <Chip label={landDetails.length} />
-                                    </div>
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
-                                        <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Area :</p>
-                                        <Chip label={getTotalArea()} />
-                                    </div>
-                                </Grid>
-                                <Grid item xs={12} sm={3} className='mx-auto'>
-                                    <Button
-                                        fullWidth
-                                        type='submit'
-                                        variant="contained"
-                                        sx={{ mt: 2, mb: 5, bgcolor: "green" }}
-                                    >
-                                        Add
-                                    </Button>
-                                </Grid>
-                            </Grid>
+                            </Box>
                         </Box>
-                    </Box>
-                </Container>
-                <Container maxWidth="lg">
-                    <div>
-                        <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                                <TableHead>
-                                    <TableRow>
-                                        <StyledTableCell align='center'>S.no</StyledTableCell>
-                                        <StyledTableCell align="center">Owner ID</StyledTableCell>
-                                        <StyledTableCell align="center">Supervisor ID</StyledTableCell>
-                                        <StyledTableCell align="center">Land ID</StyledTableCell>
-                                        <StyledTableCell align="center">Category</StyledTableCell>
-                                        <StyledTableCell align='center'>Area (Acres)</StyledTableCell>
-                                        <StyledTableCell align="center">Add-ons</StyledTableCell>
-                                        <StyledTableCell align="center"></StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-
-                                    {landDetails.length > 0 &&
-                                        landDetails.map((land, index) => (
-                                            <StyledTableRow key={index + 1}>
-                                                <StyledTableCell align="center" component="th" scope="row">
-                                                    {index + 1}
-                                                </StyledTableCell>
-                                                <StyledTableCell align="center">{land.ownerId}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.supervisorId}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.landId}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.category}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.area}</StyledTableCell>
-                                                <StyledTableCell align="center">{land.addons}</StyledTableCell>
-                                                <StyledTableCell align="left" onClick={() => deletelandDetail(index)}>
-                                                    {<HighlightOffIcon style={{ cursor: 'pointer' }} />}</StyledTableCell>
-                                            </StyledTableRow>
-                                        ))}
-                                </TableBody>
-                            </Table>
-                            {landDetails.length === 0 && <p style={{ textAlign: 'center' }}>No records  Added</p>}
-                        </TableContainer>
-                    </div>
-                    <Grid container style={{ justifyContent: "center" }}>
-                        <Grid sm={3} marginRight={10}>
-                            <Button
-                                fullWidth
-                                onClick={() => navigate('/dashboard/farmerinfo')}
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2, bgcolor: "green" }}
-                            >
-                                Back
-                            </Button>
+                    </Container>
+                    <Container maxWidth="lg">
+                        <div>
+                            <TableContainer component={Paper}>
+                                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell align="center">S.no</StyledTableCell>
+                                            <StyledTableCell align="center">Owner ID</StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                Supervisor ID
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">Land ID</StyledTableCell>
+                                            <StyledTableCell align="center">Category</StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                Area (Acres)
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">Add-ons</StyledTableCell>
+                                            <StyledTableCell align="center"></StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {landDetails.length > 0 &&
+                                            landDetails.map((land, index) => (
+                                                <StyledTableRow key={index + 1}>
+                                                    <StyledTableCell
+                                                        align="center"
+                                                        component="th"
+                                                        scope="row"
+                                                    >
+                                                        {index + 1}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        {land.ownerId}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        {land.supervisorId}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        {land.landId}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        {land.category}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        {land.area}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        {land.addons}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell
+                                                        align="left"
+                                                        onClick={() => deletelandDetail(index)}
+                                                    >
+                                                        {<HighlightOffIcon style={{ cursor: "pointer" }} />}
+                                                    </StyledTableCell>
+                                                </StyledTableRow>
+                                            ))}
+                                    </TableBody>
+                                </Table>
+                                {landDetails.length === 0 && (
+                                    <p style={{ textAlign: "center" }}>No records Added</p>
+                                )}
+                            </TableContainer>
+                        </div>
+                        <Grid container style={{ justifyContent: "center" }}>
+                            <Grid sm={3} marginRight={10}>
+                                <Button
+                                    fullWidth
+                                    onClick={() => navigate("/dashboard/farmerinfo")}
+                                    variant="contained"
+                                    sx={{ mt: 3, mb: 2, bgcolor: "green" }}
+                                >
+                                    Back
+                                </Button>
+                            </Grid>
+                            <Grid sm={3} marginLeft={10}>
+                                <Button
+                                    onClick={() => navigate("/dashboard/searchfarmer")}
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{ mt: 3, mb: 2, bgcolor: "green" }}
+                                >
+                                    Next
+                                </Button>
+                            </Grid>
                         </Grid>
-                        <Grid sm={3} marginLeft={10}>
-                            <Button
-                                // onClick={handleSubmit}
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2, bgcolor: "green" }}
-                            >
-                                Next
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Container>
-            </ThemeProvider>
-        </div>
-    )
+                    </Container>
+                </ThemeProvider>
+            </div>
+        );
+    };
 }
-
-export default LandDetails
+export default LandDetails;

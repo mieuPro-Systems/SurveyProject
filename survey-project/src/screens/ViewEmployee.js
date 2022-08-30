@@ -5,16 +5,11 @@ import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux/es/exports";
-import {
-  SET_ADDED_EMPLOYEES,
-  SET_ALL_FARMERS,
-  SET_SHOW_SNACKBAR_TRUE,
-} from "../actions/types";
+import { SET_ADDED_EMPLOYEES, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import AlertDialog from "../components/common/Modal";
 
 const ViewFarmers = () => {
@@ -272,10 +267,12 @@ const ViewFarmers = () => {
         );
     };
     fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setFarmersDataToRender(addedEmployees);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addedEmployees]);
 
   return (

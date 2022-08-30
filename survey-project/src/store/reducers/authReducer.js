@@ -5,7 +5,6 @@ import {
   SET_SHOW_SNACKBAR_FALSE,
   SET_SHOW_SNACKBAR_TRUE,
 } from "../../actions/types";
-import isEmpty from "../../Validation/isEmpty";
 
 const initialState = {
   isAuthenticated: false,

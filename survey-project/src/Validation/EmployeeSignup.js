@@ -42,7 +42,7 @@ export function validateEmployeePasswordInput(data) {
     errors.confirmPassword = "Confirm Password field is required";
   }
 
-  if (data.password != data.confirmPassword) {
+  if (data.password !== data.confirmPassword) {
     errors.confirmPassword = "Should match with Password";
     if (!Validators.isEmpty(data.confirmPassword)) {
       let error = validatePassword(data.confirmPassword);

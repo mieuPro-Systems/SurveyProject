@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,22 +11,17 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from '../utils/axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import Crop from './Tabs/Crop';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow'; import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { FormControl } from '@mui/material';
+import TableRow from '@mui/material/TableRow';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
-import { SET_BUY_DETAILS, SET_CROP_DETAILS } from '../actions/types';
-import GrassIcon from '@mui/icons-material/Grass';
+import { SET_BUY_DETAILS } from '../actions/types';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -54,20 +49,20 @@ const Buy = () => {
             payload: BuyDetail
         })
         const postData = {
-            buyDetail: BuyDetail
+            buyDetails: BuyDetail
         }
         console.log("postdata", postData)
-        // axiosInstance.post('/crop/create', postData)
-        //     .then((res) => {
-        //         if (res.status === 200) {
-        //             console.log("Uploaded Successfully", res.data)
-        //         }
-        //         if (res.status === 400) {
-        //             console.log("Error", res.data)
-        //         }
-        //     }).catch(err => console.log("Error while Uploading liveStock details", err))
+        axiosInstance.post('/buy/product', postData)
+            .then((res) => {
+                if (res.status === 200) {
+                    console.log("Uploaded Successfully", res.data)
+                }
+                if (res.status === 400) {
+                    console.log("Error", res.data)
+                }
+            }).catch(err => console.log("Error while Uploading buy details", err))
 
-        // navigate('/dashboard/farmerinfo')
+        navigate('/dashboard/farmerinfo')
     }
 
     const addtotable = (e) => {
@@ -183,6 +178,10 @@ const Buy = () => {
                                     label="Quantity"
                                     color="success"
                                     placeholder='Quantity'
+                                    type="number"
+                                    onInput={(e) => {
+                                        e.target.value = parseInt(Math.max(0, parseInt(e.target.value)).toString().slice(0, 5))
+                                    }}
                                 // error={error?.firstName !== undefined}
                                 // helperText={error.firstName}
                                 />

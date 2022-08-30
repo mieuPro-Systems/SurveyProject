@@ -7,7 +7,9 @@ import {
   SET_UPDATED_LAND_DETAILS,
   SET_LAND_DETAILS_ARRAY,
   SET_BUY_DETAILS,
-  SET_SELL_DETAILS
+  SET_SELL_DETAILS,
+  SET_CROP_DETAILS,
+  SET_GARDEN_DETAILS
 } from "../../actions/types";
 
 const initialState = {
@@ -15,7 +17,7 @@ const initialState = {
     farmerDetails: {},
     landDetails: [],
     cropDetails: {},
-    garderDetails: {},
+    gardenDetails: {},
     livestockDetails: [],
     labourDetails: {},
     machineDetails: {},
@@ -46,6 +48,16 @@ export default function (state = initialState, action) {
         ...state,
         farmers: { ...state.farmers, labourDetails: action.payload },
       };
+    case SET_CROP_DETAILS:
+      return {
+        ...state,
+        farmers: { ...state.farmers, cropDetails: action.payload }
+      }
+    case SET_GARDEN_DETAILS:
+      return {
+        ...state,
+        farmers: { ...state.farmers, gardenDetails: action.payload }
+      }
     case SET_ALL_FARMERS:
       return {
         ...state,

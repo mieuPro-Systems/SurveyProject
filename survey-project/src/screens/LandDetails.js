@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -27,6 +27,7 @@ import Chip from "@mui/material/Chip";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { SET_LAND_DETAILS, SET_UPDATED_LAND_DETAILS } from "../actions/types";
 import axiosInstance from "../utils/axiosInstance";
+import validateLandInput from "../Validation/LandAddition";
 
 const theme = createTheme();
 
@@ -35,6 +36,12 @@ const LandDetails = () => {
   const navigate = useNavigate();
   const { farmers } = useSelector((state) => state.farmer);
   const { landDetails } = farmers;
+  const landIds = {
+    ownFarming: ["13231"],
+    wasteLand: [],
+  };
+
+  const [LandDetail, setLandDetail] = useState([]);
 
   const getTotalArea = () => {
     var area = 0;
@@ -111,12 +118,12 @@ const LandDetails = () => {
       )
     ) {
       const LandData = {
-        farmerId: "HAN0001",
+        farmerId: "MAN0002",
         category: data.get("category"),
         area: data.get("area"),
         addons: data.get("addons"),
         supervisorId: "",
-        ownerId: "HAN0001",
+        ownerId: "MAN0002",
       };
       const LandDataArray = [];
       LandDataArray.push(LandData);

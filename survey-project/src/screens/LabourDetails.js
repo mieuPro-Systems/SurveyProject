@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -19,7 +18,6 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import Chip from "@mui/material/Chip";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import { SET_LABOUR_DETAILS, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import axiosInstance from "../utils/axiosInstance";
@@ -44,6 +42,7 @@ const LabourDetails = () => {
         "Land cleaning",
         "Tree climbing",
         "Paddy Steaming",
+        "Fertilization"
     ]);
     const keyvalues = [
         "landPlowing",
@@ -56,6 +55,7 @@ const LabourDetails = () => {
         "landCleaning",
         "treeClimbing",
         "paddySteaming",
+        "Fertilization"
     ];
     const worksdata = {
         landPlowing: false,
@@ -68,6 +68,7 @@ const LabourDetails = () => {
         landCleaning: false,
         treeClimbing: false,
         paddySteaming: false,
+        fertilization: false
     };
 
     const configureworkdata = (Allworkdata, Selectedwork) => {
@@ -195,16 +196,6 @@ const LabourDetails = () => {
                                             {workData.map((Value, index) => (
                                                 <MenuItem value={keyvalues[index]}>{Value}</MenuItem>
                                             ))}
-                                            {/* <MenuItem value={"Land plowing with tractor"}>Plowing with tractor</MenuItem>
-                                        <MenuItem value={"Weed removing"}>Weed removing</MenuItem>
-                                        <MenuItem value={"Pesticide spraying"}>Pesticide spraying</MenuItem>
-                                        <MenuItem value={"Hand harvesting"}>Hand harvesting</MenuItem>
-                                        <MenuItem value={"Crop spanking"}>Crop spanking</MenuItem>
-                                        <MenuItem value={"Pumpset duty"}>Pumpset duty</MenuItem>
-                                        <MenuItem value={"Land cleaning"}>Land cleaning</MenuItem>
-                                        <MenuItem value={"Tree climbing"}>Tree climbing</MenuItem>
-                                        <MenuItem value={"Paddy Steaming"}>Paddy Steaming</MenuItem>
-                                        <MenuItem value={"Others"}>Others</MenuItem> */}
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -240,11 +231,9 @@ const LabourDetails = () => {
                                             component="ul"
                                         >
                                             {chipData.map((data) => {
-                                                let icon;
                                                 return (
                                                     <ListItem key={data.key}>
                                                         <Chip
-                                                            // icon={icon}
                                                             label={data.label}
                                                             onDelete={() => HandleDelete(data)}
                                                         />

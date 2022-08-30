@@ -8,7 +8,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux/es/exports";
-import { SET_ALL_FARMERS, SET_LAND_DETAILS } from "../../actions/types";
+import { SET_ALL_FARMERS, SET_LAND_DETAILS, SET_LAND_DETAILS_ARRAY } from "../../actions/types";
 import ModalLandDetailsContent from "./ModalLandDetailsContent";
 
 const SearchFarmers = () => {
@@ -200,7 +200,38 @@ const SearchFarmers = () => {
 
   const handleOk = () => {
     setIsModalVisible(false);
-    // console.log("land details selected", selectedLandDetail);
+    console.log("land details selected", selectedLandDetail);
+    console.log("TakenleaseProps", location.state)
+    const data = location.state
+    const landdataarray = selectedLandDetail
+
+    landdataarray.forEach((land) => {
+      delete land.slNo
+      delete land.key
+      land['farmerId'] = data['farmerId']
+      land['supervisorId'] = data['farmerId']
+      land['category'] = data['category']
+    })
+    console.log("landdataarray", landdataarray)
+    const postData = {
+      rentLandDetails: landdataarray
+    }
+
+    axiosInstance.post('/land/rent', postData).then(
+      (res) => {
+        if (res.status === 200) {
+          console.log("Land details uploaded successfully", res.data)
+          dispatch({
+            type: SET_LAND_DETAILS_ARRAY,
+            payload: landdataarray
+          })
+          navigate('/dashboard/landdetails')
+        }
+        if (res.status === 400) {
+          console.log("Error while uploading land details", res.data)
+        }
+      }
+    ).catch(err => console.log(err))
   };
 
   const handleCancel = () => {

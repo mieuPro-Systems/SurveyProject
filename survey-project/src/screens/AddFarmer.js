@@ -617,14 +617,6 @@ const AddFarmer = () => {
                 skip
               </Button>
             </Box>
-            <Button
-              onClick={() => navigate('/dashboard/farmerinfo')}
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, bgcolor: "green" }}
-            >
-              Skip
-            </Button>
           </Box>
         </Container>
       </ThemeProvider>

@@ -23,6 +23,8 @@ import AgricultureIcon from '@mui/icons-material/Agriculture';
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import GrassIcon from '@mui/icons-material/Grass';
 import YardIcon from '@mui/icons-material/Yard';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import SellIcon from '@mui/icons-material/Sell';
 
 const theme = createTheme();
 
@@ -36,8 +38,8 @@ const FarmerInfo = () => {
     const card2data = [
         { icon: <GrassIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Crops', centerText: 'Mention your crops details', bottomText: 'Add Crops', onclick: '/dashboard/cropdetails' },
         { icon: <YardIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Garden', centerText: 'Mention your garden details', bottomText: 'Add Garden', onclick: '/dashboard/gardendetails' },
-        { icon: <YardIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Garden', centerText: 'Mention your garden details', bottomText: 'Add Garden', onclick: '/dashboard/gardendetails' },
-        { icon: <YardIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Garden', centerText: 'Mention your garden details', bottomText: 'Add Garden', onclick: '/dashboard/gardendetails' },
+        { icon: <ShoppingCartIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Buy', centerText: 'Get all your Needs here', bottomText: 'Buy', onclick: '/dashboard/buy' },
+        { icon: <SellIcon style={{ width: "80px", height: "80px" }} />, headerText: 'Sell', centerText: 'Sell all your Goods here', bottomText: 'Sell', onclick: '/dashboard/sell' },
     ]
 
     return (

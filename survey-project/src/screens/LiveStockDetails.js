@@ -192,6 +192,11 @@ const LiveStockDetails = () => {
                                         color="success"
                                         placeholder=''
                                         type="number"
+                                        onInput={(e) => {
+                                            e.target.value = Math.max(0, parseInt(e.target.value))
+                                                .toString()
+                                                .slice(0, 6);
+                                        }}
                                     // error={error?.userName !== undefined}
                                     // helperText={error.userName}
                                     />

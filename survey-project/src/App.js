@@ -7,14 +7,11 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
 import LoginScreen from "./screens/Login";
-
 import DrawerComponent from "./components/common/SideDrawer";
 import AddEmployeeScreen from "./screens/AddEmployee";
 import ViewEmployeesScreen from "./screens/ViewEmployee";
 import HomeScreen from "./screens/Home";
-
 import AddFarmerScreen from "./screens/AddFarmer";
 import ViewFarmerScreen from "./screens/ViewFarmer";
 import UpdateEmployeeScreen from "./screens/UpdateEmployee";
@@ -23,16 +20,17 @@ import LandDetailScreen from "./screens/LandDetails";
 import LiveStockScreen from "./screens/LiveStockDetails";
 import MachineDetailsScreen from "./screens/MachineDetails";
 import LabourDetailsScreen from "./screens/LabourDetails";
-
 import CropDetailsScreen from "./screens/CropDetails";
 import GardenDetailsScreen from "./screens/GardenDetails";
 import SearchFarmerScreen from "./screens/LandSub/SearchFarmers";
-
 import FarmerProfile from "./screens/FarmerProfile";
 import { SET_CURRENT_USER } from "./actions/types";
 import LoadingBackdrop from "./components/common/Backdrop";
 import MessageSnackBar from "./components/common/SnackBar";
 import NoRouteFound from "./components/common/NoRouteFound";
+import BuyScreen from "./screens/Buy";
+import SellScreen from "./screens/Sell";
+
 
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -73,6 +71,8 @@ const App = () => {
           <Route path="gardendetails" element={<GardenDetailsScreen />} />
           <Route path="searchfarmer" element={<SearchFarmerScreen />} />
           <Route path="viewprofile" element={<FarmerProfile />} />
+          <Route path="buy" element={<BuyScreen />} />
+          <Route path="sell" element={<SellScreen />} />
         </Route>
         <Route path="*" exact={true} element={<NoRouteFound />} />
       </Routes>

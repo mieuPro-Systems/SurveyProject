@@ -4,7 +4,10 @@ import {
   SET_LABOUR_DETAILS,
   SET_ALL_FARMERS,
   SET_LAND_DETAILS,
-  SET_UPDATED_LAND_DETAILS
+  SET_UPDATED_LAND_DETAILS,
+  SET_LAND_DETAILS_ARRAY,
+  SET_BUY_DETAILS,
+  SET_SELL_DETAILS
 } from "../../actions/types";
 
 const initialState = {
@@ -16,6 +19,8 @@ const initialState = {
     livestockDetails: [],
     labourDetails: {},
     machineDetails: {},
+    buyDetails: [],
+    sellDetails: []
   },
   loading: false,
   addedFarmers: [],
@@ -52,10 +57,31 @@ export default function (state = initialState, action) {
         farmers: { ...state.farmers, landDetails: [...state.farmers.landDetails, action.payload] }
 
       }
+    case SET_LAND_DETAILS_ARRAY:
+      {
+        const prevarray = state.farmers.landDetails
+        const newarray = action.payload
+        const updatedarray = [...prevarray, ...newarray]
+        console.log("updatedarray redux", updatedarray)
+        return {
+          ...state,
+          farmers: { ...state.farmers, landDetails: updatedarray }
+        }
+      }
     case SET_UPDATED_LAND_DETAILS:
       return {
         ...state,
         farmers: { ...state.farmers, landDetails: action.payload }
+      }
+    case SET_BUY_DETAILS:
+      return {
+        ...state,
+        farmers: { ...state.farmers, buyDetails: action.payload }
+      }
+    case SET_SELL_DETAILS:
+      return {
+        ...state,
+        farmers: { ...state.farmers, sellDetails: action.payload }
       }
     default:
       return state;

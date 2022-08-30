@@ -17,8 +17,12 @@ const FarmerProfile = () => {
     labourDetails,
     livestockDetails,
     machineDetails,
+    cropDetails,
+    gardenDetails,
+    sellDetails,
+    buyDetails,
   } = location.state;
-  console.log("landDetails", landDetails);
+  console.log("sellDetails", sellDetails, buyDetails);
   return (
     <div>
       <div className="col mb-1 fw-bold">Farmer's Profile </div>
@@ -302,7 +306,16 @@ const FarmerProfile = () => {
                 </div>
               </div>
             </div>
-            <FarmerProfileAccordion landDetails={landDetails} />
+            <FarmerProfileAccordion
+              landDetails={landDetails}
+              cropDetails={cropDetails}
+              labourDetails={labourDetails}
+              machineDetails={machineDetails}
+              livestockDetails={livestockDetails}
+              gardenDetails={gardenDetails}
+              buyDetails={buyDetails}
+              sellDetails={sellDetails}
+            />
           </div>
         </div>
       </div>

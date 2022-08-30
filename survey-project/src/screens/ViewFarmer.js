@@ -292,7 +292,7 @@ const ViewFarmers = () => {
       axiosInstance
         .get("/farmer/all")
         .then((res) => {
-          // console.log("Response for getting farmers", res);
+          console.log("Response for getting farmers", res);
           dispatch({
             type: SET_ALL_FARMERS,
             payload: res.data,

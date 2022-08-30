@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,13 +11,13 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from '../utils/axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import Crop from './Tabs/Crop';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow'; import InputLabel from '@mui/material/InputLabel';
+import TableRow from '@mui/material/TableRow';
+import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { FormControl } from '@mui/material';
@@ -42,11 +42,7 @@ const CropDetails = () => {
 
     const [CropsDetail, setCropsDetail] = useState([])
 
-    const [cropbcolor, setcropbcolor] = useState('contained');
-    const [gardenbcolor, setgardenbcolor] = useState('outlined');
-    const [ShowCrop, setShowCrop] = useState(true)
-    const [ShowGarden, setShowGarden] = useState(false)
-    const [GardenDetail, setGardenDetail] = useState([])
+
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -88,13 +84,8 @@ const CropDetails = () => {
             seedingType: data.get('seedingtype'),
             harvestPeriod: data.get('harvestperiod')
         }
-        const cropsarray = []
-        cropsarray.push(CropsData)
-        const postData = {
-            cropDetails: cropsarray
-        }
-        setCropsDetail([...CropsDetail, CropsData])
-        console.log("land", CropsData)
+        CropsDetail([...CropsDetail, CropsData])
+        console.log("CropsData", CropsData)
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -210,6 +201,11 @@ const CropDetails = () => {
                                     color="success"
                                     placeholder='in Acres'
                                     type='number'
+                                    onInput={(e) => {
+                                        e.target.value = Math.max(0, parseInt(e.target.value))
+                                            .toString()
+                                            .slice(0, 5);
+                                    }}
                                 // error={error?.firstName !== undefined}
                                 // helperText={error.firstName}
                                 />

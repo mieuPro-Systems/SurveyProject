@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,8 +14,6 @@ import Select from '@mui/material/Select';
 import { FormControl } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 import { styled } from '@mui/material/styles';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import Paper from '@mui/material/Paper';
 import { useNavigate } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
@@ -97,6 +95,8 @@ const MachineDetails = () => {
             case 'Acre':
                 setpriceLable('Price per Acre')
                 setrent(e.target.value)
+                break
+            default:
                 break
         }
     }

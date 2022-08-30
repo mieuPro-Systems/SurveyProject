@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -27,6 +27,7 @@ import Chip from "@mui/material/Chip";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { SET_LAND_DETAILS, SET_UPDATED_LAND_DETAILS } from "../actions/types";
 import axiosInstance from "../utils/axiosInstance";
+import validateLandInput from "../Validation/LandAddition";
 
 const theme = createTheme();
 
@@ -34,19 +35,21 @@ const LandDetails = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { farmers } = useSelector((state) => state.farmer);
+    const [HideFields, setHideFields] = useState(false)
+    const [Error, setError] = useState({})
     const { landDetails } = farmers;
-    const landIds = {
-        ownFarming: ["13231"],
-        wasteLand: [],
-    };
 
-    const [LandDetail, setLandDetail] = useState([]);
-
+    const handleChange = (e) => {
+        if (e.target.value === "takenLease") {
+            setHideFields(!HideFields)
+        } else {
+            setHideFields(false)
+        }
+    }
     const getTotalArea = () => {
         var area = 0;
         for (const data of landDetails) {
             area += parseInt(data.area);
-            // console.log('area1', parseInt(data.area))
         }
         // console.log("area", area)
         return area;
@@ -113,35 +116,40 @@ const LandDetails = () => {
         const data = new FormData(e.currentTarget);
         if (["ownFarming", "wasteLand", "availableForLease"].includes(data.get("category"))) {
             const LandData = {
-                farmerId: "MAN0002",
+                farmerId: "HAN0001",
                 category: data.get("category"),
                 area: data.get("area"),
                 addons: data.get("addons"),
                 supervisorId: "",
-                ownerId: "MAN0002",
+                ownerId: "HAN0001",
             };
+            const { isValid, errors } = validateLandInput(LandData)
             const LandDataArray = [];
-            LandDataArray.push(LandData);
-            const postData = {
-                landDetails: LandDataArray,
-            };
-            console.log("postData", postData);
-            axiosInstance.post("/land/create", postData).then((res) => {
-                if (res.status === 200) {
-                    console.log("Successfully get LandId", res.data);
-                    LandData["landId"] = res.data.landId;
-                    // LandData["ownerId"] = farmers.farmerDetails.farmerId;
-                    LandData["supervisorId"] = "None";
-                    // setLandDetail([...LandDetail, LandData])
-                    dispatch({
-                        type: SET_LAND_DETAILS,
-                        payload: LandData,
-                    });
-                }
-                if (res.status === 400) {
-                    console.log("Error while getting Land Id", res.data);
-                }
-            });
+            console.log("isValid", isValid, errors)
+            if (isValid) {
+                LandDataArray.push(LandData);
+                const postData = {
+                    landDetails: LandDataArray,
+                };
+                console.log("postData", postData);
+                axiosInstance.post("/land/create", postData).then((res) => {
+                    if (res.status === 200) {
+                        console.log("Successfully get LandId", res.data);
+                        LandData["landId"] = res.data.landId;
+                        // LandData["ownerId"] = farmers.farmerDetails.farmerId;
+                        LandData["supervisorId"] = "None";
+                        // setLandDetail([...LandDetail, LandData])
+                        dispatch({
+                            type: SET_LAND_DETAILS,
+                            payload: LandData,
+                        });
+                    }
+                    if (res.status === 400) {
+                        console.log("Error while getting Land Id", res.data);
+                    }
+                });
+            }
+            setError(errors)
         }
 
         if (data.get("category") === "leasedLand") {
@@ -225,7 +233,9 @@ const LandDetails = () => {
                                             labelId="category"
                                             id="category"
                                             label="Category"
-                                        // onChange={handleChange}
+                                            onChange={handleChange}
+                                            error={Error?.category !== undefined}
+                                            helperText={"Helo"}
                                         >
                                             <MenuItem value={"ownFarming"}>Own Farming</MenuItem>
                                             <MenuItem value={"wasteLand"}>Waste Land</MenuItem>
@@ -243,12 +253,15 @@ const LandDetails = () => {
                                         name="area"
                                         required
                                         fullWidth
+                                        disabled={HideFields}
                                         id="Area"
                                         label="Area"
                                         autoFocus
                                         color="success"
                                         placeholder="in Acres"
                                         type="number"
+                                        error={Error?.area !== undefined}
+                                        helperText={Error.area}
                                         onInput={(e) => {
                                             e.target.value = Math.max(0, parseInt(e.target.value))
                                                 .toString()
@@ -263,6 +276,7 @@ const LandDetails = () => {
                                         <InputLabel id="addons">Add-ons</InputLabel>
                                         <Select
                                             required
+                                            disabled={HideFields}
                                             name="addons"
                                             labelId="addons"
                                             id="addons"

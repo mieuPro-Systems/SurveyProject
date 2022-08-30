@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,13 +11,13 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from '../utils/axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import Crop from './Tabs/Crop';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow'; import InputLabel from '@mui/material/InputLabel';
+import TableRow from '@mui/material/TableRow';
+import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { FormControl } from '@mui/material';
@@ -25,7 +25,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
-import { SET_CROP_DETAILS } from '../actions/types';
+import { SET_GARDEN_DETAILS } from '../actions/types';
 import YardIcon from '@mui/icons-material/Yard';
 
 const theme = createTheme();
@@ -43,7 +43,7 @@ const GardenDetails = () => {
         e.preventDefault()
 
         dispatch({
-            type: SET_CROP_DETAILS,
+            type: SET_GARDEN_DETAILS,
             payload: GardenDetail
         })
         console.log("farmersredux", farmers)

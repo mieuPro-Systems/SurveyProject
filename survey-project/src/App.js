@@ -30,6 +30,7 @@ import MessageSnackBar from "./components/common/SnackBar";
 import NoRouteFound from "./components/common/NoRouteFound";
 import BuyScreen from "./screens/Buy";
 import SellScreen from "./screens/Sell";
+import EmployeeSignUp from "./screens/EmployeeSignup";
 
 
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
       return JSON.parse(storedUserDetail);
     };
     getUserDetail().then((res) => {
+      console.log(res, "ls");
       if (res?.isLoggedIn) {
         dispatch({ type: SET_CURRENT_USER, payload: { res } });
       }
@@ -53,6 +55,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomeScreen />} />
         <Route path="/login" element={<LoginScreen />} />
+        <Route path="/employeesignup" element={<EmployeeSignUp />} />
         <Route
           path="/dashboard"
           element={isAuthenticated ? <DrawerComponent /> : <Navigate to="/" />}

@@ -41,7 +41,7 @@ const FarmerLandDetails = (props) => {
   };
 
   useEffect(() => {
-    if (props.landDetails.length > 1) {
+    if (props.landDetails.length > 0) {
       let modalContent = [];
       props.landDetails.map((landDetail, index) => {
         modalContent.push({

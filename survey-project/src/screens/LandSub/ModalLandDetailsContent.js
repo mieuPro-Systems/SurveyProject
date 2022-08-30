@@ -42,6 +42,7 @@ const ModalLandDetailsContent = (props) => {
   };
 
   useEffect(() => {
+    // console.log("props.landDetailsForModal", props.landDetailsForModal);
     if (props.landDetailsForModal.length > 1) {
       let modalContent = [];
       let slNo = 1;

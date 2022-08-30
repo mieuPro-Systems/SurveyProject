@@ -22,7 +22,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   SET_CURRENT_USER,
   SET_LOADING_FALSE,
@@ -103,6 +103,29 @@ export default function DrawerComponent() {
   const [open, setOpen] = React.useState(false);
   const [Color, setColor] = React.useState("");
 
+  const AdminRoutes = [
+    "addemployee",
+    "viewemployees",
+    "addfarmer",
+    "viewfarmer",
+  ];
+  const AdminComponents = [
+    "Add Employee",
+    "View Employee",
+    "Add Farmer",
+    "View Farmer",
+  ];
+  const EmployeeComponents = ["Add Farmer", "View Farmer"];
+  const EmployeeRoutes = ["addfarmer", "viewfarmer"];
+
+  const { loggedInAs } = useSelector((state) => state.auth);
+
+  // console.log("sd", loggedInAs);
+
+  const SideDrawerComponents =
+    loggedInAs === "Admin" ? AdminComponents : EmployeeComponents;
+  const SideRoutes = loggedInAs === "Admin" ? AdminRoutes : EmployeeRoutes;
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -120,12 +143,7 @@ export default function DrawerComponent() {
     <PersonAddAlt1Icon />,
     <GroupsIcon />,
   ];
-  const EmployeeRoutes = [
-    "addemployee",
-    "viewemployees",
-    "addfarmer",
-    "viewfarmer",
-  ];
+
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -178,18 +196,21 @@ export default function DrawerComponent() {
           <Typography variant="h6" noWrap component="div">
             FaFaCo.
           </Typography>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={logoutClickHandler}
-            edge="end"
-            style={{ marginRight: 5, float: "right", marginLeft: "auto" }}
-            sx={{
-              ...(open && { display: "none" }),
-            }}
-          >
-            <LogoutIcon />
-          </IconButton>
+          <div style={{ marginRight: 5, float: "right", marginLeft: "auto" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={logoutClickHandler}
+              edge="end"
+              style={{ marginRight: 5, float: "right", marginLeft: "auto" }}
+              sx={{
+                ...(open && { display: "none" }),
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+            <p style={{ fontSize: "11px" }}>Logged in as {loggedInAs}</p>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -204,44 +225,42 @@ export default function DrawerComponent() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Add Employee", "View Employee", "Add Farmer", "View Farmer"].map(
-            (text, index) => (
-              <ListItemButton
-                key={text}
+          {SideDrawerComponents.map((text, index) => (
+            <ListItemButton
+              key={text}
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+              onClick={() => {
+                if (SideRoutes[index] === "addfarmer") {
+                  navigate(SideRoutes[index], {
+                    state: { update: false },
+                  });
+                } else {
+                  navigate(SideRoutes[index]);
+                }
+                setColor(index);
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                onClick={() => {
-                  if (EmployeeRoutes[index] === "addfarmer") {
-                    navigate(EmployeeRoutes[index], {
-                      state: { update: false },
-                    });
-                  } else {
-                    navigate(EmployeeRoutes[index]);
-                  }
-                  setColor(index);
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                  color: Color === index ? "green" : "",
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                    color: Color === index ? "green" : "",
-                  }}
-                >
-                  {
-                    <Tooltip title={text} placement="right-end">
-                      {EmployeeIcons[index]}
-                    </Tooltip>
-                  }
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            )
-          )}
+                {
+                  <Tooltip title={text} placement="right-end">
+                    {EmployeeIcons[index]}
+                  </Tooltip>
+                }
+              </ListItemIcon>
+              <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          ))}
         </List>
         <Divider />
       </Drawer>

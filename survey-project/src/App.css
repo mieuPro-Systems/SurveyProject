@@ -1,5 +1,5 @@
 .app {
-  background: url(../src/assests/HomeBG1.jpg);
+  background: url(../src/assests/cow2.jpeg);
   background-blend-mode: multiply;
   background-repeat: no-repeat;
   background-size: cover;
@@ -31,10 +31,7 @@
   font-size: 40px;
   font-weight: bold;
 } */
-.text3 {
-  margin-top: -20px;
-  margin-left: 10px;
-  font-size: 30px;
-  font-weight: 500;
-  font-family: "Georgia", Serif;
+.homecard {
+  margin-top: -150px;
+  margin-left: 70px;
 }

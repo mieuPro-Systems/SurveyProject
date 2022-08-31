@@ -1,9 +1,8 @@
 import * as React from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import Button from "@mui/material/Button";
-import { useDispatch, useSelector } from "react-redux";
-import { SET_LOADING_FALSE } from "../../actions/types";
+
+import { useSelector } from "react-redux";
 
 export default function LoadingBackdrop() {
   const { loading } = useSelector((state) => state.auth);

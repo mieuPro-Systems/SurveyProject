@@ -182,9 +182,9 @@ const LandDetails = () => {
                 area: "",
                 addons: "",
                 supervisorId: "",
-                ownerId: ""
-            }
-            navigate('/dashboard/searchfarmer', { state: Data })
+                ownerId: "",
+            };
+            navigate("/dashboard/searchfarmer", { state: Data });
         }
     };
 

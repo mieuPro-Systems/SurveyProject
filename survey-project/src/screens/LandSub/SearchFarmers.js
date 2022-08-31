@@ -8,7 +8,11 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux/es/exports";
-import { SET_ALL_FARMERS, SET_LAND_DETAILS, SET_LAND_DETAILS_ARRAY } from "../../actions/types";
+import {
+  SET_ALL_FARMERS,
+  SET_LAND_DETAILS,
+  SET_LAND_DETAILS_ARRAY,
+} from "../../actions/types";
 import ModalLandDetailsContent from "./ModalLandDetailsContent";
 
 const SearchFarmers = () => {
@@ -201,37 +205,38 @@ const SearchFarmers = () => {
   const handleOk = () => {
     setIsModalVisible(false);
     console.log("land details selected", selectedLandDetail);
-    console.log("TakenleaseProps", location.state)
-    const data = location.state
-    const landdataarray = selectedLandDetail
+    console.log("TakenleaseProps", location.state);
+    const data = location.state;
+    const landdataarray = selectedLandDetail;
 
     landdataarray.forEach((land) => {
-      delete land.slNo
-      delete land.key
-      land['farmerId'] = data['farmerId']
-      land['supervisorId'] = data['farmerId']
-      land['category'] = data['category']
-    })
-    console.log("landdataarray", landdataarray)
+      delete land.slNo;
+      delete land.key;
+      land["farmerId"] = data["farmerId"];
+      land["supervisorId"] = data["farmerId"];
+      land["category"] = data["category"];
+    });
+    console.log("landdataarray", landdataarray);
     const postData = {
-      rentLandDetails: landdataarray
-    }
+      rentLandDetails: landdataarray,
+    };
 
-    axiosInstance.post('/land/rent', postData).then(
-      (res) => {
+    axiosInstance
+      .post("/land/rent", postData)
+      .then((res) => {
         if (res.status === 200) {
-          console.log("Land details uploaded successfully", res.data)
+          console.log("Land details uploaded successfully", res.data);
           dispatch({
             type: SET_LAND_DETAILS_ARRAY,
-            payload: landdataarray
-          })
-          navigate('/dashboard/landdetails')
+            payload: landdataarray,
+          });
+          navigate("/dashboard/landdetails");
         }
         if (res.status === 400) {
-          console.log("Error while uploading land details", res.data)
+          console.log("Error while uploading land details", res.data);
         }
-      }
-    ).catch(err => console.log(err))
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleCancel = () => {
@@ -291,10 +296,12 @@ const SearchFarmers = () => {
         );
     };
     fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setFarmersDataToRender(addedFarmers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addedFarmers]);
 
   const rowSelection = {
@@ -319,33 +326,31 @@ const SearchFarmers = () => {
     addedFarmers.map((farmerDetail) => {
       // console.log(farmerDetail);
       if (selectedFarmersId.includes(farmerDetail.farmerDetails.id)) {
-        console.log("propscheck", location.state)
-        const data = location.state
-        data.supervisorId = farmerDetail.farmerDetails.id
-        console.log("Updateprops", data)
-        const dataarray = []
-        dataarray.push(data)
+        console.log("propscheck", location.state);
+        const data = location.state;
+        data.supervisorId = farmerDetail.farmerDetails.id;
+        console.log("Updateprops", data);
+        const dataarray = [];
+        dataarray.push(data);
         const postData = {
-          landDetails: dataarray
-        }
-        console.log("postData", postData)
-        axiosInstance.post('/land/create', postData).then(
-          (res) => {
-            if (res.status === 200) {
-              console.log("Land Id created Successfully", res.data)
-              data['landId'] = res.data.landId
-              console.log("afterpost", data)
-              dispatch({
-                type: SET_LAND_DETAILS,
-                payload: data
-              })
-            }
+          landDetails: dataarray,
+        };
+        console.log("postData", postData);
+        axiosInstance.post("/land/create", postData).then((res) => {
+          if (res.status === 200) {
+            console.log("Land Id created Successfully", res.data);
+            data["landId"] = res.data.landId;
+            console.log("afterpost", data);
+            dispatch({
+              type: SET_LAND_DETAILS,
+              payload: data,
+            });
           }
-        )
-        navigate('/dashboard/landdetails')
+        });
+        navigate("/dashboard/landdetails");
         return console.log("found match details", farmerDetail);
       } else {
-        return;
+        return null;
       }
     });
   };

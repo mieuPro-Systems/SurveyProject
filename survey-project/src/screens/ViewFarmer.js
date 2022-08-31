@@ -304,10 +304,12 @@ const ViewFarmers = () => {
         );
     };
     fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setFarmersDataToRender(addedFarmers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addedFarmers]);
 
   return (

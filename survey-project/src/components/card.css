@@ -4,9 +4,9 @@
   flex: 1;
   position: absolute;
   padding: 10px;
-  margin-left: 250px;
+  margin-left: 25px;
   margin-top: 180px;
-  float:right;
+  /* float: left; */
   /* justify-content: space-evenly; */
 }
 

@@ -20,9 +20,9 @@ const Home = () => {
       <Navbar />
       <div>
         <p className="text1 float-end mr-3 ">உழவுக்கு வந்தனை செய்வோம்...!!!</p>
-        <div className="float-end mr-3">
-          <Card />
-        </div>
+      </div>
+      <div className="homecard">
+        <Card />
       </div>
     </div>
   );

@@ -37,14 +37,21 @@ const LandDetails = () => {
     const { farmers } = useSelector((state) => state.farmer);
     const [HideFields, setHideFields] = useState(false)
     const [Error, setError] = useState({})
+    const [Category, setCategory] = useState("ownFarming")
+    const [Addons, setAddons] = useState("None")
     const { landDetails } = farmers;
 
     const handleChange = (e) => {
+        setCategory(e.target.value)
         if (e.target.value === "takenLease") {
             setHideFields(!HideFields)
         } else {
             setHideFields(false)
         }
+    }
+
+    const handleChangeAddon = (e) => {
+        setAddons(e.target.value)
     }
     const getTotalArea = () => {
         var area = 0;
@@ -116,12 +123,12 @@ const LandDetails = () => {
         const data = new FormData(e.currentTarget);
         if (["ownFarming", "wasteLand", "availableForLease"].includes(data.get("category"))) {
             const LandData = {
-                farmerId: "HAN0001",
+                farmerId: "VEE0002",
                 category: data.get("category"),
                 area: data.get("area"),
                 addons: data.get("addons"),
                 supervisorId: "",
-                ownerId: "HAN0001",
+                ownerId: "VEE0002",
             };
             const { isValid, errors } = validateLandInput(LandData)
             const LandDataArray = [];
@@ -161,7 +168,11 @@ const LandDetails = () => {
                 supervisorId: "",
                 ownerId: "HAN0001",
             };
-            navigate('/dashboard/searchfarmer', { state: Data })
+            const { isValid, errors } = validateLandInput(Data)
+            if (isValid) {
+                navigate('/dashboard/searchfarmer', { state: Data })
+            }
+            setError(errors)
         }
 
         if (data.get("category") === "takenLease") {
@@ -234,8 +245,7 @@ const LandDetails = () => {
                                             id="category"
                                             label="Category"
                                             onChange={handleChange}
-                                            error={Error?.category !== undefined}
-                                            helperText={"Helo"}
+                                            value={Category}
                                         >
                                             <MenuItem value={"ownFarming"}>Own Farming</MenuItem>
                                             <MenuItem value={"wasteLand"}>Waste Land</MenuItem>
@@ -259,16 +269,18 @@ const LandDetails = () => {
                                         autoFocus
                                         color="success"
                                         placeholder="in Acres"
-                                        type="number"
+                                        type='number'
+                                        // inputProps={{
+                                        //     maxLength: 13,
+                                        //     step: "1"
+                                        // }}
                                         error={Error?.area !== undefined}
                                         helperText={Error.area}
                                         onInput={(e) => {
-                                            e.target.value = Math.max(0, parseInt(e.target.value))
-                                                .toString()
-                                                .slice(0, 5);
+                                            setError("")
+                                            // e.target.value = (e.target.value)
+                                            //     .slice(0, 5);
                                         }}
-                                    // error={error?.firstName !== undefined}
-                                    // helperText={error.firstName}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -281,7 +293,8 @@ const LandDetails = () => {
                                             labelId="addons"
                                             id="addons"
                                             label="Add-ons"
-                                        // onChange={handleChange}
+                                            value={Addons}
+                                            onChange={handleChangeAddon}
                                         >
                                             <MenuItem value={"interestedToClean"}>
                                                 Interested to Clean
@@ -431,7 +444,7 @@ const LandDetails = () => {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
                             >
-                                Next
+                                Submit
                             </Button>
                         </Grid>
                     </Grid>

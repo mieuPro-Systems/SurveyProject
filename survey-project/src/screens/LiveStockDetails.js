@@ -27,6 +27,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PetsIcon from '@mui/icons-material/Pets';
 import { SET_LIVESTOCK_DETAILS } from '../actions/types';
 import axiosInstance from '../utils/axiosInstance';
+import validateLiveStockInput from '../Validation/LiveStock';
 
 
 const theme = createTheme();
@@ -38,6 +39,12 @@ const LiveStockDetails = () => {
     const { farmers } = useSelector((state) => state.farmer)
 
     const [LiveStocks, setLiveStocks] = useState([]);
+    const [Place, setPlace] = useState("Home")
+    const [Error, setError] = useState({})
+
+    const handleChange = (e) => {
+        setPlace(e.target.value)
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -75,9 +82,13 @@ const LiveStockDetails = () => {
             count: data.get('livestockcount'),
             season: data.get('season')
         }
-        setLiveStocks([...LiveStocks, LiveStockData])
-        console.log("land", LiveStockData)
-        console.log("first", LiveStocks)
+        const { isValid, errors } = validateLiveStockInput(LiveStockData)
+        if (isValid) {
+            setLiveStocks([...LiveStocks, LiveStockData])
+            console.log("land", LiveStockData)
+            console.log("first", LiveStocks)
+        }
+        setError(errors)
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -136,7 +147,8 @@ const LiveStockDetails = () => {
                                             labelId="place"
                                             id="place"
                                             label="Place"
-                                        // onChange={handleChange}
+                                            value={Place}
+                                            onChange={handleChange}
                                         >
                                             <MenuItem value={"Home"}>Home</MenuItem>
                                             <MenuItem value={"Farm"}>Farm</MenuItem>
@@ -152,8 +164,12 @@ const LiveStockDetails = () => {
                                         autoComplete="livestocktype"
                                         color="success"
                                         placeholder=''
-                                    // error={error?.lastName !== undefined}
-                                    // helperText={error.lastName}
+                                        error={Error?.type !== undefined}
+                                        helperText={Error.type}
+                                        onInput={(e) => {
+                                            setError({})
+                                            e.target.value = (e.target.value).toString().slice(0, 45);
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -165,8 +181,9 @@ const LiveStockDetails = () => {
                                         autoComplete="livestockbreed"
                                         color="success"
                                         placeholder=''
-                                    // error={error?.userName !== undefined}
-                                    // helperText={error.userName}
+                                        error={Error?.breed !== undefined}
+                                        helperText={Error.breed}
+                                        onInput={() => setError({})}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -178,8 +195,9 @@ const LiveStockDetails = () => {
                                         autoComplete="livestockname"
                                         color="success"
                                         placeholder=''
-                                    // error={error?.userName !== undefined}
-                                    // helperText={error.userName}
+                                        error={Error?.name !== undefined}
+                                        helperText={Error.name}
+                                        onInput={() => setError({})}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -193,12 +211,13 @@ const LiveStockDetails = () => {
                                         placeholder=''
                                         type="number"
                                         onInput={(e) => {
+                                            setError({})
                                             e.target.value = Math.max(0, parseInt(e.target.value))
                                                 .toString()
                                                 .slice(0, 6);
                                         }}
-                                    // error={error?.userName !== undefined}
-                                    // helperText={error.userName}
+                                        error={Error?.count !== undefined}
+                                        helperText={Error.count}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -210,8 +229,9 @@ const LiveStockDetails = () => {
                                         autoComplete="season"
                                         color="success"
                                         placeholder=''
-                                    // error={error?.userName !== undefined}
-                                    // helperText={error.userName}
+                                        error={Error?.season !== undefined}
+                                        helperText={Error.season}
+                                        onInput={() => setError({})}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>

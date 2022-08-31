@@ -84,7 +84,7 @@ const CropDetails = () => {
             seedingType: data.get('seedingtype'),
             harvestPeriod: data.get('harvestperiod')
         }
-        CropsDetail([...CropsDetail, CropsData])
+        setCropsDetail([...CropsDetail, CropsData])
         console.log("CropsData", CropsData)
     }
 

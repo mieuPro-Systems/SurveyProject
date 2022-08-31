@@ -13,9 +13,12 @@ import LivestockDetails from "./LivestockDetails";
 import GardenDetails from "./GardenDetails";
 import BuyDetails from "./BuyDetails";
 import SellDetails from "./SellDetails";
+import { useDispatch } from "react-redux";
+import { SET_UPDATED_LAND_DETAILS } from "../../actions/types";
 
 export default function FarmerProfileAccordion(props) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const LandDetailCategory = {
     ownFarming: "Own Farming",
     wasteLand: "Waste Land",
@@ -24,9 +27,14 @@ export default function FarmerProfileAccordion(props) {
     availableForLease: "Available For Lease",
   };
   const updatedLandDetails = props.landDetails.map((detail) => {
-    return { ...detail, category: LandDetailCategory[detail.category] };
+    return {
+      ...detail,
+      category: LandDetailCategory[detail.category],
+      farmerId: props.farmerDetails.id,
+    };
   });
-  console.log("machineDetails", props.machineDetails);
+
+  console.log("landDetails 1", updatedLandDetails);
   return (
     <div>
       <Accordion className="mt-1">
@@ -39,9 +47,11 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() =>
-              navigate("/dashboard/landdetails", { state: props.landDetails })
-            }
+            onClick={() => {
+              navigate("/dashboard/landdetails", {
+                state: { update: true, landDetails: updatedLandDetails },
+              });
+            }}
             className="btn btn-success btn-sm float-end mb-3"
           >
             Edit
@@ -66,7 +76,9 @@ export default function FarmerProfileAccordion(props) {
         <AccordionDetails>
           <button
             onClick={() =>
-              navigate("/dashboard/cropdetails", { state: props.cropDetails })
+              navigate("/dashboard/cropdetails", {
+                state: { update: true, cropDetails: props.cropDetails },
+              })
             }
             className="btn btn-success btn-sm float-end mb-3"
           >
@@ -91,7 +103,11 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() => navigate("/dashboard/labour")}
+            onClick={() =>
+              navigate("/dashboard/labour", {
+                state: { update: true, labourDetails: props.labourDetails },
+              })
+            }
             className="btn btn-success btn-sm float-end"
           >
             Edit

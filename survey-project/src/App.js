@@ -32,7 +32,6 @@ import BuyScreen from "./screens/Buy";
 import SellScreen from "./screens/Sell";
 import EmployeeSignUp from "./screens/EmployeeSignup";
 
-
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -43,7 +42,7 @@ const App = () => {
       return JSON.parse(storedUserDetail);
     };
     getUserDetail().then((res) => {
-      console.log(res, "ls");
+      // console.log(res, "ls");
       if (res?.isLoggedIn) {
         dispatch({ type: SET_CURRENT_USER, payload: { res } });
       }

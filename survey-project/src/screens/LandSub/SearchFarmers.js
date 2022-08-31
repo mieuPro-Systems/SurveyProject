@@ -14,6 +14,7 @@ import {
   SET_LAND_DETAILS_ARRAY,
 } from "../../actions/types";
 import ModalLandDetailsContent from "./ModalLandDetailsContent";
+import { Link } from "react-router-dom";
 
 const SearchFarmers = () => {
   const [searchText, setSearchText] = useState("");
@@ -22,7 +23,7 @@ const SearchFarmers = () => {
   const [farmersData, setFarmersData] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { addedFarmers } = useSelector((state) => state.farmer);
+  const { addedFarmers, farmers } = useSelector((state) => state.farmer);
   const [selectedRow, setSelectedRow] = useState([]);
   const location = useLocation();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -251,30 +252,32 @@ const SearchFarmers = () => {
 
   const setFarmersDataToRender = (datas) => {
     let temp = [];
-    datas.map((data, index) =>
-      temp.push({
-        key: index + 1,
-        slNo: index + 1,
-        farmerId: data.farmerDetails.id,
-        farmerName: data.farmerDetails.farmerName,
-        fatherName: data.farmerDetails.fatherName,
-        age: data.farmerDetails.age,
-        gender: data.farmerDetails.gender,
-        phoneNumber: data.farmerDetails.phoneNumber,
-        village: data.farmerDetails.village,
-        landDetails: (
-          <IconButton
-            onClick={() => {
-              // console.log(data.farmerDetails.id);
-              handleIndividualFarmerLandDetailsClick(data);
-              return true;
-            }}
-          >
-            <VisibilityIcon />
-          </IconButton>
-        ),
-      })
-    );
+    datas.map((data, index) => {
+      if (data.farmerDetails.id !== farmers?.farmerDetails?.farmerId) {
+        temp.push({
+          key: index + 1,
+          slNo: index + 1,
+          farmerId: data.farmerDetails.id,
+          farmerName: data.farmerDetails.farmerName,
+          fatherName: data.farmerDetails.fatherName,
+          age: data.farmerDetails.age,
+          gender: data.farmerDetails.gender,
+          phoneNumber: data.farmerDetails.phoneNumber,
+          village: data.farmerDetails.village,
+          landDetails: (
+            <IconButton
+              onClick={() => {
+                // console.log(data.farmerDetails.id);
+                handleIndividualFarmerLandDetailsClick(data);
+                return true;
+              }}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          ),
+        });
+      }
+    });
     // console.log(temp, "temp");
     setFarmersData(temp);
   };
@@ -369,12 +372,34 @@ const SearchFarmers = () => {
           ...rowSelection,
         }}
       />
+
       <button
         onClick={handleAddClick}
         className="btn btn-sm btn-primary float-end mx-3"
       >
         Add
       </button>
+      <button
+        onClick={() => navigate(-1)}
+        className="btn btn-sm btn-danger float-end mx-3"
+      >
+        Cancel
+      </button>
+      <p className="text-muted ms-3">
+        Note: If couldn't find farmer you are searching{" "}
+        <span
+          className="text-primary"
+          role="button"
+          onClick={() =>
+            navigate("/dashboard/addfarmer", {
+              state: { update: false },
+            })
+          }
+        >
+          Click here
+        </span>{" "}
+        to add new farmer
+      </p>
       <Modal
         title="Land Details"
         visible={isModalVisible}

@@ -22,7 +22,7 @@ const FarmerProfile = () => {
     sellDetails,
     buyDetails,
   } = location.state;
-  console.log("sellDetails", sellDetails, buyDetails);
+  // console.log("sellDetails", sellDetails, buyDetails);
   return (
     <div>
       <div className="col mb-1 fw-bold">Farmer's Profile </div>
@@ -307,6 +307,7 @@ const FarmerProfile = () => {
               </div>
             </div>
             <FarmerProfileAccordion
+            farmerDetails={farmerDetails}
               landDetails={landDetails}
               cropDetails={cropDetails}
               labourDetails={labourDetails}

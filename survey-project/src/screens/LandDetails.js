@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -22,7 +22,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { SET_LAND_DETAILS, SET_UPDATED_LAND_DETAILS } from "../actions/types";
@@ -36,12 +36,11 @@ const LandDetails = () => {
   const navigate = useNavigate();
   const { farmers } = useSelector((state) => state.farmer);
   const { landDetails } = farmers;
-  const landIds = {
-    ownFarming: ["13231"],
-    wasteLand: [],
-  };
 
-  const [LandDetail, setLandDetail] = useState([]);
+  const location = useLocation();
+  const { state } = location;
+
+  console.log("land detail location", location.state);
 
   const getTotalArea = () => {
     var area = 0;
@@ -79,36 +78,6 @@ const LandDetails = () => {
       .catch((err) => console.log(err));
   };
 
-  // const handleSubmit = (e) => {
-  //     e.preventDefault()
-
-  //     dispatch({
-  //         type: SET_LAND_DETAILS,
-  //         payload: LandDetail
-  //     })
-  //     const postData = {
-  //         farmerId: farmers.farmerDetails.farmerId,
-  //         landDetails: LandDetail
-  //     }
-  //     console.log("postdata".postData)
-  //     axiosInstance.post('/', postData)
-  //         .then((res) => {
-  //             if (res.status === 200) {
-  //                 console.log("Upload successfully", postData)
-  //             }
-  //             if (res.status === 400) {
-  //                 console.log("Error while uploading", res.data)
-  //             }
-  //         }).then(err => console.log(err))
-
-  //     LandDetail.forEach((data) => {
-  //         if (data.toshare.length > 0) {
-  //             navigate('/dashboard/ownerdetails')
-  //         }
-  //     })
-  //     console.log("Landdetails", LandDetail)
-  // }
-
   const addtotable = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -118,12 +87,12 @@ const LandDetails = () => {
       )
     ) {
       const LandData = {
-        farmerId: "MAN0002",
+        farmerId: "HAN0001",
         category: data.get("category"),
         area: data.get("area"),
         addons: data.get("addons"),
         supervisorId: "",
-        ownerId: "MAN0002",
+        ownerId: "HAN0001",
       };
       const LandDataArray = [];
       LandDataArray.push(LandData);
@@ -194,6 +163,20 @@ const LandDetails = () => {
       border: 0,
     },
   }));
+
+  useEffect(() => {
+    if (state.update === true) {
+      dispatch({
+        type: SET_UPDATED_LAND_DETAILS,
+        payload: state.landDetails,
+      });
+    } else {
+      dispatch({
+        type: SET_UPDATED_LAND_DETAILS,
+        payload: [],
+      });
+    }
+  }, []);
 
   return (
     <div>

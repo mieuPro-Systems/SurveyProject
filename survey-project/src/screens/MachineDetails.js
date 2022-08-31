@@ -14,8 +14,6 @@ import Select from "@mui/material/Select";
 import { FormControl } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { styled } from "@mui/material/styles";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
 import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import Chip from "@mui/material/Chip";
@@ -29,6 +27,7 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import validateMachineInput from "../Validation/Machine";
 
 const theme = createTheme();
 
@@ -40,30 +39,33 @@ const MachineDetails = () => {
     const [priceLabel, setpriceLable] = useState("Price per Hour ");
     const [rent, setrent] = useState("Hour");
     const [Machines, setMachines] = useState([]);
+    const [Error, setError] = useState({})
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (Machines.length > 0) {
+            dispatch({
+                type: SET_MACHINE_DETAILS,
+                payload: Machines,
+            });
 
-        dispatch({
-            type: SET_MACHINE_DETAILS,
-            payload: Machines,
-        });
-
-        const postData = {
-            machineDetails: Machines,
-        };
-        console.log("postData", postData);
-        axiosInstance
-            .post("/machinery/create", postData)
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log("Machine Details Uploaded Successfully", res.data);
-                }
-                if (res.status === 400) {
-                    console.log("Error", res.data);
-                }
-            })
-            .catch((err) => console.log(err));
+            const postData = {
+                machineDetails: Machines,
+            };
+            console.log("postData", postData);
+            axiosInstance
+                .post("/machinery/create", postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Machine Details Uploaded Successfully", res.data);
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data);
+                    }
+                })
+                .catch((err) => console.log(err));
+            navigate('/dashboard/farmerinfo')
+        }
     };
 
     const addtotable = (e) => {
@@ -79,8 +81,12 @@ const MachineDetails = () => {
             rentalBasis: data.get("rentalbasis"),
             rent: data.get("price"),
         };
-        setMachines([...Machines, MachinesData]);
-        console.log("land", MachinesData);
+        const { isValid, errors } = validateMachineInput(MachinesData)
+        if (isValid) {
+            setMachines([...Machines, MachinesData]);
+            console.log("land", MachinesData);
+        }
+        setError(errors)
     };
 
     const handleChange = (e) => {
@@ -163,8 +169,12 @@ const MachineDetails = () => {
                                         autoFocus
                                         color="success"
                                         placeholder="Type of machine"
-                                    // error={error?.firstName !== undefined}
-                                    // helperText={error.firstName}
+                                        error={Error?.type !== undefined}
+                                        helperText={Error.type}
+                                        onInput={(e) => {
+                                            setError({})
+                                            e.target.value = (e.target.value).toString().slice(0, 40);
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
@@ -176,8 +186,12 @@ const MachineDetails = () => {
                                         label="Subtype"
                                         color="success"
                                         placeholder="Subtype of Machine"
-                                    // error={error?.firstName !== undefined}
-                                    // helperText={error.firstName}
+                                        error={Error?.subType !== undefined}
+                                        helperText={Error.subType}
+                                        onInput={(e) => {
+                                            setError({})
+                                            e.target.value = (e.target.value).toString().slice(0, 40);
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -189,8 +203,12 @@ const MachineDetails = () => {
                                         label="Attachments"
                                         color="success"
                                         placeholder="Attachments for Machines"
-                                    // error={error?.firstName !== undefined}
-                                    // helperText={error.firstName}
+                                        error={Error?.attachments !== undefined}
+                                        helperText={Error.attachments}
+                                        onInput={(e) => {
+                                            setError({})
+                                            e.target.value = (e.target.value).toString().slice(0, 40);
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -202,8 +220,12 @@ const MachineDetails = () => {
                                         label="Brand"
                                         color="success"
                                         placeholder="Machine Brand"
-                                    // error={error?.firstName !== undefined}
-                                    // helperText={error.firstName}
+                                        error={Error?.brand !== undefined}
+                                        helperText={Error.brand}
+                                        onInput={(e) => {
+                                            setError({})
+                                            e.target.value = (e.target.value).toString().slice(0, 40);
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -217,14 +239,15 @@ const MachineDetails = () => {
                                         placeholder="count"
                                         type="number"
                                         onInput={(e) => {
+                                            setError({})
                                             e.target.value = parseInt(
                                                 Math.max(0, parseInt(e.target.value))
                                                     .toString()
                                                     .slice(0, 5)
                                             );
                                         }}
-                                    // error={error?.firstName !== undefined}
-                                    // helperText={error.firstName}
+                                        error={Error?.count !== undefined}
+                                        helperText={Error.count}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
@@ -256,12 +279,13 @@ const MachineDetails = () => {
                                         placeholder="in Rupess"
                                         type="number"
                                         onInput={(e) => {
+                                            setError({})
                                             e.target.value = Math.max(0, parseInt(e.target.value))
                                                 .toString()
                                                 .slice(0, 10);
                                         }}
-                                    // error={error?.firstName !== undefined}
-                                    // helperText={error.firstName}
+                                        error={Error?.rent !== undefined}
+                                        helperText={Error.rent}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>

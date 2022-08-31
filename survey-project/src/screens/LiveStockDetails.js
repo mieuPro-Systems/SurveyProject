@@ -48,26 +48,28 @@ const LiveStockDetails = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        dispatch({
-            type: SET_LIVESTOCK_DETAILS,
-            payload: LiveStocks
-        })
-        console.log("farmersredux", farmers)
-        const postData = {
-            livestockDetails: LiveStocks
-        }
-        console.log("postdata", postData)
-        axiosInstance.post('/livestock/create', postData)
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log("Uploaded Successfully", res.data)
-                }
-                if (res.status === 400) {
-                    console.log("Error", res.data)
-                }
-            }).catch(err => console.log("Error while Uploading liveStock details", err))
+        if (LiveStocks.length > 0) {
+            dispatch({
+                type: SET_LIVESTOCK_DETAILS,
+                payload: LiveStocks
+            })
+            console.log("farmersredux", farmers)
+            const postData = {
+                livestockDetails: LiveStocks
+            }
+            console.log("postdata", postData)
+            axiosInstance.post('/livestock/create', postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Uploaded Successfully", res.data)
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data)
+                    }
+                }).catch(err => console.log("Error while Uploading liveStock details", err))
 
-        navigate('/dashboard/farmerinfo')
+            navigate('/dashboard/farmerinfo')
+        }
     }
 
     const addtotable = (e) => {
@@ -168,7 +170,7 @@ const LiveStockDetails = () => {
                                         helperText={Error.type}
                                         onInput={(e) => {
                                             setError({})
-                                            e.target.value = (e.target.value).toString().slice(0, 45);
+                                            e.target.value = (e.target.value).toString().slice(0, 40);
                                         }}
                                     />
                                 </Grid>
@@ -183,7 +185,10 @@ const LiveStockDetails = () => {
                                         placeholder=''
                                         error={Error?.breed !== undefined}
                                         helperText={Error.breed}
-                                        onInput={() => setError({})}
+                                        onInput={(e) => {
+                                            setError({})
+                                            e.target.value = (e.target.value).toString().slice(0, 40);
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -197,7 +202,10 @@ const LiveStockDetails = () => {
                                         placeholder=''
                                         error={Error?.name !== undefined}
                                         helperText={Error.name}
-                                        onInput={() => setError({})}
+                                        onInput={(e) => {
+                                            setError({})
+                                            e.target.value = (e.target.value).toString().slice(0, 40);
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
@@ -231,7 +239,10 @@ const LiveStockDetails = () => {
                                         placeholder=''
                                         error={Error?.season !== undefined}
                                         helperText={Error.season}
-                                        onInput={() => setError({})}
+                                        onInput={(e) => {
+                                            setError({})
+                                            e.target.value = (e.target.value).toString().slice(0, 40);
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>

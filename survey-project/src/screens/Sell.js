@@ -31,6 +31,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import moment from 'moment';
 import SellIcon from '@mui/icons-material/Sell';
+import validateSellInput from '../Validation/SellValidation';
 
 const theme = createTheme();
 
@@ -42,29 +43,32 @@ const Sell = () => {
 
     const [SellDetail, setSellDetail] = useState([])
     const [Datevalue, setDateValue] = useState(null);
+    const [Organic, setOrganic] = useState('')
+    const [Error, setError] = useState({})
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        if (SellDetail.length > 0) {
+            dispatch({
+                type: SET_SELL_DETAILS,
+                payload: SellDetail
+            })
+            const postData = {
+                sellDetails: SellDetail
+            }
+            console.log("postdata", postData)
+            axiosInstance.post('/sell/product', postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Uploaded Successfully", res.data)
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data)
+                    }
+                }).catch(err => console.log("Error while Uploading liveStock details", err))
 
-        dispatch({
-            type: SET_SELL_DETAILS,
-            payload: SellDetail
-        })
-        const postData = {
-            sellDetails: SellDetail
+            navigate('/dashboard/farmerinfo')
         }
-        console.log("postdata", postData)
-        axiosInstance.post('/sell/product', postData)
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log("Uploaded Successfully", res.data)
-                }
-                if (res.status === 400) {
-                    console.log("Error", res.data)
-                }
-            }).catch(err => console.log("Error while Uploading liveStock details", err))
-
-        navigate('/dashboard/farmerinfo')
     }
 
     const addtotable = (e) => {
@@ -80,10 +84,14 @@ const Sell = () => {
             price: data.get('price'),
             date: formattedDate
         }
-        // console.log("Object", Datevalue.$d)
-        console.log("Date", formattedDate)
-        setSellDetail([...SellDetail, SellData])
-        console.log("Sell items", SellData)
+        const { isValid, errors } = validateSellInput(SellData)
+        if (isValid) {
+            // console.log("Object", Datevalue.$d)
+            console.log("Date", formattedDate)
+            setSellDetail([...SellDetail, SellData])
+            console.log("Sell items", SellData)
+        }
+        setError(errors)
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -142,8 +150,12 @@ const Sell = () => {
                                     label="Product Name"
                                     color="success"
                                     placeholder='Product Name'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.productName !== undefined}
+                                    helperText={Error.productName}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -155,8 +167,12 @@ const Sell = () => {
                                     label="Variety"
                                     color="success"
                                     placeholder='Variety'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.variety !== undefined}
+                                    helperText={Error.variety}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -168,8 +184,8 @@ const Sell = () => {
                                         labelId="organic"
                                         id="organic"
                                         label="Organic"
-                                    // onChange={handleChange}
-                                    // value={rent}
+                                        onChange={(e) => setOrganic(e.target.value)}
+                                        value={Organic}
                                     >
                                         <MenuItem value={"Yes"}>Yes</MenuItem>
                                         <MenuItem value={"no"}>no</MenuItem>
@@ -187,10 +203,11 @@ const Sell = () => {
                                     placeholder='Quantity'
                                     type="number"
                                     onInput={(e) => {
+                                        setError({})
                                         e.target.value = parseInt(Math.max(0, parseInt(e.target.value)).toString().slice(0, 5))
                                     }}
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.quantity !== undefined}
+                                    helperText={Error.quantity}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -204,10 +221,11 @@ const Sell = () => {
                                     placeholder='in Rupees'
                                     type="number"
                                     onInput={(e) => {
+                                        setError({})
                                         e.target.value = parseInt(Math.max(0, parseInt(e.target.value)).toString().slice(0, 10))
                                     }}
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.price !== undefined}
+                                    helperText={Error.price}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>

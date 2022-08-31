@@ -27,6 +27,7 @@ import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import { SET_CROP_DETAILS } from '../actions/types';
 import GrassIcon from '@mui/icons-material/Grass';
+import validateCropInput from '../Validation/Crop';
 
 
 
@@ -41,32 +42,36 @@ const CropDetails = () => {
     const { farmers } = useSelector((state) => state.farmer)
 
     const [CropsDetail, setCropsDetail] = useState([])
-
+    const [CropType, setCropType] = useState("")
+    const [Organic, setOrganic] = useState("")
+    const [SeedType, setSeedType] = useState("")
+    const [Error, setError] = useState({})
 
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        if (CropDetails.length > 0) {
+            dispatch({
+                type: SET_CROP_DETAILS,
+                payload: CropsDetail
+            })
+            console.log("farmersredux", farmers)
+            const postData = {
+                cropDetails: CropsDetail
+            }
+            console.log("postdata", postData)
+            axiosInstance.post('/crop/create', postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Uploaded Successfully", res.data)
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data)
+                    }
+                }).catch(err => console.log("Error while Uploading liveStock details", err))
 
-        dispatch({
-            type: SET_CROP_DETAILS,
-            payload: CropsDetail
-        })
-        console.log("farmersredux", farmers)
-        const postData = {
-            cropDetails: CropsDetail
+            navigate('/dashboard/farmerinfo')
         }
-        console.log("postdata", postData)
-        axiosInstance.post('/crop/create', postData)
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log("Uploaded Successfully", res.data)
-                }
-                if (res.status === 400) {
-                    console.log("Error", res.data)
-                }
-            }).catch(err => console.log("Error while Uploading liveStock details", err))
-
-        navigate('/dashboard/farmerinfo')
     }
 
     const addtotable = (e) => {
@@ -84,8 +89,14 @@ const CropDetails = () => {
             seedingType: data.get('seedingtype'),
             harvestPeriod: data.get('harvestperiod')
         }
-        setCropsDetail([...CropsDetail, CropsData])
-        console.log("CropsData", CropsData)
+
+        const { isValid, errors } = validateCropInput(CropsData)
+        if (isValid) {
+            setCropsDetail([...CropsDetail, CropsData])
+            console.log("CropsData", CropsData)
+        }
+        setError(errors)
+
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -144,11 +155,11 @@ const CropDetails = () => {
                                         labelId="typeofcrop"
                                         id="typeofcrop"
                                         label="Type of Cropping"
-                                    // onChange={handleChange}
-                                    // value={rent}
+                                        onChange={(e) => setCropType(e.target.value)}
+                                        value={CropType}
                                     >
-                                        <MenuItem value={"Wetland"}>Wetland</MenuItem>
-                                        <MenuItem value={"Dryland"}>Dryland</MenuItem>
+                                        <MenuItem value={"Wetland"}>Wet Land</MenuItem>
+                                        <MenuItem value={"Dryland"}>Dry Land</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -161,8 +172,12 @@ const CropDetails = () => {
                                     label="Crop Name"
                                     color="success"
                                     placeholder='Crop Name'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.name !== undefined}
+                                    helperText={Error.name}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -174,8 +189,12 @@ const CropDetails = () => {
                                     label="Crop Variety"
                                     color="success"
                                     placeholder='Crop Variety'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.variety !== undefined}
+                                    helperText={Error.variety}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -187,8 +206,12 @@ const CropDetails = () => {
                                     label="Brand"
                                     color="success"
                                     placeholder='Brand'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.brand !== undefined}
+                                    helperText={Error.brand}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -202,12 +225,13 @@ const CropDetails = () => {
                                     placeholder='in Acres'
                                     type='number'
                                     onInput={(e) => {
+                                        setError({})
                                         e.target.value = Math.max(0, parseInt(e.target.value))
                                             .toString()
                                             .slice(0, 5);
                                     }}
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.area !== undefined}
+                                    helperText={Error.area}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -219,21 +243,25 @@ const CropDetails = () => {
                                     label="Croppped At"
                                     color="success"
                                     placeholder='Starting Date'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.croppedAt !== undefined}
+                                    helperText={Error.croppedAt}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <FormControl fullWidth>
-                                    <InputLabel id="typeofcrop">Organic</InputLabel>
+                                    <InputLabel id="organic">Organic</InputLabel>
                                     <Select
                                         required
                                         name='organic'
                                         labelId="organic"
                                         id="organic"
                                         label="Organic"
-                                    // onChange={handleChange}
-                                    // value={rent}
+                                        onChange={(e) => setOrganic(e.target.value)}
+                                        value={Organic}
                                     >
                                         <MenuItem value={"Yes"}>Yes</MenuItem>
                                         <MenuItem value={"No"}>No</MenuItem>
@@ -249,8 +277,8 @@ const CropDetails = () => {
                                         labelId="seedingtype"
                                         id="seedingtype"
                                         label="Seeding Type"
-                                    // onChange={handleChange}
-                                    // value={rent}
+                                        onChange={(e) => setSeedType(e.target.value)}
+                                        value={SeedType}
                                     >
                                         <MenuItem value={"Planted"}>Planted</MenuItem>
                                         <MenuItem value={"Seeded"}>Seeded</MenuItem>
@@ -266,8 +294,12 @@ const CropDetails = () => {
                                     label="Harvest Period"
                                     color="success"
                                     placeholder='Harvesting Season'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.harvestPeriod !== undefined}
+                                    helperText={Error.harvestPeriod}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>

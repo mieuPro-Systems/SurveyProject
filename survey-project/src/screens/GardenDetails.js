@@ -27,6 +27,7 @@ import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import { SET_GARDEN_DETAILS } from '../actions/types';
 import YardIcon from '@mui/icons-material/Yard';
+import validateGardenInput from '../Validation/Garden';
 
 const theme = createTheme();
 
@@ -38,30 +39,34 @@ const GardenDetails = () => {
     const { farmers } = useSelector((state) => state.farmer)
 
     const [GardenDetail, setGardenDetail] = useState([])
+    const [Type, setType] = useState('')
+    const [Organic, setOrganic] = useState('')
+    const [Error, setError] = useState({})
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        if (GardenDetail.length > 0) {
+            dispatch({
+                type: SET_GARDEN_DETAILS,
+                payload: GardenDetail
+            })
+            console.log("farmersredux", farmers)
+            const postData = {
+                gardenDetails: GardenDetail
+            }
+            console.log("postdata", postData)
+            axiosInstance.post('/garden/create', postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Uploaded Successfully", res.data)
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data)
+                    }
+                }).catch(err => console.log("Error while Uploading liveStock details", err))
 
-        dispatch({
-            type: SET_GARDEN_DETAILS,
-            payload: GardenDetail
-        })
-        console.log("farmersredux", farmers)
-        const postData = {
-            gardenDetails: GardenDetail
+            navigate('/dashboard/farmerinfo')
         }
-        console.log("postdata", postData)
-        axiosInstance.post('/garden/create', postData)
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log("Uploaded Successfully", res.data)
-                }
-                if (res.status === 400) {
-                    console.log("Error", res.data)
-                }
-            }).catch(err => console.log("Error while Uploading liveStock details", err))
-
-        navigate('/dashboard/farmerinfo')
     }
 
     const addtotable = (e) => {
@@ -79,8 +84,13 @@ const GardenDetails = () => {
             count: data.get('count'),
             sellingPeriod: data.get('sellingperiod')
         }
-        setGardenDetail([...GardenDetail, GardenData])
-        console.log("GArden", GardenData)
+        const { isValid, errors } = validateGardenInput(GardenData)
+
+        if (isValid) {
+            setGardenDetail([...GardenDetail, GardenData])
+            console.log("GArden", GardenData)
+        }
+        setError(errors)
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -139,8 +149,8 @@ const GardenDetails = () => {
                                         labelId="gardentype"
                                         id="gardentype"
                                         label="Garden Type"
-                                    // onChange={handleChange}
-                                    // value={rent}
+                                        onChange={(e) => setType(e.target.value)}
+                                        value={Type}
                                     >
                                         <MenuItem value={"HouseGarden"}>House Garden</MenuItem>
                                         <MenuItem value={"FarmGarden"}>Farm Garden</MenuItem>
@@ -156,8 +166,12 @@ const GardenDetails = () => {
                                     label="Name"
                                     color="success"
                                     placeholder='Name'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.name !== undefined}
+                                    helperText={Error.name}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -169,8 +183,12 @@ const GardenDetails = () => {
                                     label="Variety"
                                     color="success"
                                     placeholder='Variety'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.variety !== undefined}
+                                    helperText={Error.variety}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -182,8 +200,12 @@ const GardenDetails = () => {
                                     label="Brand"
                                     color="success"
                                     placeholder='Brand'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.brand !== undefined}
+                                    helperText={Error.brand}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -196,8 +218,12 @@ const GardenDetails = () => {
                                     color="success"
                                     placeholder='in Acres'
                                     type='number'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.area !== undefined}
+                                    helperText={Error.area}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -210,8 +236,12 @@ const GardenDetails = () => {
                                     color="success"
                                     placeholder='Age'
                                     type='number'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.age !== undefined}
+                                    helperText={Error.age}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -224,8 +254,12 @@ const GardenDetails = () => {
                                     color="success"
                                     placeholder='count'
                                     type='number'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.count !== undefined}
+                                    helperText={Error.count}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -237,8 +271,8 @@ const GardenDetails = () => {
                                         labelId="organic"
                                         id="organic"
                                         label="Organic"
-                                    // onChange={handleChange}
-                                    // value={rent}
+                                        onChange={(e) => setOrganic(e.target.value)}
+                                        value={Organic}
                                     >
                                         <MenuItem value={"Yes"}>Yes</MenuItem>
                                         <MenuItem value={"No"}>No</MenuItem>
@@ -254,8 +288,12 @@ const GardenDetails = () => {
                                     label="Selling Period"
                                     color="success"
                                     placeholder='Selling Season'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.sellingPeriod !== undefined}
+                                    helperText={Error.sellingPeriod}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>

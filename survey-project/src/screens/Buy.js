@@ -27,6 +27,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import moment from 'moment';
+import validateBuyInput from '../Validation/BuyValidation';
 
 
 
@@ -40,29 +41,31 @@ const Buy = () => {
 
     const [BuyDetail, setBuyDetail] = useState([])
     const [Datevalue, setDateValue] = useState(null);
+    const [Error, setError] = useState({})
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        if (BuyDetail.length > 0) {
+            dispatch({
+                type: SET_BUY_DETAILS,
+                payload: BuyDetail
+            })
+            const postData = {
+                buyDetails: BuyDetail
+            }
+            console.log("postdata", postData)
+            axiosInstance.post('/buy/product', postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Uploaded Successfully", res.data)
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data)
+                    }
+                }).catch(err => console.log("Error while Uploading buy details", err))
 
-        dispatch({
-            type: SET_BUY_DETAILS,
-            payload: BuyDetail
-        })
-        const postData = {
-            buyDetails: BuyDetail
+            navigate('/dashboard/farmerinfo')
         }
-        console.log("postdata", postData)
-        axiosInstance.post('/buy/product', postData)
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log("Uploaded Successfully", res.data)
-                }
-                if (res.status === 400) {
-                    console.log("Error", res.data)
-                }
-            }).catch(err => console.log("Error while Uploading buy details", err))
-
-        navigate('/dashboard/farmerinfo')
     }
 
     const addtotable = (e) => {
@@ -77,10 +80,15 @@ const Buy = () => {
             quantity: data.get('quantity'),
             date: formattedDate
         }
-        // console.log("Object", Datevalue.$d)
-        console.log("Date", formattedDate)
-        setBuyDetail([...BuyDetail, BuyData])
-        console.log("buy items", BuyData)
+        const { isValid, errors } = validateBuyInput(BuyData)
+
+        if (isValid) {
+            // console.log("Object", Datevalue.$d)
+            console.log("Date", formattedDate)
+            setBuyDetail([...BuyDetail, BuyData])
+            console.log("buy items", BuyData)
+        }
+        setError(errors)
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -139,8 +147,12 @@ const Buy = () => {
                                     label="Requirement"
                                     color="success"
                                     placeholder='Your Requirement'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.requirement !== undefined}
+                                    helperText={Error.requirement}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -152,8 +164,12 @@ const Buy = () => {
                                     label="Name"
                                     color="success"
                                     placeholder='Name'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.name !== undefined}
+                                    helperText={Error.name}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -165,8 +181,12 @@ const Buy = () => {
                                     label="Brand/Variety"
                                     color="success"
                                     placeholder='Brand/Variety'
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.brandOrVariety !== undefined}
+                                    helperText={Error.brandOrVariety}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -180,10 +200,11 @@ const Buy = () => {
                                     placeholder='Quantity'
                                     type="number"
                                     onInput={(e) => {
+                                        setError({})
                                         e.target.value = parseInt(Math.max(0, parseInt(e.target.value)).toString().slice(0, 5))
                                     }}
-                                // error={error?.firstName !== undefined}
-                                // helperText={error.firstName}
+                                    error={Error?.quantity !== undefined}
+                                    helperText={Error.quantity}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -195,8 +216,13 @@ const Buy = () => {
                                         formatDate={(date) => moment(date).format('DD-MM-YYYY')}
                                         onChange={(newValue) => {
                                             setDateValue(newValue);
+                                            setError({})
                                         }}
                                         renderInput={(params) => <TextField {...params} />}
+                                        error={Error?.date !== undefined}
+                                        helperText={Error.date}
+
+
                                     />
                                 </LocalizationProvider>
                             </Grid>

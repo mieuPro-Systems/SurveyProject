@@ -52,20 +52,35 @@ const CropDetails = () => {
       cropDetails: CropsDetail,
     };
     console.log("postdata", postData);
-    axiosInstance
-      .post("/crop/create", postData)
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("Uploaded Successfully", res.data);
-        }
-        if (res.status === 400) {
-          console.log("Error", res.data);
-        }
-      })
-      .catch((err) =>
-        console.log("Error while Uploading liveStock details", err)
-      );
-
+    if (state.update === false) {
+      axiosInstance
+        .post("/crop/create", postData)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Uploaded Successfully", res.data);
+          }
+          if (res.status === 400) {
+            console.log("Error", res.data);
+          }
+        })
+        .catch((err) =>
+          console.log("Error while Uploading liveStock details", err)
+        );
+    } else if (state.update === true) {
+      axiosInstance
+        .put("/crop/", postData)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Uploaded Successfully", res.data);
+          }
+          if (res.status === 400) {
+            console.log("Error", res.data);
+          }
+        })
+        .catch((err) =>
+          console.log("Error while Uploading liveStock details", err)
+        );
+    }
     navigate("/dashboard/farmerinfo");
   };
 
@@ -84,7 +99,7 @@ const CropDetails = () => {
       seedingType: data.get("seedingtype"),
       harvestPeriod: data.get("harvestperiod"),
     };
-    CropsDetail([...CropsDetail, CropsData]);
+    setCropsDetail([...CropsDetail, CropsData]);
     console.log("CropsData", CropsData);
   };
 

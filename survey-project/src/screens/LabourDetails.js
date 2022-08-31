@@ -79,7 +79,8 @@ const LabourDetails = () => {
     for (const work of Selectedwork) {
       Allworkdata[work.key] = true;
     }
-    Allworkdata.farmerId = farmers.farmerDetails.farmerId;
+    Allworkdata.farmerId =
+      state.update === true ? state.farmerId : farmers.farmerDetails.farmerId;
     return Allworkdata;
   };
 
@@ -98,15 +99,27 @@ const LabourDetails = () => {
       labourDetails: ConfiguredData,
     };
     console.log("postData", postData);
-    axiosInstance
-      .post("/labour/create", postData)
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("Uploaded Successfully(LabourDetails)", res.data);
-        }
+    if (state.update === false) {
+      axiosInstance
+        .post("/labour/create", postData)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Uploaded Successfully(LabourDetails)", res.data);
+          }
 
-        if (res.status === 400) {
-          console.log("error for jeyendran", res.data);
+          if (res.status === 400) {
+            console.log("error for jeyendran", res.data);
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Error while adding Labour details",
+                snackBarColor: "warning",
+              },
+            });
+          }
+        })
+        .catch((err) => {
+          console.log("LabourDetails", err);
           dispatch({
             type: SET_SHOW_SNACKBAR_TRUE,
             payload: {
@@ -114,18 +127,37 @@ const LabourDetails = () => {
               snackBarColor: "warning",
             },
           });
-        }
-      })
-      .catch((err) => {
-        console.log("LabourDetails", err);
-        dispatch({
-          type: SET_SHOW_SNACKBAR_TRUE,
-          payload: {
-            snackBarMessage: "Error while adding Labour details",
-            snackBarColor: "warning",
-          },
         });
-      });
+    } else if (state.update === true) {
+      axiosInstance
+        .put("/labour/", postData)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Updated Successfully(LabourDetails)", res.data);
+          }
+
+          if (res.status === 400) {
+            console.log("error for jeyendran", res.data);
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Error while adding Labour details",
+                snackBarColor: "warning",
+              },
+            });
+          }
+        })
+        .catch((err) => {
+          console.log("LabourDetails", err);
+          dispatch({
+            type: SET_SHOW_SNACKBAR_TRUE,
+            payload: {
+              snackBarMessage: "Error while adding Labour details",
+              snackBarColor: "warning",
+            },
+          });
+        });
+    }
   };
 
   const handleChange = (e) => {
@@ -155,12 +187,16 @@ const LabourDetails = () => {
   useEffect(() => {
     if (state.update === true) {
       let chipDataTemp = [];
-      Object.keys(state.labourDetails[0]).map((data, index) =>
-        chipDataTemp.push({ key: index, label: data })
-      );
+
+      Object.keys(state.labourDetails[0]).map((data, index) => {
+        if (state.labourDetails[0][data] === true) {
+          chipDataTemp.push({ key: data, label: data });
+        }
+      });
       setChipData(chipDataTemp);
     }
   }, []);
+//   console.log("chip data", chipData);
 
   return (
     <div>

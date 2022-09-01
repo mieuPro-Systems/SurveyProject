@@ -69,7 +69,7 @@ const LandDetails = () => {
 
   const deletelandDetail = (index) => {
     const postData = landDetails[index];
-    postData["farmerId"] = "HAN0001";
+    postData["farmerId"] = farmers.farmerDetails.farmerId;
     console.log("postData", postData);
 
     axiosInstance
@@ -102,12 +102,12 @@ const LandDetails = () => {
       )
     ) {
       const LandData = {
-        farmerId: "HAN0001",
+        farmerId: farmers.farmerDetails.farmerId,
         category: data.get("category"),
         area: data.get("area"),
         addons: data.get("addons"),
         supervisorId: "",
-        ownerId: "HAN0001",
+        ownerId: farmers.farmerDetails.farmerId,
       };
       const { isValid, errors } = validateLandInput(LandData)
       if (isValid) {
@@ -139,19 +139,19 @@ const LandDetails = () => {
 
     if (data.get("category") === "leasedLand") {
       const Data = {
-        farmerId: "HAN0001",
+        farmerId: farmers.farmerDetails.farmerId,
         category: data.get("category"),
         area: data.get("area"),
         addons: data.get("addons"),
         supervisorId: "",
-        ownerId: "HAN0001",
+        ownerId: farmers.farmerDetails.farmerId,
       };
       navigate("/dashboard/searchfarmer", { state: Data });
     }
 
     if (data.get("category") === "takenLease") {
       const Data = {
-        farmerId: "HAN0001",
+        farmerId: farmers.farmerDetails.farmerId,
         category: data.get("category"),
         area: "",
         addons: "",

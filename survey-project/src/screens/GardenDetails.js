@@ -73,7 +73,7 @@ const GardenDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const GardenData = {
-            farmerId: "HAN0001",
+            farmerId: farmers.farmerDetails.farmerId,
             type: data.get('gardentype'),
             name: data.get('gardenname'),
             variety: data.get('gardenvariety'),

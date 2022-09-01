@@ -76,7 +76,7 @@ const CropDetails = () => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const CropsData = {
-            farmerId: "HAN0001",
+            farmerId: farmers.farmerDetails.farmerId,
             type: data.get('typeofcrop'),
             name: data.get('cropname'),
             variety: data.get('cropvariety'),
@@ -374,7 +374,7 @@ const CropDetails = () => {
                         </Grid>
                         <Grid sm={3} marginLeft={10}>
                             <Button
-                                // onClick={handleSubmit}
+                                onClick={handleSubmit}
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}

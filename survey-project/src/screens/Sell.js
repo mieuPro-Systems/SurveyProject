@@ -76,7 +76,7 @@ const Sell = () => {
         const data = new FormData(e.currentTarget);
         const formattedDate = moment(Datevalue.$d).format('DD/MM/YYYY')
         const SellData = {
-            farmerId: "HAN0001",
+            farmerId: farmers.farmerDetails.farmerId,
             productName: data.get('productname'),
             variety: data.get('variety'),
             organic: data.get('organic'),

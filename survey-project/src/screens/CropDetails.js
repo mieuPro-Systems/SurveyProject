@@ -48,7 +48,7 @@ const CropDetails = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (CropDetails.length > 0) {
+        if (CropsDetail.length > 0) {
             dispatch({
                 type: SET_CROP_DETAILS,
                 payload: CropsDetail

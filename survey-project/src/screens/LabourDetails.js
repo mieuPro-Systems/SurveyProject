@@ -108,6 +108,7 @@ const LabourDetails = () => {
           .then((res) => {
             if (res.status === 200) {
               console.log("Uploaded Successfully(LabourDetails)", res.data);
+              navigate('/dashboard/farmerinfo')
             }
 
             if (res.status === 400) {

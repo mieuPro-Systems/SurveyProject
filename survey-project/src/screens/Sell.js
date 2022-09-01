@@ -65,7 +65,7 @@ const Sell = () => {
                     if (res.status === 400) {
                         console.log("Error", res.data)
                     }
-                }).catch(err => console.log("Error while Uploading liveStock details", err))
+                }).catch(err => console.log("Error while Uploading Sell details", err))
 
             navigate('/dashboard/farmerinfo')
         }

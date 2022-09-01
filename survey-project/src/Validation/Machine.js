@@ -42,6 +42,9 @@ export default function validateMachineInput(data) {
     if (Validators.isEmpty(data.rentalBasis)) {
         errors.rentalBasis = "RentalBasis field is Required"
     }
+    if (!Validators.isLength(data.rent, { min: 0, max: 9 })) {
+        errors.rent = "Enter a Proper Price Value"
+    }
 
     if (Validators.isEmpty(data.rent)) {
         errors.rent = "Rent field is Required"

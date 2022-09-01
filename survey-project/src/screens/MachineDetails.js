@@ -37,6 +37,7 @@ const MachineDetails = () => {
     const { farmers } = useSelector((state) => state.farmer);
 
     const [priceLabel, setpriceLable] = useState("Price per Hour ");
+    const [Pricevalue, setPriceValue] = useState("0.00")
     const [rent, setrent] = useState("Hour");
     const [Machines, setMachines] = useState([]);
     const [Error, setError] = useState({})
@@ -278,11 +279,17 @@ const MachineDetails = () => {
                                         color="success"
                                         placeholder="in Rupess"
                                         type="number"
+                                        inputProps={{
+                                            maxLength: 13,
+                                            step: "1"
+                                        }}
+                                        // value={Pricevalue}
+                                        // onChange={(e) => setPriceValue(parseFloat(e.target.value).toFixed(1))}
                                         onInput={(e) => {
                                             setError({})
-                                            e.target.value = Math.max(0, parseInt(e.target.value))
-                                                .toString()
-                                                .slice(0, 10);
+                                            // e.target.value = e.target.value
+                                            //     .toString()
+                                            //     .slice(0, 10);
                                         }}
                                         error={Error?.rent !== undefined}
                                         helperText={Error.rent}

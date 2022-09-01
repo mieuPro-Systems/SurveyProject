@@ -36,7 +36,7 @@ const LandDetails = () => {
   const navigate = useNavigate();
   const { farmers } = useSelector((state) => state.farmer);
   const [Category, setCategory] = useState('')
-  const [AddOns, setAddOns] = useState('')
+  const [AddOns, setAddOns] = useState('None')
   const [HideField, setHideField] = useState(false)
   const { landDetails } = farmers;
   const [Error, setError] = useState({})
@@ -183,19 +183,19 @@ const LandDetails = () => {
     },
   }));
 
-  useEffect(() => {
-    if (state.update === true) {
-      dispatch({
-        type: SET_UPDATED_LAND_DETAILS,
-        payload: state.landDetails,
-      });
-    } else {
-      dispatch({
-        type: SET_UPDATED_LAND_DETAILS,
-        payload: [],
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (state.update === true) {
+  //     dispatch({
+  //       type: SET_UPDATED_LAND_DETAILS,
+  //       payload: state.landDetails,
+  //     });
+  //   } else {
+  //     dispatch({
+  //       type: SET_UPDATED_LAND_DETAILS,
+  //       payload: [],
+  //     });
+  //   }
+  // }, []);
 
   return (
     <div>
@@ -429,7 +429,7 @@ const LandDetails = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
               >
-                Next
+                Submit
               </Button>
             </Grid>
           </Grid>

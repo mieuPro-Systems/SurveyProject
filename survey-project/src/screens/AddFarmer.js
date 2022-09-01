@@ -506,7 +506,7 @@ const AddFarmer = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={4}>
                   <FormControlLabel
-                    fullWidth
+                    // fullWidth
                     checked={farmerData.organic}
                     onChange={() =>
                       setFarmerData({
@@ -521,7 +521,7 @@ const AddFarmer = () => {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <FormControlLabel
-                    fullWidth
+                    // fullWidth
                     value="end"
                     checked={farmerData.singleSeed}
                     onChange={() =>
@@ -537,7 +537,7 @@ const AddFarmer = () => {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <FormControlLabel
-                    fullWidth
+                    // fullWidth
                     value="end"
                     checked={farmerData.altCrop}
                     onChange={() =>
@@ -553,7 +553,7 @@ const AddFarmer = () => {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <FormControlLabel
-                    fullWidth
+                    // fullWidth
                     value="end"
                     checked={farmerData.seedVariety}
                     onChange={() =>
@@ -569,7 +569,7 @@ const AddFarmer = () => {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <FormControlLabel
-                    fullWidth
+                    // fullWidth
                     value="end"
                     checked={farmerData.leaseOwnLand}
                     onChange={() =>
@@ -585,7 +585,7 @@ const AddFarmer = () => {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <FormControlLabel
-                    fullWidth
+                    // fullWidth
                     value="end"
                     checked={farmerData.farmRentedLand}
                     onChange={() =>

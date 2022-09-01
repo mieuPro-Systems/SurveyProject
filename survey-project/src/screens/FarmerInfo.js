@@ -60,10 +60,10 @@ const FarmerInfo = () => {
                 </Container>
             </ThemeProvider>
             <div style={{ flexDirection: 'row', display: 'flex', flex: '1', justifyContent: 'space-evenly', marginBottom: '15px' }}>
-                {card1data.map((data, index) => <Cards data={data} />)}
+                {card1data.map((data, index) => <Cards key={index} data={data} />)}
             </div>
             <div style={{ flexDirection: 'row', display: 'flex', flex: '1', justifyContent: 'space-evenly' }}>
-                {card2data.map((data, index) => <Cards data={data} />)}
+                {card2data.map((data, index) => <Cards key={index} data={data} />)}
             </div>
         </div>
 

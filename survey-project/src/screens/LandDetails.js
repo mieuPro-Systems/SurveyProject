@@ -35,13 +35,28 @@ const LandDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { farmers } = useSelector((state) => state.farmer);
+  const [Category, setCategory] = useState('')
+  const [AddOns, setAddOns] = useState('')
+  const [HideField, setHideField] = useState(false)
   const { landDetails } = farmers;
+  const [Error, setError] = useState({})
 
   const location = useLocation();
   const { state } = location;
 
   console.log("land detail location", location.state);
 
+
+  const HandleCategory = (e) => {
+    if (e.target.value === "takenLease") {
+      setHideField(!HideField)
+      setCategory(e.target.value)
+    } else {
+      setCategory(e.target.value)
+      setHideField(false)
+    }
+
+  }
   const getTotalArea = () => {
     var area = 0;
     for (const data of landDetails) {
@@ -94,28 +109,32 @@ const LandDetails = () => {
         supervisorId: "",
         ownerId: "HAN0001",
       };
-      const LandDataArray = [];
-      LandDataArray.push(LandData);
-      const postData = {
-        landDetails: LandDataArray,
-      };
-      console.log("postData", postData);
-      axiosInstance.post("/land/create", postData).then((res) => {
-        if (res.status === 200) {
-          console.log("Successfully get LandId", res.data);
-          LandData["landId"] = res.data.landId;
-          // LandData["ownerId"] = farmers.farmerDetails.farmerId;
-          LandData["supervisorId"] = "None";
-          // setLandDetail([...LandDetail, LandData])
-          dispatch({
-            type: SET_LAND_DETAILS,
-            payload: LandData,
-          });
-        }
-        if (res.status === 400) {
-          console.log("Error while getting Land Id", res.data);
-        }
-      });
+      const { isValid, errors } = validateLandInput(LandData)
+      if (isValid) {
+        const LandDataArray = [];
+        LandDataArray.push(LandData);
+        const postData = {
+          landDetails: LandDataArray,
+        };
+        console.log("postData", postData);
+        axiosInstance.post("/land/create", postData).then((res) => {
+          if (res.status === 200) {
+            console.log("Successfully get LandId", res.data);
+            LandData["landId"] = res.data.landId;
+            // LandData["ownerId"] = farmers.farmerDetails.farmerId;
+            LandData["supervisorId"] = "None";
+            // setLandDetail([...LandDetail, LandData])
+            dispatch({
+              type: SET_LAND_DETAILS,
+              payload: LandData,
+            });
+          }
+          if (res.status === 400) {
+            console.log("Error while getting Land Id", res.data);
+          }
+        });
+      }
+      setError(errors)
     }
 
     if (data.get("category") === "leasedLand") {
@@ -213,7 +232,8 @@ const LandDetails = () => {
                       labelId="category"
                       id="category"
                       label="Category"
-                      // onChange={handleChange}
+                      value={Category}
+                      onChange={HandleCategory}
                     >
                       <MenuItem value={"ownFarming"}>Own Farming</MenuItem>
                       <MenuItem value={"wasteLand"}>Waste Land</MenuItem>
@@ -236,14 +256,16 @@ const LandDetails = () => {
                     autoFocus
                     color="success"
                     placeholder="in Acres"
+                    disabled={HideField}
                     type="number"
                     onInput={(e) => {
-                      e.target.value = Math.max(0, parseInt(e.target.value))
+                      setError({})
+                      e.target.value = Math.max(0, parseFloat(e.target.value))
                         .toString()
                         .slice(0, 5);
                     }}
-                    // error={error?.firstName !== undefined}
-                    // helperText={error.firstName}
+                    error={Error?.area !== undefined}
+                    helperText={Error.area}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
@@ -255,7 +277,9 @@ const LandDetails = () => {
                       labelId="addons"
                       id="addons"
                       label="Add-ons"
-                      // onChange={handleChange}
+                      disabled={HideField}
+                      value={AddOns}
+                      onChange={(e) => setAddOns(e.target.value)}
                     >
                       <MenuItem value={"interestedToClean"}>
                         Interested to Clean

@@ -75,11 +75,17 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() =>
+            onClick={() => {
+              const updatedCropDetails = props.cropDetails.map((detail) => {
+                return {
+                  ...detail,
+                  farmerId: props.farmerDetails.id,
+                };
+              });
               navigate("/dashboard/cropdetails", {
-                state: { update: true, cropDetails: props.cropDetails },
-              })
-            }
+                state: { update: true, cropDetails: updatedCropDetails },
+              });
+            }}
             className="btn btn-success btn-sm float-end mb-3"
           >
             Edit
@@ -103,11 +109,20 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() =>
+            onClick={() => {
+              const updatedLabourDetails = props.labourDetails.map((detail) => {
+                return {
+                  ...detail,
+                };
+              });
               navigate("/dashboard/labour", {
-                state: { update: true, labourDetails: props.labourDetails },
-              })
-            }
+                state: {
+                  update: true,
+                  labourDetails: updatedLabourDetails,
+                  farmerId: props.farmerDetails.id,
+                },
+              });
+            }}
             className="btn btn-success btn-sm float-end"
           >
             Edit
@@ -131,7 +146,24 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() => navigate("/dashboard/machines")}
+            onClick={() => {
+              const updatedMachineDetails = props.machineDetails.map(
+                (detail) => {
+                  return {
+                    ...detail,
+                    farmerId: props.farmerDetails.id,
+                  };
+                }
+              );
+              // console.log("updated machine dtails", updatedMachineDetails);
+              navigate("/dashboard/machines", {
+                state: {
+                  update: true,
+                  machineDetails: updatedMachineDetails,
+                  farmerId: props.farmerDetails.id,
+                },
+              });
+            }}
             className="btn btn-success btn-sm float-end"
           >
             Edit
@@ -156,7 +188,23 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() => navigate("/dashboard/livestocks")}
+            onClick={() => {
+              const updatedliveStockDetails = props.livestockDetails.map(
+                (detail) => {
+                  return {
+                    ...detail,
+                    farmerId: props.farmerDetails.id,
+                  };
+                }
+              );
+              // console.log("updated machine dtails", updatedMachineDetails);
+              navigate("/dashboard/livestocks", {
+                state: {
+                  update: true,
+                  livestockDetails: updatedliveStockDetails,
+                },
+              });
+            }}
             className="btn btn-success btn-sm float-end"
           >
             Edit
@@ -182,7 +230,22 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() => navigate("/dashboard/gardendetails")}
+            onClick={() => {
+              console.log("props.gardenDetails", props.gardenDetails);
+              const updatedGardenDetails = props.gardenDetails.map((detail) => {
+                return {
+                  ...detail,
+                  farmerId: props.farmerDetails.id,
+                };
+              });
+              console.log("updatedGardenDetails", updatedGardenDetails);
+              navigate("/dashboard/gardendetails", {
+                state: {
+                  update: true,
+                  gardenDetails: updatedGardenDetails,
+                },
+              });
+            }}
             className="btn btn-success btn-sm float-end"
           >
             Edit
@@ -204,7 +267,7 @@ export default function FarmerProfileAccordion(props) {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography className="fw-bold ms-3">Buy Details</Typography>
+          <Typography className="fw-bold ms-3">Interested in Buying</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <button
@@ -228,7 +291,9 @@ export default function FarmerProfileAccordion(props) {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography className="fw-bold ms-3">Sell Details</Typography>
+          <Typography className="fw-bold ms-3">
+            Interested in Selling
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <button

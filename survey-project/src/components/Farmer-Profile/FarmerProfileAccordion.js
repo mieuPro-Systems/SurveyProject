@@ -14,7 +14,7 @@ import GardenDetails from "./GardenDetails";
 import BuyDetails from "./BuyDetails";
 import SellDetails from "./SellDetails";
 import { useDispatch } from "react-redux";
-import { SET_UPDATED_LAND_DETAILS } from "../../actions/types";
+import { SET_FARMER_DETAILS, SET_UPDATED_LAND_DETAILS, SET_UPDATE_FARMER } from "../../actions/types";
 
 export default function FarmerProfileAccordion(props) {
   const navigate = useNavigate();
@@ -29,12 +29,26 @@ export default function FarmerProfileAccordion(props) {
   const updatedLandDetails = props.landDetails.map((detail) => {
     return {
       ...detail,
-      category: LandDetailCategory[detail.category],
-      farmerId: props.farmerDetails.id,
+      farmerId: props.farmerDetails.farmerId,
+      supervisorId: detail.supervisorId.length === 0 ? 'None' : detail.supervisorId
     };
   });
 
-  console.log("landDetails 1", updatedLandDetails);
+  // console.log("landDetails 1", updatedLandDetails);
+
+  const farmerDetailForUpdate =
+  {
+    farmerDetails: props.farmerDetails,
+    landDetails: props.landDetails,
+    cropDetails: props.cropDetails,
+    labourDetails: props.labourDetails,
+    livestockDetails: props.livestockDetails,
+    machineDetails: props.machineDetails,
+    gardenDetails: props.gardenDetails,
+    buyDetails: props.buyDetails,
+    sellDetails: props.sellDetails
+  }
+
   return (
     <div>
       <Accordion className="mt-1">
@@ -48,8 +62,27 @@ export default function FarmerProfileAccordion(props) {
         <AccordionDetails>
           <button
             onClick={() => {
+              console.log('landDetails check', updatedLandDetails)
+              dispatch({
+                type: SET_UPDATED_LAND_DETAILS,
+                payload: updatedLandDetails,
+              });
+              dispatch({
+                type: SET_UPDATE_FARMER,
+                payload: farmerDetailForUpdate,
+              });
+              dispatch({
+                type: SET_FARMER_DETAILS,
+                payload: props.farmerDetails,
+              });
+
               navigate("/dashboard/landdetails", {
-                state: { update: true, landDetails: updatedLandDetails },
+                state: {
+                  update: true,
+                  landDetails: updatedLandDetails,
+                  farmerId: props.farmerDetails.farmerId,
+                  farmerDetailForUpdate: farmerDetailForUpdate
+                },
               });
             }}
             className="btn btn-success btn-sm float-end mb-3"
@@ -79,11 +112,17 @@ export default function FarmerProfileAccordion(props) {
               const updatedCropDetails = props.cropDetails.map((detail) => {
                 return {
                   ...detail,
-                  farmerId: props.farmerDetails.id,
+                  farmerId: props.farmerDetails.farmerId,
+                  organic: detail.organic ? "Yes" : "No",
                 };
               });
               navigate("/dashboard/cropdetails", {
-                state: { update: true, cropDetails: updatedCropDetails },
+                state: {
+                  update: true,
+                  cropDetails: updatedCropDetails,
+                  farmerId: props.farmerDetails.farmerId,
+                  farmerDetailForUpdate: farmerDetailForUpdate
+                },
               });
             }}
             className="btn btn-success btn-sm float-end mb-3"
@@ -119,7 +158,8 @@ export default function FarmerProfileAccordion(props) {
                 state: {
                   update: true,
                   labourDetails: updatedLabourDetails,
-                  farmerId: props.farmerDetails.id,
+                  farmerId: props.farmerDetails.farmerId,
+                  farmerDetailForUpdate: farmerDetailForUpdate
                 },
               });
             }}
@@ -151,7 +191,7 @@ export default function FarmerProfileAccordion(props) {
                 (detail) => {
                   return {
                     ...detail,
-                    farmerId: props.farmerDetails.id,
+                    farmerId: props.farmerDetails.farmerId,
                   };
                 }
               );
@@ -160,7 +200,8 @@ export default function FarmerProfileAccordion(props) {
                 state: {
                   update: true,
                   machineDetails: updatedMachineDetails,
-                  farmerId: props.farmerDetails.id,
+                  farmerId: props.farmerDetails.farmerId,
+                  farmerDetailForUpdate: farmerDetailForUpdate
                 },
               });
             }}
@@ -193,7 +234,7 @@ export default function FarmerProfileAccordion(props) {
                 (detail) => {
                   return {
                     ...detail,
-                    farmerId: props.farmerDetails.id,
+                    farmerId: props.farmerDetails.farmerId,
                   };
                 }
               );
@@ -202,6 +243,8 @@ export default function FarmerProfileAccordion(props) {
                 state: {
                   update: true,
                   livestockDetails: updatedliveStockDetails,
+                  farmerId: props.farmerDetails.farmerId,
+                  farmerDetailForUpdate: farmerDetailForUpdate
                 },
               });
             }}
@@ -235,7 +278,8 @@ export default function FarmerProfileAccordion(props) {
               const updatedGardenDetails = props.gardenDetails.map((detail) => {
                 return {
                   ...detail,
-                  farmerId: props.farmerDetails.id,
+                  farmerId: props.farmerDetails.farmerId,
+                  organic: detail.organic ? "Yes" : "No",
                 };
               });
               console.log("updatedGardenDetails", updatedGardenDetails);
@@ -243,6 +287,8 @@ export default function FarmerProfileAccordion(props) {
                 state: {
                   update: true,
                   gardenDetails: updatedGardenDetails,
+                  farmerId: props.farmerDetails.farmerId,
+                  farmerDetailForUpdate: farmerDetailForUpdate
                 },
               });
             }}
@@ -271,13 +317,29 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() => navigate("/dashboard/buy")}
+            onClick={() => {
+              const updatedBuyDetails = props.buyDetails.map((detail) => {
+                return {
+                  ...detail,
+                  farmerId: props.farmerDetails.farmerId,
+                };
+              });
+              console.log("updatedBuyDetails", updatedBuyDetails);
+              navigate("/dashboard/buy", {
+                state: {
+                  update: true,
+                  buyDetails: updatedBuyDetails,
+                  farmerId: props.farmerDetails.farmerId,
+                  farmerDetailForUpdate: farmerDetailForUpdate
+                },
+              });
+            }}
             className="btn btn-success btn-sm float-end"
           >
             Edit
           </button>
 
-          {props.gardenDetails.length > 0 ? (
+          {props.buyDetails.length > 0 ? (
             <BuyDetails buyDetails={props.buyDetails} />
           ) : (
             <p className="text-primary text-center">No Details Added Yet</p>
@@ -297,13 +359,30 @@ export default function FarmerProfileAccordion(props) {
         </AccordionSummary>
         <AccordionDetails>
           <button
-            onClick={() => navigate("/dashboard/sell")}
+            onClick={() => {
+              const updatedSellDetails = props.sellDetails.map((detail) => {
+                return {
+                  ...detail,
+                  farmerId: props.farmerDetails.farmerId,
+                  organic: detail.organic ? "Yes" : "No",
+                };
+              });
+              console.log("updatedSellDetails", updatedSellDetails);
+              navigate("/dashboard/sell", {
+                state: {
+                  update: true,
+                  sellDetails: updatedSellDetails,
+                  farmerId: props.farmerDetails.farmerId,
+                  farmerDetailForUpdate: farmerDetailForUpdate
+                },
+              });
+            }}
             className="btn btn-success btn-sm float-end"
           >
             Edit
           </button>
 
-          {props.gardenDetails.length > 0 ? (
+          {props.sellDetails.length > 0 ? (
             <SellDetails sellDetails={props.sellDetails} />
           ) : (
             <p className="text-primary text-center">No Details Added Yet</p>

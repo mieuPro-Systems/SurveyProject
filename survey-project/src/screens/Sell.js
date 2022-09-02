@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,82 +9,109 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from '../utils/axiosInstance';
-import { useNavigate } from 'react-router-dom';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { FormControl } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Chip from '@mui/material/Chip';
-import { SET_SELL_DETAILS } from '../actions/types';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import moment from 'moment';
-import SellIcon from '@mui/icons-material/Sell';
-import validateSellInput from '../Validation/SellValidation';
+import axiosInstance from "../utils/axiosInstance";
+import { useLocation, useNavigate } from "react-router-dom";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { FormControl } from "@mui/material";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
+import Chip from "@mui/material/Chip";
+import { SET_SELL_DETAILS } from "../actions/types";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import moment from "moment";
+import SellIcon from "@mui/icons-material/Sell";
+import validateSellInput from "../Validation/SellValidation";
 
 const theme = createTheme();
 
 const Sell = () => {
-
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const { farmers } = useSelector((state) => state.farmer)
-
-    const [SellDetail, setSellDetail] = useState([])
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { farmers } = useSelector((state) => state.farmer);
+    const location = useLocation();
+    const { state } = location;
+    const { farmerDetailForUpdate } = state
+    const [SellDetail, setSellDetail] = useState([]);
     const [Datevalue, setDateValue] = useState(null);
-    const [Organic, setOrganic] = useState('')
-    const [Error, setError] = useState({})
+    const [Organic, setOrganic] = useState("");
+    const [Error, setError] = useState({});
 
     const handleSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (SellDetail.length > 0) {
             dispatch({
                 type: SET_SELL_DETAILS,
-                payload: SellDetail
-            })
+                payload: SellDetail,
+            });
             const postData = {
-                sellDetails: SellDetail
+                sellDetails: SellDetail,
+            };
+            console.log("postdata", postData);
+            if (state.update === false) {
+                axiosInstance
+                    .post("/sell/product", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Uploaded Successfully", res.data);
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                        }
+                    })
+                    .catch((err) =>
+                        console.log("Error while Uploading liveStock details", err)
+                    );
+            } else if (state.update === true) {
+                axiosInstance
+                    .put("/sell/", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Updated Successfully", res.data);
+                            console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, sellDetails: SellDetail } })
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                            console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, sellDetails: SellDetail } })
+                        }
+                    })
+                    .catch((err) => {
+                        console.log("Error while Updating liveStock details", err)
+                        console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, sellDetails: SellDetail } })
+                    }
+                    );
             }
-            console.log("postdata", postData)
-            axiosInstance.post('/sell/product', postData)
-                .then((res) => {
-                    if (res.status === 200) {
-                        console.log("Uploaded Successfully", res.data)
-                    }
-                    if (res.status === 400) {
-                        console.log("Error", res.data)
-                    }
-                }).catch(err => console.log("Error while Uploading Sell details", err))
-
-            navigate('/dashboard/farmerinfo')
+            navigate("/dashboard/farmerinfo");
         }
-    }
+    };
 
     const addtotable = (e) => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const formattedDate = moment(Datevalue.$d).format('DD/MM/YYYY')
         const SellData = {
-            farmerId: farmers.farmerDetails.farmerId,
-            productName: data.get('productname'),
-            variety: data.get('variety'),
-            organic: data.get('organic'),
-            quantity: data.get('quantity'),
-            price: data.get('price'),
-            date: formattedDate
-        }
-        const { isValid, errors } = validateSellInput(SellData)
+            farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId,
+            productName: data.get("productname"),
+            variety: data.get("variety"),
+            organic: data.get("organic"),
+            quantity: data.get("quantity"),
+            price: data.get("price"),
+            date: formattedDate,
+        };
+        const { isValid, errors } = validateSellInput(SellData);
         if (isValid) {
             // console.log("Object", Datevalue.$d)
             console.log("Date", formattedDate)
@@ -114,6 +141,12 @@ const Sell = () => {
             border: 0,
         },
     }));
+
+    useEffect(() => {
+        if (state.update === true) {
+            setSellDetail(state.sellDetails);
+        }
+    }, []);
 
     return (
         <div>

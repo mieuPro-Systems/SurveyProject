@@ -34,7 +34,7 @@ const theme = createTheme();
 const LandDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { farmers } = useSelector((state) => state.farmer);
+  const { farmers, farmerUpdate } = useSelector((state) => state.farmer);
   const [Category, setCategory] = useState('')
   const [AddOns, setAddOns] = useState('None')
   const [HideField, setHideField] = useState(false)
@@ -69,7 +69,9 @@ const LandDetails = () => {
 
   const deletelandDetail = (index) => {
     const postData = landDetails[index];
-    postData["farmerId"] = farmers.farmerDetails.farmerId;
+    postData["farmerId"] = state.update
+      ? state.farmerId
+      : farmers.farmerDetails.farmerId;
     console.log("postData", postData);
 
     axiosInstance
@@ -102,12 +104,12 @@ const LandDetails = () => {
       )
     ) {
       const LandData = {
-        farmerId: farmers.farmerDetails.farmerId,
+        farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId,
         category: data.get("category"),
         area: data.get("area"),
         addons: data.get("addons"),
         supervisorId: "",
-        ownerId: farmers.farmerDetails.farmerId,
+        ownerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId,
       };
       const { isValid, errors } = validateLandInput(LandData)
       if (isValid) {
@@ -146,7 +148,7 @@ const LandDetails = () => {
         supervisorId: "",
         ownerId: farmers.farmerDetails.farmerId,
       };
-      navigate("/dashboard/searchfarmer", { state: Data });
+      navigate("/dashboard/searchfarmer", { state: { ...Data, farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId, update: state.update } });
     }
 
     if (data.get("category") === "takenLease") {
@@ -158,7 +160,7 @@ const LandDetails = () => {
         supervisorId: "",
         ownerId: "",
       };
-      navigate("/dashboard/searchfarmer", { state: Data });
+      navigate("/dashboard/searchfarmer", { state: { ...Data, farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId, update: state.update } });
     }
   };
 
@@ -424,7 +426,14 @@ const LandDetails = () => {
             </Grid>
             <Grid item sm={3} marginLeft={10}>
               <Button
-                onClick={() => navigate("/dashboard/searchfarmer")}
+                onClick={() => {
+                  if (state.update) {
+                    console.log('after land update', { ...farmerUpdate, landDetails: landDetails })
+                    navigate('/dashboard/viewprofile', { state: { ...state.farmerDetailForUpdate, landDetails: landDetails } })
+                  } else {
+                    navigate("/dashboard/farmerinfo")
+                  }
+                }}
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}

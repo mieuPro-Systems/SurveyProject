@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,35 +9,36 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from '../utils/axiosInstance';
-import { useNavigate } from 'react-router-dom';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { FormControl } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Chip from '@mui/material/Chip';
-import { SET_CROP_DETAILS } from '../actions/types';
-import GrassIcon from '@mui/icons-material/Grass';
-import validateCropInput from '../Validation/Crop';
-
-
+import axiosInstance from "../utils/axiosInstance";
+import { useNavigate, useLocation } from "react-router-dom";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { FormControl } from "@mui/material";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
+import Chip from "@mui/material/Chip";
+import { SET_CROP_DETAILS } from "../actions/types";
+import GrassIcon from "@mui/icons-material/Grass";
+import validateCropInput from "../Validation/Crop";
 
 const theme = createTheme();
 
 const CropDetails = () => {
-
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const { farmers } = useSelector((state) => state.farmer)
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { farmers } = useSelector((state) => state.farmer);
+    const location = useLocation();
+    const { state } = location;
+    const { farmerDetailForUpdate } = state
+    console.log("crop detail state", state);
 
     const [CropsDetail, setCropsDetail] = useState([])
     const [CropType, setCropType] = useState("")
@@ -47,46 +48,72 @@ const CropDetails = () => {
 
 
     const handleSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (CropsDetail.length > 0) {
             dispatch({
                 type: SET_CROP_DETAILS,
-                payload: CropsDetail
-            })
-            console.log("farmersredux", farmers)
+                payload: CropsDetail,
+            });
+            console.log("farmersredux", farmers);
             const postData = {
-                cropDetails: CropsDetail
+                cropDetails: CropsDetail,
+            };
+            console.log("postdata", postData);
+            if (state.update === false) {
+                axiosInstance
+                    .post("/crop/create", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Uploaded Successfully", res.data);
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                        }
+                    })
+                    .catch((err) =>
+                        console.log("Error while Uploading liveStock details", err)
+                    );
+            } else if (state.update === true) {
+                axiosInstance
+                    .put("/crop/", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Uploaded Successfully", res.data);
+                            console.log("Crop update ", { ...farmerDetailForUpdate, cropDetails: CropsDetail })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, cropDetails: CropsDetail } })
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                            console.log("Crop update ", { ...farmerDetailForUpdate, cropDetails: CropsDetail })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, cropDetails: CropsDetail } })
+                        }
+                    })
+                    .catch((err) => {
+                        console.log("Error while Uploading liveStock details", err)
+                        console.log("Crop update ", { ...farmerDetailForUpdate, cropDetails: CropsDetail })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, cropDetails: CropsDetail } })
+                    }
+                    );
             }
-            console.log("postdata", postData)
-            axiosInstance.post('/crop/create', postData)
-                .then((res) => {
-                    if (res.status === 200) {
-                        console.log("Uploaded Successfully", res.data)
-                    }
-                    if (res.status === 400) {
-                        console.log("Error", res.data)
-                    }
-                }).catch(err => console.log("Error while Uploading liveStock details", err))
-
-            navigate('/dashboard/farmerinfo')
+            navigate("/dashboard/farmerinfo");
         }
-    }
+    };
 
     const addtotable = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         const data = new FormData(e.currentTarget);
         const CropsData = {
-            farmerId: farmers.farmerDetails.farmerId,
-            type: data.get('typeofcrop'),
-            name: data.get('cropname'),
-            variety: data.get('cropvariety'),
-            brand: data.get('brand'),
-            area: data.get('area'),
-            croppedAt: data.get('cropppedat'),
-            organic: data.get('organic'),
-            seedingType: data.get('seedingtype'),
-            harvestPeriod: data.get('harvestperiod')
-        }
+            farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId,
+            type: data.get("typeofcrop"),
+            name: data.get("cropname"),
+            variety: data.get("cropvariety"),
+            brand: data.get("brand"),
+            area: data.get("area"),
+            croppedAt: data.get("cropppedat"),
+            organic: data.get("organic"),
+            seedingType: data.get("seedingtype"),
+            harvestPeriod: data.get("harvestperiod"),
+        };
 
         const { isValid, errors } = validateCropInput(CropsData)
         if (isValid) {
@@ -117,6 +144,21 @@ const CropDetails = () => {
             border: 0,
         },
     }));
+
+    useEffect(() => {
+        if (state.update === true) {
+            setCropsDetail(state.cropDetails);
+            dispatch({
+                type: SET_CROP_DETAILS,
+                payload: state.cropDetails,
+            });
+        } else {
+            dispatch({
+                type: SET_CROP_DETAILS,
+                payload: [],
+            });
+        }
+    }, []);
 
     return (
         <div>
@@ -323,8 +365,8 @@ const CropDetails = () => {
                             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                                 <TableHead>
                                     <TableRow>
-                                        <StyledTableCell align='center'>S.No</StyledTableCell>
-                                        <StyledTableCell align='center'>Type</StyledTableCell>
+                                        <StyledTableCell align="center">S.No</StyledTableCell>
+                                        <StyledTableCell align="center">Type</StyledTableCell>
                                         <StyledTableCell align="center">Name</StyledTableCell>
                                         <StyledTableCell align="center">Variety</StyledTableCell>
                                         <StyledTableCell align="center">Brand</StyledTableCell>
@@ -385,8 +427,8 @@ const CropDetails = () => {
                     </Grid>
                 </Container>
             </ThemeProvider>
-        </div >
-    )
-}
+        </div>
+    );
+};
 
-export default CropDetails
+export default CropDetails;

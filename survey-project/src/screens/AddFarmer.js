@@ -109,7 +109,7 @@ const AddFarmer = () => {
         });
     } else {
       axiosInstance
-        .put(`/farmer/id/${farmerDetails.id}`, {
+        .put(`/farmer/id/${farmerDetails.farmerId}`, {
           farmerDetails: farmerData,
         })
         .then((res) => {

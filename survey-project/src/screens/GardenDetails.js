@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,95 +9,123 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from '../utils/axiosInstance';
-import { useNavigate } from 'react-router-dom';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { FormControl } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Chip from '@mui/material/Chip';
-import { SET_GARDEN_DETAILS } from '../actions/types';
-import YardIcon from '@mui/icons-material/Yard';
-import validateGardenInput from '../Validation/Garden';
+import axiosInstance from "../utils/axiosInstance";
+import { useLocation, useNavigate } from "react-router-dom";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { FormControl } from "@mui/material";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
+import Chip from "@mui/material/Chip";
+import { SET_GARDEN_DETAILS } from "../actions/types";
+import YardIcon from "@mui/icons-material/Yard";
+import validateGardenInput from "../Validation/Garden";
 
 const theme = createTheme();
 
 
 const GardenDetails = () => {
-
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const { farmers } = useSelector((state) => state.farmer)
-
-    const [GardenDetail, setGardenDetail] = useState([])
-    const [Type, setType] = useState('')
-    const [Organic, setOrganic] = useState('')
-    const [Error, setError] = useState({})
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { farmers } = useSelector((state) => state.farmer);
+    const [GardenDetail, setGardenDetail] = useState([]);
+    const [Type, setType] = useState("");
+    const [Organic, setOrganic] = useState("");
+    const [Error, setError] = useState({});
+    const location = useLocation();
+    const { state } = location;
+    const { farmerDetailForUpdate } = state
+    console.log("Garden details state", state);
 
     const handleSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (GardenDetail.length > 0) {
             dispatch({
                 type: SET_GARDEN_DETAILS,
-                payload: GardenDetail
-            })
-            console.log("farmersredux", farmers)
+                payload: GardenDetail,
+            });
+            console.log("farmersredux", farmers);
             const postData = {
-                gardenDetails: GardenDetail
+                gardenDetails: GardenDetail,
+            };
+            console.log("postdata", postData);
+            if (state.update === false) {
+                axiosInstance
+                    .post("/garden/create", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Uploaded Successfully", res.data);
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                        }
+                    })
+                    .catch((err) =>
+                        console.log("Error while Uploading liveStock details", err)
+                    );
+            } else if (state.update === true) {
+                axiosInstance
+                    .put("/garden/", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Uploaded Successfully", res.data);
+                            console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, gardenDetails: GardenDetail } })
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                            console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, gardenDetails: GardenDetail } })
+                        }
+                    })
+                    .catch((err) => {
+                        console.log("Error while Uploading liveStock details", err)
+                        console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, gardenDetails: GardenDetail } })
+                    }
+                    );
             }
-            console.log("postdata", postData)
-            axiosInstance.post('/garden/create', postData)
-                .then((res) => {
-                    if (res.status === 200) {
-                        console.log("Uploaded Successfully", res.data)
-                    }
-                    if (res.status === 400) {
-                        console.log("Error", res.data)
-                    }
-                }).catch(err => console.log("Error while Uploading liveStock details", err))
-
-            navigate('/dashboard/farmerinfo')
+            navigate("/dashboard/farmerinfo");
         }
-    }
+    };
 
     const addtotable = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         const data = new FormData(e.currentTarget);
         const GardenData = {
-            farmerId: farmers.farmerDetails.farmerId,
-            type: data.get('gardentype'),
-            name: data.get('gardenname'),
-            variety: data.get('gardenvariety'),
-            brand: data.get('brand'),
-            area: data.get('area'),
-            age: data.get('age'),
-            organic: data.get('organic'),
-            count: data.get('count'),
-            sellingPeriod: data.get('sellingperiod')
-        }
-        const { isValid, errors } = validateGardenInput(GardenData)
+            farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId,
+            type: data.get("gardentype"),
+            name: data.get("gardenname"),
+            variety: data.get("gardenvariety"),
+            brand: data.get("brand"),
+            area: data.get("area"),
+            age: data.get("age"),
+            organic: data.get("organic"),
+            count: data.get("count"),
+            sellingPeriod: data.get("sellingperiod"),
+        };
+        const { isValid, errors } = validateGardenInput(GardenData);
 
         if (isValid) {
-            setGardenDetail([...GardenDetail, GardenData])
-            console.log("GArden", GardenData)
+            setGardenDetail([...GardenDetail, GardenData]);
+            console.log("GArden", GardenData);
         }
-        setError(errors)
-    }
+        setError(errors);
+    };
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
             backgroundColor: theme.palette.common.black,
             color: theme.palette.common.white,
-            fontSize: 13
+            fontSize: 13,
         },
         [`&.${tableCellClasses.body}`]: {
             fontSize: 14,
@@ -105,14 +133,20 @@ const GardenDetails = () => {
     }));
 
     const StyledTableRow = styled(TableRow)(({ theme }) => ({
-        '&:nth-of-type(odd)': {
+        "&:nth-of-type(odd)": {
             backgroundColor: theme.palette.action.hover,
         },
         // hide last border
-        '&:last-child td, &:last-child th': {
+        "&:last-child td, &:last-child th": {
             border: 0,
         },
     }));
+
+    useEffect(() => {
+        if (state.update === true) {
+            setGardenDetail(state.gardenDetails);
+        }
+    }, []);
 
     return (
         <div>

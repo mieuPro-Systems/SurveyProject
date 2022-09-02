@@ -9,7 +9,8 @@ import {
   SET_BUY_DETAILS,
   SET_SELL_DETAILS,
   SET_CROP_DETAILS,
-  SET_GARDEN_DETAILS
+  SET_GARDEN_DETAILS,
+  SET_UPDATE_FARMER
 } from "../../actions/types";
 
 const initialState = {
@@ -24,6 +25,7 @@ const initialState = {
     buyDetails: [],
     sellDetails: []
   },
+  farmerUpdate: {},
   loading: false,
   addedFarmers: [],
 };
@@ -94,6 +96,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         farmers: { ...state.farmers, sellDetails: action.payload }
+      }
+    case SET_UPDATE_FARMER:
+      return {
+        ...state,
+        farmerUpdate: action.payload
       }
     default:
       return state;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProfilePic from "../assests/defaultProfilePicuture.png";
 import Chip from "@mui/material/Chip";
@@ -6,11 +6,14 @@ import Stack from "@mui/material/Stack";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import FarmerProfileAccordion from "../components/Farmer-Profile/FarmerProfileAccordion";
+import { useDispatch } from "react-redux";
+import { SET_UPDATE_FARMER } from "../actions/types";
 
 const FarmerProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  // console.log(location.state);
+  const dispatch = useDispatch()
+  console.log('farmer update details', location.state);
   const {
     farmerDetails,
     landDetails,
@@ -23,6 +26,24 @@ const FarmerProfile = () => {
     buyDetails,
   } = location.state;
   // console.log("farmerDetails", farmerDetails);
+
+  // useEffect(() => {
+  //   dispatch({
+  //     type: SET_FARMER_DETAILS,
+  //     payload: {
+  //       farmerDetails,
+  //       landDetails,
+  //       labourDetails,
+  //       livestockDetails,
+  //       machineDetails,
+  //       cropDetails,
+  //       gardenDetails,
+  //       sellDetails,
+  //       buyDetails,
+  //     }
+  //   })
+  // }, [])
+
   return (
     <div>
       <div className="col mb-1 fw-bold">Farmer's Profile </div>
@@ -30,7 +51,7 @@ const FarmerProfile = () => {
         <button
           type="button"
           className="btn btn-sm m-3 float-right btn-success"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/dashboard/viewfarmer')}
         >
           Back
         </button>
@@ -57,7 +78,7 @@ const FarmerProfile = () => {
                     </p>
                   )}
 
-                  <p className="">Farmer ID - {farmerDetails.id}</p>
+                  <p className="">Farmer ID - {farmerDetails.farmerId}</p>
                   <button
                     className="btn btn-sm btn-success"
                     onClick={() =>
@@ -209,7 +230,7 @@ const FarmerProfile = () => {
                       <p className="text-muted mb-0">
                         {farmerDetails.gender
                           ? farmerDetails.gender[0].toUpperCase() +
-                            farmerDetails.gender.slice(1).toLowerCase()
+                          farmerDetails.gender.slice(1).toLowerCase()
                           : "-"}
                       </p>
                     </div>
@@ -253,7 +274,7 @@ const FarmerProfile = () => {
                       <p className="text-muted mb-0">
                         {farmerDetails.residentialType
                           ? farmerDetails.residentialType[0].toUpperCase() +
-                            farmerDetails.residentialType.slice(1).toLowerCase()
+                          farmerDetails.residentialType.slice(1).toLowerCase()
                           : "-"}
                       </p>
                     </div>

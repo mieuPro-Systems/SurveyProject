@@ -15,7 +15,7 @@ import { FormControl } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AgricultureIcon from "@mui/icons-material/Agriculture";
@@ -40,7 +40,12 @@ const MachineDetails = () => {
     const [Pricevalue, setPriceValue] = useState("0.00")
     const [rent, setrent] = useState("Hour");
     const [Machines, setMachines] = useState([]);
-    const [Error, setError] = useState({})
+    const [Error, setError] = useState({});
+
+    const location = useLocation();
+    const { state } = location;
+    const { farmerDetailForUpdate } = state
+    console.log("machine details state", state);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -54,18 +59,44 @@ const MachineDetails = () => {
                 machineDetails: Machines,
             };
             console.log("postData", postData);
-            axiosInstance
-                .post("/machinery/create", postData)
-                .then((res) => {
-                    if (res.status === 200) {
-                        console.log("Machine Details Uploaded Successfully", res.data);
-                    }
-                    if (res.status === 400) {
-                        console.log("Error", res.data);
-                    }
-                })
-                .catch((err) => console.log(err));
-            navigate('/dashboard/farmerinfo')
+            if (state.update === false) {
+                axiosInstance
+                    .post("/machinery/create", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Machine Details Uploaded Successfully", res.data);
+                            navigate("/dashboard/farmerinfo");
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                            navigate("/dashboard/farmerinfo");
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        navigate("/dashboard/farmerinfo");
+                    });
+            } else if (state.update === true) {
+                axiosInstance
+                    .put("/machinery/", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Machine Details updated Successfully", res.data);
+                            console.log("Machine update ", { ...farmerDetailForUpdate, machineDetails: Machines })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, machineDetails: Machines } })
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                            console.log("Machine update ", { ...farmerDetailForUpdate, machineDetails: Machines })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, machineDetails: Machines } })
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        console.log("Machine update ", { ...farmerDetailForUpdate, machineDetails: Machines })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, machineDetails: Machines } })
+                    });
+            }
         }
     };
 
@@ -73,7 +104,7 @@ const MachineDetails = () => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
         const MachinesData = {
-            farmerId: farmers.farmerDetails.farmerId,
+            farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId,
             type: data.get("type"),
             subType: data.get("subtype"),
             attachments: data.get("attachments"),
@@ -82,7 +113,7 @@ const MachineDetails = () => {
             rentalBasis: data.get("rentalbasis"),
             rent: data.get("price"),
         };
-        const { isValid, errors } = validateMachineInput(MachinesData)
+        const { isValid, errors } = validateMachineInput(MachinesData);
         if (isValid) {
             setMachines([...Machines, MachinesData]);
             console.log("land", MachinesData);
@@ -105,7 +136,7 @@ const MachineDetails = () => {
                 setrent(e.target.value);
                 break;
             default:
-                break
+                break;
         }
     };
 
@@ -132,6 +163,11 @@ const MachineDetails = () => {
         },
     }));
 
+    useEffect(() => {
+        if (state.update === true) {
+            setMachines(state.machineDetails);
+        }
+    }, []);
 
     return (
         <div>
@@ -173,8 +209,8 @@ const MachineDetails = () => {
                                         error={Error?.type !== undefined}
                                         helperText={Error.type}
                                         onInput={(e) => {
-                                            setError({})
-                                            e.target.value = (e.target.value).toString().slice(0, 40);
+                                            setError({});
+                                            e.target.value = e.target.value.toString().slice(0, 40);
                                         }}
                                     />
                                 </Grid>
@@ -432,7 +468,6 @@ const MachineDetails = () => {
             </ThemeProvider>
         </div>
     );
-}
-
+};
 
 export default MachineDetails;

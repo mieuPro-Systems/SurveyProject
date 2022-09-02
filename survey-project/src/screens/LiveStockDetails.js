@@ -34,42 +34,64 @@ const theme = createTheme();
 const LiveStockDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { farmers } = useSelector((state) => state.farmer);
-
+  const { farmers, farmerUpdate } = useSelector((state) => state.farmer);
   const [LiveStocks, setLiveStocks] = useState([]);
   const [Place, setPlace] = useState("Home");
   const [Error, setError] = useState({});
   const location = useLocation();
   const { state } = location;
+  const { farmerDetailForUpdate } = state
   console.log("livestock details state", state);
 
   const handleChange = (e) => {
-    setPlace(e.target.value)
-  }
+    setPlace(e.target.value);
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (LiveStocks.length > 0) {
       dispatch({
         type: SET_LIVESTOCK_DETAILS,
-        payload: LiveStocks
-      })
-      console.log("farmersredux", farmers)
+        payload: LiveStocks,
+      });
+      console.log("farmersredux", farmers);
       const postData = {
         livestockDetails: LiveStocks
       }
       console.log("postdata", postData)
-      axiosInstance.post('/livestock/create', postData)
-        .then((res) => {
-          if (res.status === 200) {
-            console.log("Uploaded Successfully", res.data)
-          }
-          if (res.status === 400) {
-            console.log("Error", res.data)
-          }
-        }).catch(err => console.log("Error while Uploading liveStock details", err))
+      if (state.update === false) {
+        axiosInstance.post('/livestock/create', postData)
+          .then((res) => {
+            if (res.status === 200) {
+              console.log("Uploaded Successfully", res.data);
+              navigate('/dashboard/farmerinfo')
+            }
+            if (res.status === 400) {
+              console.log("Error", res.data);
+              navigate('/dashboard/farmerinfo')
+            }
+          }).catch(err => {
+            console.log("Error while Uploading liveStock details", err)
+            navigate('/dashboard/farmerinfo')
+          })
+      } else if (state.update) {
+        axiosInstance.put('/livestock/', postData)
+          .then((res) => {
+            if (res.status === 200) {
+              console.log("Updated Successfully", res.data);
+              console.log("livestock update ", { ...farmerDetailForUpdate, livestockDetails: LiveStocks })
+              navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, livestockDetails: LiveStocks } })
+            }
+            if (res.status === 400) {
+              console.log("Error", res.data);
+              navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, livestockDetails: LiveStocks } })
+            }
+          }).catch(err => {
+            console.log("Error while Updating liveStock details", err)
+            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, livestockDetails: LiveStocks } })
+          })
+      }
 
-      navigate('/dashboard/farmerinfo')
     }
   }
 
@@ -77,7 +99,7 @@ const LiveStockDetails = () => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const LiveStockData = {
-      farmerId: farmers.farmerDetails.farmerId,
+      farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId,
       place: data.get("place"),
       type: data.get("livestocktype"),
       breed: data.get("livestockbreed"),

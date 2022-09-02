@@ -20,7 +20,7 @@ const ViewFarmers = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { addedFarmers } = useSelector((state) => state.farmer);
-  const [deleteFarmerId, setDeleteFarmmerId] = React.useState(null);
+  const [deleteFarmerId, setDeleteFarmerId] = React.useState(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -194,7 +194,7 @@ const ViewFarmers = () => {
     // console.log("indFarmerDetail", farmerId);
     // console.log(addedFarmers);
     let individualFarmerChoosen = addedFarmers.filter(
-      (farmerDetail) => farmerDetail.farmerDetails.id === farmerId
+      (farmerDetail) => farmerDetail.farmerDetails.farmerId === farmerId
     );
     // console.log("farmer choosen", individualFarmerChoosen);
     if (individualFarmerChoosen.length > 0) {
@@ -245,7 +245,7 @@ const ViewFarmers = () => {
   const handledelete = (farmerId) => {
     console.log("Delete", farmerId);
     handleModalClickOpen();
-    setDeleteFarmmerId(farmerId);
+    setDeleteFarmerId(farmerId);
   };
 
   const setFarmersDataToRender = (datas) => {
@@ -254,7 +254,7 @@ const ViewFarmers = () => {
       temp.push({
         key: index + 1,
         slNo: index + 1,
-        farmerId: data.farmerDetails.id,
+        farmerId: data.farmerDetails.farmerId,
         farmerName: data.farmerDetails.farmerName,
         fatherName: data.farmerDetails.fatherName,
         age: data.farmerDetails.age,
@@ -263,8 +263,8 @@ const ViewFarmers = () => {
         profile: (
           <IconButton
             onClick={() => {
-              // console.log(data.farmerDetails.id);
-              handleIndividualFarmerClick(data.farmerDetails.id);
+              // console.log(data.farmerDetails.farmerId);
+              handleIndividualFarmerClick(data.farmerDetails.farmerId);
               return true;
             }}
           >
@@ -274,7 +274,7 @@ const ViewFarmers = () => {
         delete: (
           <IconButton
             onClick={() => {
-              handledelete(data.farmerDetails.id);
+              handledelete(data.farmerDetails.farmerId);
               return true;
             }}
           >

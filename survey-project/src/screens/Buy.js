@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,78 +9,102 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from '../utils/axiosInstance';
-import { useNavigate } from 'react-router-dom';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Chip from '@mui/material/Chip';
-import { SET_BUY_DETAILS } from '../actions/types';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import moment from 'moment';
-import validateBuyInput from '../Validation/BuyValidation';
-
-
+import axiosInstance from "../utils/axiosInstance";
+import { useLocation, useNavigate } from "react-router-dom";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
+import Chip from "@mui/material/Chip";
+import { SET_BUY_DETAILS } from "../actions/types";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import moment from "moment";
+import validateBuyInput from "../Validation/BuyValidation";
 
 const theme = createTheme();
 
 const Buy = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { farmers } = useSelector((state) => state.farmer);
 
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const { farmers } = useSelector((state) => state.farmer)
-
-    const [BuyDetail, setBuyDetail] = useState([])
+    const [BuyDetail, setBuyDetail] = useState([]);
     const [Datevalue, setDateValue] = useState(null);
-    const [Error, setError] = useState({})
+    const [Error, setError] = useState({});
+
+    const location = useLocation();
+    const { state } = location;
+    const { farmerDetailForUpdate } = state
+    console.log("buy details state", state);
 
     const handleSubmit = (e) => {
         e.preventDefault()
         if (BuyDetail.length > 0) {
             dispatch({
                 type: SET_BUY_DETAILS,
-                payload: BuyDetail
-            })
+                payload: BuyDetail,
+            });
             const postData = {
-                buyDetails: BuyDetail
+                buyDetails: BuyDetail,
+            };
+            console.log("postdata", postData);
+            if (state.update === false) {
+                axiosInstance
+                    .post("/buy/product", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Uploaded Successfully", res.data);
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                        }
+                    })
+                    .catch((err) => console.log("Error while Uploading buy details", err));
+            } else if (state.update === true) {
+                axiosInstance
+                    .put("/buy/", postData)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            console.log("Updated Successfully", res.data);
+                            console.log("Buy update ", { ...farmerDetailForUpdate, buyDetails: BuyDetail })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, buyDetails: BuyDetail } })
+                        }
+                        if (res.status === 400) {
+                            console.log("Error", res.data);
+                            console.log("Buy update ", { ...farmerDetailForUpdate, buyDetails: BuyDetail })
+                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, buyDetails: BuyDetail } })
+                        }
+                    })
+                    .catch((err) => {
+                        console.log("Error while Updating buy details", err)
+                        console.log("Buy update ", { ...farmerDetailForUpdate, buyDetails: BuyDetail })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, buyDetails: BuyDetail } })
+                    });
             }
-            console.log("postdata", postData)
-            axiosInstance.post('/buy/product', postData)
-                .then((res) => {
-                    if (res.status === 200) {
-                        console.log("Uploaded Successfully", res.data)
-                    }
-                    if (res.status === 400) {
-                        console.log("Error", res.data)
-                    }
-                }).catch(err => console.log("Error while Uploading buy details", err))
-
-            navigate('/dashboard/farmerinfo')
-        }
+            navigate("/dashboard/farmerinfo");
+        };
     }
-
     const addtotable = (e) => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
         const formattedDate = moment(Datevalue.$d).format('DD/MM/YYYY')
         const BuyData = {
-            farmerId: farmers.farmerDetails.farmerId,
-            requirement: data.get('requirement'),
-            name: data.get('name'),
-            brandOrVariety: data.get('brandorvariety'),
-            quantity: data.get('quantity'),
-            date: formattedDate
-        }
-        const { isValid, errors } = validateBuyInput(BuyData)
+            farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId,
+            requirement: data.get("requirement"),
+            name: data.get("name"),
+            brandOrVariety: data.get("brandorvariety"),
+            quantity: data.get("quantity"),
+            date: formattedDate,
+        };
+        const { isValid, errors } = validateBuyInput(BuyData);
 
         if (isValid) {
             // console.log("Object", Datevalue.$d)
@@ -111,6 +135,12 @@ const Buy = () => {
             border: 0,
         },
     }));
+
+    useEffect(() => {
+        if (state.update === true) {
+            setBuyDetail(state.buyDetails);
+        }
+    }, []);
 
     return (
         <div>
@@ -306,5 +336,6 @@ const Buy = () => {
         </div >
     )
 }
+
 
 export default Buy

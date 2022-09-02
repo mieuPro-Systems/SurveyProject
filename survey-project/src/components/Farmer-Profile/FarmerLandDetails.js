@@ -53,7 +53,7 @@ const FarmerLandDetails = (props) => {
           landId: landDetail.landId,
           category: landDetail.category,
           area: landDetail.area,
-          addons: landDetail.addons === "None" ? "NA" : landDetail.addons,
+          addons: landDetail.addons
         });
       });
       setData(modalContent);

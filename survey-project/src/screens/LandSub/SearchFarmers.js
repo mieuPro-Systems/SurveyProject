@@ -26,9 +26,12 @@ const SearchFarmers = () => {
   const { addedFarmers, farmers } = useSelector((state) => state.farmer);
   const [selectedRow, setSelectedRow] = useState([]);
   const location = useLocation();
+  const { state } = location;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [landDetailsForModal, setLandDetailsForModal] = useState([]);
   const [selectedLandDetail, setSelectedLandDetails] = useState([]);
+
+  console.log("location state", location.state)
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -231,7 +234,7 @@ const SearchFarmers = () => {
             type: SET_LAND_DETAILS_ARRAY,
             payload: landdataarray,
           });
-          navigate("/dashboard/landdetails");
+          navigate("/dashboard/landdetails", { state: { update: state.update } });
         }
         if (res.status === 400) {
           console.log("Error while uploading land details", res.data);
@@ -253,11 +256,11 @@ const SearchFarmers = () => {
   const setFarmersDataToRender = (datas) => {
     let temp = [];
     datas.map((data, index) => {
-      if (data.farmerDetails.id !== farmers?.farmerDetails?.farmerId) {
+      if (data.farmerDetails.farmerId !== farmers?.farmerDetails?.farmerId) {
         temp.push({
           key: index + 1,
           slNo: index + 1,
-          farmerId: data.farmerDetails.id,
+          farmerId: data.farmerDetails.farmerId,
           farmerName: data.farmerDetails.farmerName,
           fatherName: data.farmerDetails.fatherName,
           age: data.farmerDetails.age,
@@ -350,7 +353,7 @@ const SearchFarmers = () => {
             });
           }
         });
-        navigate("/dashboard/landdetails");
+        navigate("/dashboard/landdetails", { state: { update: state.update } });
         return console.log("found match details", farmerDetail);
       } else {
         return null;

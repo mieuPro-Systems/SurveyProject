@@ -30,6 +30,7 @@ const LabourDetails = () => {
   const { farmers } = useSelector((state) => state.farmer);
   const location = useLocation();
   const { state } = location;
+  const { farmerDetailForUpdate } = state
   console.log("labour details state", state);
 
   const [Error, setError] = useState(false);
@@ -60,7 +61,7 @@ const LabourDetails = () => {
     "landCleaning",
     "treeClimbing",
     "paddySteaming",
-    "Fertilization",
+    "fertilization",
   ];
 
   const worksdata = {
@@ -138,6 +139,8 @@ const LabourDetails = () => {
           .then((res) => {
             if (res.status === 200) {
               console.log("Updated Successfully(LabourDetails)", res.data);
+              console.log("Labour update ", { ...farmerDetailForUpdate, labourDetails: ConfiguredData })
+              navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, labourDetails: ConfiguredData } })
             }
 
             if (res.status === 400) {

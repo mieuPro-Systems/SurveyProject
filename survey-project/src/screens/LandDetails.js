@@ -25,7 +25,7 @@ import Paper from "@mui/material/Paper";
 import { useLocation, useNavigate } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { SET_LAND_DETAILS, SET_UPDATED_LAND_DETAILS } from "../actions/types";
+import { SET_LAND_DETAILS, SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SHOW_SNACKBAR_TRUE, SET_UPDATED_LAND_DETAILS } from "../actions/types";
 import axiosInstance from "../utils/axiosInstance";
 import validateLandInput from "../Validation/LandAddition";
 
@@ -113,6 +113,9 @@ const LandDetails = () => {
       };
       const { isValid, errors } = validateLandInput(LandData)
       if (isValid) {
+        dispatch({
+          type: SET_LOADING_TRUE,
+        });
         const LandDataArray = [];
         LandDataArray.push(LandData);
         const postData = {
@@ -130,10 +133,42 @@ const LandDetails = () => {
               type: SET_LAND_DETAILS,
               payload: LandData,
             });
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Land Details Added Successfully",
+                snackBarColor: "success",
+              },
+            });
           }
           if (res.status === 400) {
             console.log("Error while getting Land Id", res.data);
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Something went Wrong",
+                snackBarColor: "warning",
+              },
+            });
           }
+        }).catch(err => {
+          console.log("Error while getting Land ID", err)
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
+          dispatch({
+            type: SET_SHOW_SNACKBAR_TRUE,
+            payload: {
+              snackBarMessage: "Something went Wrong",
+              snackBarColor: "warning",
+            },
+          });
         });
       }
       setError(errors)
@@ -429,8 +464,22 @@ const LandDetails = () => {
                 onClick={() => {
                   if (state.update) {
                     console.log('after land update', { ...farmerUpdate, landDetails: landDetails })
+                    dispatch({
+                      type: SET_SHOW_SNACKBAR_TRUE,
+                      payload: {
+                        snackBarMessage: "Land Details Submitted",
+                        snackBarColor: "success",
+                      },
+                    });
                     navigate('/dashboard/viewprofile', { state: { ...farmerUpdate, landDetails: landDetails } })
                   } else {
+                    dispatch({
+                      type: SET_SHOW_SNACKBAR_TRUE,
+                      payload: {
+                        snackBarMessage: "Land Details Submitted",
+                        snackBarColor: "success",
+                      },
+                    });
                     navigate("/dashboard/farmerinfo")
                   }
                 }}

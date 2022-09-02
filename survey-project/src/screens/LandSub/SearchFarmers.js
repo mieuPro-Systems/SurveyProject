@@ -12,6 +12,8 @@ import {
   SET_ALL_FARMERS,
   SET_LAND_DETAILS,
   SET_LAND_DETAILS_ARRAY,
+  SET_LOADING_FALSE,
+  SET_LOADING_TRUE,
 } from "../../actions/types";
 import ModalLandDetailsContent from "./ModalLandDetailsContent";
 import { Link } from "react-router-dom";
@@ -224,6 +226,9 @@ const SearchFarmers = () => {
     const postData = {
       rentLandDetails: landdataarray,
     };
+    dispatch({
+      type: SET_LOADING_TRUE,
+    });
 
     axiosInstance
       .post("/land/rent", postData)
@@ -234,13 +239,24 @@ const SearchFarmers = () => {
             type: SET_LAND_DETAILS_ARRAY,
             payload: landdataarray,
           });
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
           navigate("/dashboard/landdetails", { state: { update: state.update } });
         }
         if (res.status === 400) {
           console.log("Error while uploading land details", res.data);
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err)
+        dispatch({
+          type: SET_LOADING_FALSE,
+        });
+      });
   };
 
   const handleCancel = () => {
@@ -342,6 +358,9 @@ const SearchFarmers = () => {
           landDetails: dataarray,
         };
         console.log("postData", postData);
+        dispatch({
+          type: SET_LOADING_TRUE,
+        });
         axiosInstance.post("/land/create", postData).then((res) => {
           if (res.status === 200) {
             console.log("Land Id created Successfully", res.data);
@@ -351,7 +370,21 @@ const SearchFarmers = () => {
               type: SET_LAND_DETAILS,
               payload: data,
             });
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
           }
+          if (res.status === 400) {
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+            console.log("Error while Getting Land ID", res.data)
+          }
+        }).catch(err => {
+          console.log("Error while getting Land ID", err)
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
         });
         navigate("/dashboard/landdetails", { state: { update: state.update } });
         return console.log("found match details", farmerDetail);

@@ -98,7 +98,7 @@ const AddFarmer = () => {
               dispatch({
                 type: SET_SHOW_SNACKBAR_TRUE,
                 payload: {
-                  snackBarMessage: `Farmer Added Successfully`,
+                  snackBarMessage: "Farmer Added Successfully",
                   snackBarColor: "success",
                 },
               });

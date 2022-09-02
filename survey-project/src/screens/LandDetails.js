@@ -429,7 +429,7 @@ const LandDetails = () => {
                 onClick={() => {
                   if (state.update) {
                     console.log('after land update', { ...farmerUpdate, landDetails: landDetails })
-                    navigate('/dashboard/viewprofile', { state: { ...state.farmerDetailForUpdate, landDetails: landDetails } })
+                    navigate('/dashboard/viewprofile', { state: { ...farmerUpdate, landDetails: landDetails } })
                   } else {
                     navigate("/dashboard/farmerinfo")
                   }

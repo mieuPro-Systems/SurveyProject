@@ -328,13 +328,13 @@ const SearchFarmers = () => {
 
   const handleAddClick = () => {
     let selectedFarmersId = selectedRow.map((entry) => entry.farmerId);
-    // console.log("selectedFarmersId", selectedFarmersId);
+    console.log("selectedFarmersId", selectedFarmersId);
     addedFarmers.map((farmerDetail) => {
-      // console.log(farmerDetail);
-      if (selectedFarmersId.includes(farmerDetail.farmerDetails.id)) {
+      console.log(farmerDetail);
+      if (selectedFarmersId.includes(farmerDetail.farmerDetails.farmerId)) {
         console.log("propscheck", location.state);
         const data = location.state;
-        data.supervisorId = farmerDetail.farmerDetails.id;
+        data.supervisorId = farmerDetail.farmerDetails.farmerId;
         console.log("Updateprops", data);
         const dataarray = [];
         dataarray.push(data);

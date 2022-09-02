@@ -24,6 +24,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import validateFarmerAddInput from "../Validation/FarmerAddition";
 
 const theme = createTheme();
 
@@ -61,86 +62,92 @@ const AddFarmer = () => {
   const [Union, setUnion] = useState([]);
   const [Panchayat, setPanchayat] = useState([]);
   const [Village, setVillage] = useState([]);
+  const [Error, setError] = useState({})
 
   const handleInputChange = (e) => {
+    setError({})
     setFarmerData({ ...farmerData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (event) => {
-    dispatch({
-      type: SET_LOADING_TRUE,
-    });
     console.log("farmerData", farmerData);
     event.preventDefault();
-
-    console.log("farmerDetails", farmerData);
-    if (!update) {
-      axiosInstance
-        .post("/farmer/create", {
-          farmerDetails: farmerData,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            console.log("response for create new farmer", res.data);
-            dispatch({
-              type: SET_FARMER_DETAILS,
-              payload: { ...farmerData, farmerId: res.data.farmerId },
-            });
-            dispatch({
-              type: SET_LOADING_FALSE,
-            });
-            navigate("/dashboard/farmerinfo");
-            dispatch({
-              type: SET_SHOW_SNACKBAR_TRUE,
-              payload: {
-                snackBarMessage: `Farmer Added Successfully`,
-                snackBarColor: "success",
-              },
-            });
-          } else {
-            console.error("Error in adding new farmer");
-          }
-        })
-        .catch((err) => {
-          console.log("error in create new user", err.response.data);
-          dispatch({
-            type: SET_LOADING_FALSE,
-          });
-        });
-    } else {
-      axiosInstance
-        .put(`/farmer/id/${farmerDetails.farmerId}`, {
-          farmerDetails: farmerData,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            console.log("response for updating farmer", res.data);
-            dispatch({
-              type: SET_FARMER_DETAILS,
-              payload: { ...farmerData, farmerId: res.data.farmerId },
-            });
-            navigate("/dashboard/farmerinfo");
+    const { isValid, errors } = validateFarmerAddInput(farmerData)
+    console.log("farmer input Validation", isValid, errors)
+    if (isValid) {
+      dispatch({
+        type: SET_LOADING_TRUE,
+      });
+      console.log("farmerDetails", farmerData);
+      if (!update) {
+        axiosInstance
+          .post("/farmer/create", {
+            farmerDetails: farmerData,
+          })
+          .then((res) => {
+            if (res.status === 200) {
+              console.log("response for create new farmer", res.data);
+              dispatch({
+                type: SET_FARMER_DETAILS,
+                payload: { ...farmerData, farmerId: res.data.farmerId },
+              });
+              dispatch({
+                type: SET_LOADING_FALSE,
+              });
+              navigate("/dashboard/farmerinfo");
+              dispatch({
+                type: SET_SHOW_SNACKBAR_TRUE,
+                payload: {
+                  snackBarMessage: `Farmer Added Successfully`,
+                  snackBarColor: "success",
+                },
+              });
+            } else {
+              console.error("Error in adding new farmer");
+            }
+          })
+          .catch((err) => {
+            console.log("error in create new user", err.response.data);
             dispatch({
               type: SET_LOADING_FALSE,
             });
-            dispatch({
-              type: SET_SHOW_SNACKBAR_TRUE,
-              payload: {
-                snackBarMessage: `Farmer Updated Successfully`,
-                snackBarColor: "success",
-              },
-            });
-          } else {
-            console.error("Error in adding updating farmer");
-          }
-        })
-        .catch((err) => {
-          console.log("error in create new user", err.response.data);
-          dispatch({
-            type: SET_LOADING_FALSE,
           });
-        });
+      } else {
+        axiosInstance
+          .put(`/farmer/id/${farmerDetails.farmerId}`, {
+            farmerDetails: farmerData,
+          })
+          .then((res) => {
+            if (res.status === 200) {
+              console.log("response for updating farmer", res.data);
+              dispatch({
+                type: SET_FARMER_DETAILS,
+                payload: { ...farmerData, farmerId: res.data.farmerId },
+              });
+              navigate("/dashboard/farmerinfo");
+              dispatch({
+                type: SET_LOADING_FALSE,
+              });
+              dispatch({
+                type: SET_SHOW_SNACKBAR_TRUE,
+                payload: {
+                  snackBarMessage: `Farmer Updated Successfully`,
+                  snackBarColor: "success",
+                },
+              });
+            } else {
+              console.error("Error in adding updating farmer");
+            }
+          })
+          .catch((err) => {
+            console.log("error in create new user", err.response.data);
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+          });
+      }
     }
+    setError(errors)
   };
 
   const handleState = (state) => {
@@ -252,12 +259,11 @@ const AddFarmer = () => {
                     required
                     fullWidth
                     id="farmername"
-                    label="Farmer Name/
-                                        முதல் பெயர்"
+                    label="Farmer Name/முதல் பெயர்"
                     autoFocus
                     color="success"
-                    // error={error?.firstName !== undefined}
-                    // helperText={error.firstName}
+                    error={Error?.farmerName !== undefined}
+                    helperText={Error.farmerName}
                     value={farmerData.farmerName}
                     onChange={handleInputChange}
                   />
@@ -272,8 +278,8 @@ const AddFarmer = () => {
                     color="success"
                     value={farmerData.nickName}
                     onChange={handleInputChange}
-                  // error={error?.userName !== undefined}
-                  // helperText={error.userName}
+                    error={Error?.nickName !== undefined}
+                    helperText={Error.nickName}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -286,8 +292,8 @@ const AddFarmer = () => {
                     color="success"
                     value={farmerData.fatherName}
                     onChange={handleInputChange}
-                  // error={error?.userName !== undefined}
-                  // helperText={error.userName}
+                    error={Error?.fatherName !== undefined}
+                    helperText={Error.fatherName}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -307,8 +313,8 @@ const AddFarmer = () => {
                     }}
                     value={farmerData.age}
                     onChange={handleInputChange}
-                  // error={error?.userName !== undefined}
-                  // helperText={error.userName}
+                    error={Error?.age !== undefined}
+                    helperText={Error.age}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -321,6 +327,7 @@ const AddFarmer = () => {
                       id="gender"
                       label="Gender/பாலினம்"
                       value={farmerData.gender}
+                      error={Error?.gender !== undefined}
                       onChange={handleInputChange}
                     // onChange={handleChange}
                     >
@@ -347,8 +354,8 @@ const AddFarmer = () => {
                     }}
                     value={farmerData.phoneNumber}
                     onChange={handleInputChange}
-                  // error={error?.phoneNumber !== undefined}
-                  // helperText={error.phoneNumber}
+                    error={Error?.phoneNumber !== undefined}
+                    helperText={Error.phoneNumber}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -367,8 +374,8 @@ const AddFarmer = () => {
                     }}
                     value={farmerData.whatsappNumber}
                     onChange={handleInputChange}
-                  // error={error?.email !== undefined}
-                  // helperText={error.email}
+                  // error={Error?.email !== undefined}
+                  // helperText={Error.email}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -381,6 +388,7 @@ const AddFarmer = () => {
                       name="residentialType"
                       id="Local/Outsider"
                       label="Local(உள்ளூர்)/Outsider(வெளி நபர்)"
+                      error={Error?.residentialType !== undefined}
                       value={farmerData.residentialType}
                       onChange={handleInputChange}
                     >
@@ -398,6 +406,7 @@ const AddFarmer = () => {
                       name="state"
                       label="State/மாநிலம்"
                       value={farmerData.state}
+                      error={Error?.state !== undefined}
                       onChange={(e) => {
                         handleState(e.target.value);
                         handleInputChange(e);
@@ -418,6 +427,7 @@ const AddFarmer = () => {
                       id="district"
                       label="District/மாவட்டம்"
                       value={farmerData.district}
+                      error={Error?.district !== undefined}
                       onChange={(e) => {
                         handleDistrict(e.target.value);
                         handleInputChange(e);
@@ -439,6 +449,7 @@ const AddFarmer = () => {
                       // value={age}
                       label="Union/ஒன்றியம்"
                       value={farmerData.union}
+                      error={Error?.union !== undefined}
                       onChange={(e) => {
                         handleUnion(e.target.value);
                         handleInputChange(e);
@@ -460,6 +471,7 @@ const AddFarmer = () => {
                       // value={age}
                       label="Panchayat/பஞ்சாயத்து"
                       value={farmerData.panchayat}
+                      error={Error?.panchayat !== undefined}
                       onChange={(e) => {
                         handlePanchayat(e.target.value);
                         handleInputChange(e);
@@ -483,6 +495,7 @@ const AddFarmer = () => {
                       name="village"
                       label="Village(கிராமம்)/Town(நகரம்)"
                       value={farmerData.village}
+                      error={Error?.village !== undefined}
                       onChange={(e) => {
                         handleInputChange(e);
                       }}

@@ -368,7 +368,7 @@ const LiveStockDetails = () => {
             </TableContainer>
           </div>
           <Grid container style={{ justifyContent: "center" }}>
-            <Grid sm={3} marginRight={10}>
+            <Grid item sm={3} marginRight={10}>
               <Button
                 fullWidth
                 onClick={() => navigate("/dashboard/farmerinfo")}
@@ -378,7 +378,7 @@ const LiveStockDetails = () => {
                 Back
               </Button>
             </Grid>
-            <Grid sm={3} marginLeft={10}>
+            <Grid item sm={3} marginLeft={10}>
               <Button
                 onClick={handleSubmit}
                 fullWidth

@@ -413,7 +413,7 @@ const AddFarmer = () => {
                       }}
                     >
                       {States.map((State, index) => (
-                        <MenuItem value={State}>{State}</MenuItem>
+                        <MenuItem key={index} value={State}>{State}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -434,7 +434,7 @@ const AddFarmer = () => {
                       }}
                     >
                       {District.map((district, index) => (
-                        <MenuItem value={district}>{district}</MenuItem>
+                        <MenuItem key={index} value={district}>{district}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -456,7 +456,7 @@ const AddFarmer = () => {
                       }}
                     >
                       {Union.map((union, index) => (
-                        <MenuItem value={union}>{union}</MenuItem>
+                        <MenuItem key={index} value={union}>{union}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -478,7 +478,7 @@ const AddFarmer = () => {
                       }}
                     >
                       {Panchayat.map((panchayat, index) => (
-                        <MenuItem value={panchayat}>{panchayat}</MenuItem>
+                        <MenuItem key={index} value={panchayat}>{panchayat}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -501,7 +501,7 @@ const AddFarmer = () => {
                       }}
                     >
                       {Village.map((village, index) => (
-                        <MenuItem value={village}>{village}</MenuItem>
+                        <MenuItem key={index} value={village}>{village}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>

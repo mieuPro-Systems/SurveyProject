@@ -253,7 +253,7 @@ const LabourDetails = () => {
                       onChange={handleChange}
                     >
                       {workData.map((Value, index) => (
-                        <MenuItem value={keyvalues[index]}>{Value}</MenuItem>
+                        <MenuItem key={index} value={keyvalues[index]}>{Value}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>

@@ -10,7 +10,8 @@ import {
   SET_SELL_DETAILS,
   SET_CROP_DETAILS,
   SET_GARDEN_DETAILS,
-  SET_UPDATE_FARMER
+  SET_UPDATE_FARMER,
+  CLEAR_FARMER_DETAILS
 } from "../../actions/types";
 
 const initialState = {
@@ -101,6 +102,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         farmerUpdate: action.payload
+      }
+    case CLEAR_FARMER_DETAILS:
+      return {
+        ...state, farmers: {
+          ...state.farmers, farmerDetails: {}, landDetails: [], livestockDetails: [],
+          machineDetails: {}, labourDetails: {}, cropDetails: {}, gardenDetails: {}, buyDetails: {}, sellDetails: {}
+        }
       }
     default:
       return state;

@@ -19,7 +19,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AgricultureIcon from "@mui/icons-material/Agriculture";
-import { SET_MACHINE_DETAILS } from "../actions/types";
+import { SET_LOADING_FALSE, SET_LOADING_TRUE, SET_MACHINE_DETAILS, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import axiosInstance from "../utils/axiosInstance";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -49,7 +49,13 @@ const MachineDetails = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const postData = {
+            machineDetails: Machines,
+        };
         if (Machines.length > 0) {
+            dispatch({
+                type: SET_LOADING_TRUE,
+            });
             dispatch({
                 type: SET_MACHINE_DETAILS,
                 payload: Machines,
@@ -66,38 +72,104 @@ const MachineDetails = () => {
                         if (res.status === 200) {
                             console.log("Machine Details Uploaded Successfully", res.data);
                             navigate("/dashboard/farmerinfo");
+                            dispatch({
+                                type: SET_SHOW_SNACKBAR_TRUE,
+                                payload: {
+                                    snackBarMessage: "Machine updated Successfully",
+                                    snackBarColor: "success",
+                                },
+                            });
+                            dispatch({
+                                type: SET_LOADING_FALSE,
+                            });
                         }
                         if (res.status === 400) {
                             console.log("Error", res.data);
                             navigate("/dashboard/farmerinfo");
+                            dispatch({
+                                type: SET_SHOW_SNACKBAR_TRUE,
+                                payload: {
+                                    snackBarMessage: "Something went Wrong",
+                                    snackBarColor: "warning",
+                                },
+                            });
+                            dispatch({
+                                type: SET_LOADING_FALSE,
+                            });
                         }
                     })
                     .catch((err) => {
                         console.log(err)
                         navigate("/dashboard/farmerinfo");
-                    });
-            } else if (state.update === true) {
-                axiosInstance
-                    .put("/machinery/", postData)
-                    .then((res) => {
-                        if (res.status === 200) {
-                            console.log("Machine Details updated Successfully", res.data);
-                            console.log("Machine update ", { ...farmerDetailForUpdate, machineDetails: Machines })
-                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, machineDetails: Machines } })
-                        }
-                        if (res.status === 400) {
-                            console.log("Error", res.data);
-                            console.log("Machine update ", { ...farmerDetailForUpdate, machineDetails: Machines })
-                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, machineDetails: Machines } })
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                        console.log("Machine update ", { ...farmerDetailForUpdate, machineDetails: Machines })
-                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, machineDetails: Machines } })
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Something went Wrong",
+                                snackBarColor: "warning",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
                     });
             }
         }
+        if (state.update === true) {
+            dispatch({
+                type: SET_LOADING_TRUE,
+            });
+            postData.farmerId = state.farmerId
+            axiosInstance
+                .put("/machinery/", postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Machine Details updated Successfully", res.data);
+                        console.log("Machine update ", { ...farmerDetailForUpdate, machineDetails: Machines })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, machineDetails: Machines } })
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Machine updated Successfully",
+                                snackBarColor: "success",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data);
+                        console.log("Machine update ", { ...farmerDetailForUpdate, machineDetails: Machines })
+                        navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Something went Wrong",
+                                snackBarColor: "warning",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                    console.log("Machine update ", { ...farmerDetailForUpdate, machineDetails: Machines })
+                    navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                    dispatch({
+                        type: SET_SHOW_SNACKBAR_TRUE,
+                        payload: {
+                            snackBarMessage: "Something went Wrong",
+                            snackBarColor: "warning",
+                        },
+                    });
+                    dispatch({
+                        type: SET_LOADING_FALSE,
+                    });
+                });
+        }
+
     };
 
     const addtotable = (e) => {

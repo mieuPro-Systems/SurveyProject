@@ -25,7 +25,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
-import { SET_SELL_DETAILS } from "../actions/types";
+import { SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SELL_DETAILS, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -49,14 +49,20 @@ const Sell = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const postData = {
+            sellDetails: SellDetail,
+        };
         if (SellDetail.length > 0) {
+            dispatch({
+                type: SET_LOADING_TRUE,
+            });
             dispatch({
                 type: SET_SELL_DETAILS,
                 payload: SellDetail,
             });
-            const postData = {
-                sellDetails: SellDetail,
-            };
+            // const postData = {
+            //     sellDetails: SellDetail,
+            // };
             console.log("postdata", postData);
             if (state.update === false) {
                 axiosInstance
@@ -64,37 +70,104 @@ const Sell = () => {
                     .then((res) => {
                         if (res.status === 200) {
                             console.log("Uploaded Successfully", res.data);
+                            navigate("/dashboard/farmerinfo");
+                            dispatch({
+                                type: SET_SHOW_SNACKBAR_TRUE,
+                                payload: {
+                                    snackBarMessage: "Sell Details Added Successfully",
+                                    snackBarColor: "success",
+                                },
+                            });
+                            dispatch({
+                                type: SET_LOADING_FALSE,
+                            });
                         }
                         if (res.status === 400) {
                             console.log("Error", res.data);
-                        }
-                    })
-                    .catch((err) =>
-                        console.log("Error while Uploading liveStock details", err)
-                    );
-            } else if (state.update === true) {
-                axiosInstance
-                    .put("/sell/", postData)
-                    .then((res) => {
-                        if (res.status === 200) {
-                            console.log("Updated Successfully", res.data);
-                            console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
-                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, sellDetails: SellDetail } })
-                        }
-                        if (res.status === 400) {
-                            console.log("Error", res.data);
-                            console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
-                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, sellDetails: SellDetail } })
+                            navigate("/dashboard/farmerinfo");
+                            dispatch({
+                                type: SET_SHOW_SNACKBAR_TRUE,
+                                payload: {
+                                    snackBarMessage: "Error while adding Sell details",
+                                    snackBarColor: "warning",
+                                },
+                            });
+                            dispatch({
+                                type: SET_LOADING_FALSE,
+                            });
                         }
                     })
                     .catch((err) => {
-                        console.log("Error while Updating liveStock details", err)
-                        console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
-                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, sellDetails: SellDetail } })
+                        console.log("Error while Uploading liveStock details", err)
+                        navigate("/dashboard/farmerinfo");
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Error while adding Sell details",
+                                snackBarColor: "warning",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
                     }
                     );
             }
-            navigate("/dashboard/farmerinfo");
+        }
+        if (state.update === true) {
+            dispatch({
+                type: SET_LOADING_TRUE,
+            });
+            axiosInstance
+                .put("/sell/", postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Updated Successfully", res.data);
+                        console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, sellDetails: SellDetail } })
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Sell Details Added Successfully",
+                                snackBarColor: "success",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data);
+                        console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
+                        navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Error while adding Sell details",
+                                snackBarColor: "warning",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.log("Error while Updating liveStock details", err)
+                    console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
+                    navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                    dispatch({
+                        type: SET_SHOW_SNACKBAR_TRUE,
+                        payload: {
+                            snackBarMessage: "Error while adding Sell details",
+                            snackBarColor: "warning",
+                        },
+                    });
+                    dispatch({
+                        type: SET_LOADING_FALSE,
+                    });
+                }
+                );
         }
     };
 

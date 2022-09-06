@@ -25,7 +25,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
-import { SET_CROP_DETAILS } from "../actions/types";
+import { SET_CROP_DETAILS, SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import GrassIcon from "@mui/icons-material/Grass";
 import validateCropInput from "../Validation/Crop";
 
@@ -49,7 +49,13 @@ const CropDetails = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const postData = {
+            cropDetails: CropsDetail,
+        };
         if (CropsDetail.length > 0) {
+            dispatch({
+                type: SET_LOADING_TRUE,
+            });
             dispatch({
                 type: SET_CROP_DETAILS,
                 payload: CropsDetail,
@@ -65,37 +71,106 @@ const CropDetails = () => {
                     .then((res) => {
                         if (res.status === 200) {
                             console.log("Uploaded Successfully", res.data);
+                            navigate("/dashboard/farmerinfo");
+                            dispatch({
+                                type: SET_SHOW_SNACKBAR_TRUE,
+                                payload: {
+                                    snackBarMessage: "Crop Details Added Successfully",
+                                    snackBarColor: "success",
+                                },
+                            });
+                            dispatch({
+                                type: SET_LOADING_FALSE,
+                            });
                         }
                         if (res.status === 400) {
                             console.log("Error", res.data);
-                        }
-                    })
-                    .catch((err) =>
-                        console.log("Error while Uploading liveStock details", err)
-                    );
-            } else if (state.update === true) {
-                axiosInstance
-                    .put("/crop/", postData)
-                    .then((res) => {
-                        if (res.status === 200) {
-                            console.log("Uploaded Successfully", res.data);
-                            console.log("Crop update ", { ...farmerDetailForUpdate, cropDetails: CropsDetail })
-                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, cropDetails: CropsDetail } })
-                        }
-                        if (res.status === 400) {
-                            console.log("Error", res.data);
-                            console.log("Crop update ", { ...farmerDetailForUpdate, cropDetails: CropsDetail })
-                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, cropDetails: CropsDetail } })
+                            navigate("/dashboard/farmerinfo");
+                            dispatch({
+                                type: SET_SHOW_SNACKBAR_TRUE,
+                                payload: {
+                                    snackBarMessage: "Error while adding Labour details",
+                                    snackBarColor: "warning",
+                                },
+                            });
+                            dispatch({
+                                type: SET_LOADING_FALSE,
+                            });
                         }
                     })
                     .catch((err) => {
                         console.log("Error while Uploading liveStock details", err)
-                        console.log("Crop update ", { ...farmerDetailForUpdate, cropDetails: CropsDetail })
-                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, cropDetails: CropsDetail } })
+                        navigate("/dashboard/farmerinfo");
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Error while adding Labour details",
+                                snackBarColor: "warning",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
                     }
                     );
             }
-            navigate("/dashboard/farmerinfo");
+        }
+        if (state.update === true) {
+            dispatch({
+                type: SET_LOADING_TRUE,
+            });
+            postData.farmerId = state.farmerId
+            console.log("postData", postData)
+            axiosInstance
+                .put("/crop/", postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Uploaded Successfully", res.data);
+                        console.log("Crop update ", { ...farmerDetailForUpdate, cropDetails: CropsDetail })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, cropDetails: CropsDetail } })
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Crop Details Added Successfully",
+                                snackBarColor: "success",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data);
+                        console.log("Crop update ", { ...farmerDetailForUpdate, cropDetails: CropsDetail })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, cropDetails: CropsDetail } })
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Error while adding Labour details",
+                                snackBarColor: "warning",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.log("Error while Uploading liveStock details", err)
+                    console.log("Crop update ", { ...farmerDetailForUpdate, cropDetails: CropsDetail })
+                    navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, cropDetails: CropsDetail } })
+                    dispatch({
+                        type: SET_SHOW_SNACKBAR_TRUE,
+                        payload: {
+                            snackBarMessage: "Error while adding Labour details",
+                            snackBarColor: "warning",
+                        },
+                    });
+                    dispatch({
+                        type: SET_LOADING_FALSE,
+                    });
+                }
+                );
         }
     };
 

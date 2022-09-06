@@ -152,7 +152,7 @@ const AddFarmer = () => {
 
   const handleState = (state) => {
     console.log("StateDropDown", state);
-    axiosInstance.get(`/farmer/districts?state=${state}`).then((res) => {
+    axiosInstance.get(`/farmer/districts/${state}`).then((res) => {
       if (res.status === 200) {
         console.log("DistrictDropDown", res.data);
         setDistrict(res.data);
@@ -161,7 +161,7 @@ const AddFarmer = () => {
   };
 
   const handleDistrict = (district) => {
-    axiosInstance.get(`/farmer/unions?district=${district}`).then((res) => {
+    axiosInstance.get(`/farmer/unions/${district}`).then((res) => {
       if (res.status === 200) {
         console.log("UnionDropDown", res.data);
         setUnion(res.data);
@@ -170,7 +170,7 @@ const AddFarmer = () => {
   };
 
   const handleUnion = (union) => {
-    axiosInstance.get(`/farmer/panchayats?union=${union}`).then((res) => {
+    axiosInstance.get(`/farmer/panchayats/${union}`).then((res) => {
       if (res.status === 200) {
         console.log("PanchayatDropdown", res.data);
         setPanchayat(res.data);
@@ -179,7 +179,7 @@ const AddFarmer = () => {
   };
 
   const handlePanchayat = (panchayat) => {
-    axiosInstance.get(`/farmer/villages?panchayat=${panchayat}`).then((res) => {
+    axiosInstance.get(`/farmer/villages/${panchayat}`).then((res) => {
       if (res.status === 200) {
         console.log("VillageDropdown", res.data);
         setVillage(res.data);

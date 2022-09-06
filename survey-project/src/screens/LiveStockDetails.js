@@ -25,7 +25,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import PetsIcon from "@mui/icons-material/Pets";
-import { SET_LIVESTOCK_DETAILS } from "../actions/types";
+import { SET_LIVESTOCK_DETAILS, SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import axiosInstance from "../utils/axiosInstance";
 import validateLiveStockInput from "../Validation/LiveStock";
 
@@ -48,16 +48,22 @@ const LiveStockDetails = () => {
   };
 
   const handleSubmit = (e) => {
+    const postData = {
+      livestockDetails: LiveStocks
+    }
     e.preventDefault();
     if (LiveStocks.length > 0) {
+      dispatch({
+        type: SET_LOADING_TRUE,
+      });
       dispatch({
         type: SET_LIVESTOCK_DETAILS,
         payload: LiveStocks,
       });
       console.log("farmersredux", farmers);
-      const postData = {
-        livestockDetails: LiveStocks
-      }
+      // const postData = {
+      //   livestockDetails: LiveStocks
+      // }
       console.log("postdata", postData)
       if (state.update === false) {
         axiosInstance.post('/livestock/create', postData)
@@ -65,33 +71,97 @@ const LiveStockDetails = () => {
             if (res.status === 200) {
               console.log("Uploaded Successfully", res.data);
               navigate('/dashboard/farmerinfo')
+              dispatch({
+                type: SET_SHOW_SNACKBAR_TRUE,
+                payload: {
+                  snackBarMessage: "LiveStock updated Successfully",
+                  snackBarColor: "success",
+                },
+              });
+              dispatch({
+                type: SET_LOADING_FALSE,
+              });
             }
             if (res.status === 400) {
               console.log("Error", res.data);
               navigate('/dashboard/farmerinfo')
+              dispatch({
+                type: SET_SHOW_SNACKBAR_TRUE,
+                payload: {
+                  snackBarMessage: "Something went Wrong",
+                  snackBarColor: "warning",
+                },
+              });
+              dispatch({
+                type: SET_LOADING_FALSE,
+              });
             }
           }).catch(err => {
             console.log("Error while Uploading liveStock details", err)
             navigate('/dashboard/farmerinfo')
-          })
-      } else if (state.update) {
-        axiosInstance.put('/livestock/', postData)
-          .then((res) => {
-            if (res.status === 200) {
-              console.log("Updated Successfully", res.data);
-              console.log("livestock update ", { ...farmerDetailForUpdate, livestockDetails: LiveStocks })
-              navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, livestockDetails: LiveStocks } })
-            }
-            if (res.status === 400) {
-              console.log("Error", res.data);
-              navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, livestockDetails: LiveStocks } })
-            }
-          }).catch(err => {
-            console.log("Error while Updating liveStock details", err)
-            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, livestockDetails: LiveStocks } })
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Something went Wrong",
+                snackBarColor: "warning",
+              },
+            });
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
           })
       }
-
+    }
+    if (state.update) {
+      dispatch({
+        type: SET_LOADING_TRUE,
+      });
+      postData.farmerId = state.farmerId
+      axiosInstance.put('/livestock/', postData)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Updated Successfully", res.data);
+            console.log("livestock update ", { ...farmerDetailForUpdate, livestockDetails: LiveStocks })
+            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, livestockDetails: LiveStocks } })
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "LiveStock updated Successfully",
+                snackBarColor: "success",
+              },
+            });
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+          }
+          if (res.status === 400) {
+            console.log("Error", res.data);
+            navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Something went Wrong",
+                snackBarColor: "warning",
+              },
+            });
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+          }
+        }).catch(err => {
+          console.log("Error while Updating liveStock details", err)
+          navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+          dispatch({
+            type: SET_SHOW_SNACKBAR_TRUE,
+            payload: {
+              snackBarMessage: "Something went Wrong",
+              snackBarColor: "warning",
+            },
+          });
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
+        })
     }
   }
 

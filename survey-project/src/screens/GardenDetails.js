@@ -25,7 +25,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
-import { SET_GARDEN_DETAILS } from "../actions/types";
+import { SET_GARDEN_DETAILS, SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import YardIcon from "@mui/icons-material/Yard";
 import validateGardenInput from "../Validation/Garden";
 
@@ -47,15 +47,21 @@ const GardenDetails = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const postData = {
+            gardenDetails: GardenDetail,
+        };
         if (GardenDetail.length > 0) {
+            dispatch({
+                type: SET_LOADING_TRUE,
+            });
             dispatch({
                 type: SET_GARDEN_DETAILS,
                 payload: GardenDetail,
             });
             console.log("farmersredux", farmers);
-            const postData = {
-                gardenDetails: GardenDetail,
-            };
+            // const postData = {
+            //     gardenDetails: GardenDetail,
+            // };
             console.log("postdata", postData);
             if (state.update === false) {
                 axiosInstance
@@ -63,37 +69,102 @@ const GardenDetails = () => {
                     .then((res) => {
                         if (res.status === 200) {
                             console.log("Uploaded Successfully", res.data);
+                            navigate("/dashboard/farmerinfo");
+                            dispatch({
+                                type: SET_SHOW_SNACKBAR_TRUE,
+                                payload: {
+                                    snackBarMessage: "Garden Details Added Successfully",
+                                    snackBarColor: "success",
+                                },
+                            });
+                            dispatch({
+                                type: SET_LOADING_FALSE,
+                            });
                         }
                         if (res.status === 400) {
                             console.log("Error", res.data);
-                        }
-                    })
-                    .catch((err) =>
-                        console.log("Error while Uploading liveStock details", err)
-                    );
-            } else if (state.update === true) {
-                axiosInstance
-                    .put("/garden/", postData)
-                    .then((res) => {
-                        if (res.status === 200) {
-                            console.log("Uploaded Successfully", res.data);
-                            console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
-                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, gardenDetails: GardenDetail } })
-                        }
-                        if (res.status === 400) {
-                            console.log("Error", res.data);
-                            console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
-                            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, gardenDetails: GardenDetail } })
+                            navigate("/dashboard/farmerinfo");
+                            dispatch({
+                                type: SET_SHOW_SNACKBAR_TRUE,
+                                payload: {
+                                    snackBarMessage: "Error while adding Garden details",
+                                    snackBarColor: "warning",
+                                },
+                            });
+                            dispatch({
+                                type: SET_LOADING_FALSE,
+                            });
                         }
                     })
                     .catch((err) => {
                         console.log("Error while Uploading liveStock details", err)
-                        console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
-                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, gardenDetails: GardenDetail } })
+                        navigate("/dashboard/farmerinfo");
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Error while adding Garden details",
+                                snackBarColor: "warning",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
                     }
                     );
             }
-            navigate("/dashboard/farmerinfo");
+        }
+        if (state.update === true) {
+            postData.farmerId = state.farmerId
+            axiosInstance
+                .put("/garden/", postData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        console.log("Uploaded Successfully", res.data);
+                        console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, gardenDetails: GardenDetail } })
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Garden Details Added Successfully",
+                                snackBarColor: "success",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
+                    }
+                    if (res.status === 400) {
+                        console.log("Error", res.data);
+                        console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
+                        navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                        dispatch({
+                            type: SET_SHOW_SNACKBAR_TRUE,
+                            payload: {
+                                snackBarMessage: "Error while adding Garden details",
+                                snackBarColor: "warning",
+                            },
+                        });
+                        dispatch({
+                            type: SET_LOADING_FALSE,
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.log("Error while Uploading liveStock details", err)
+                    console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
+                    navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                    dispatch({
+                        type: SET_SHOW_SNACKBAR_TRUE,
+                        payload: {
+                            snackBarMessage: "Error while adding Garden details",
+                            snackBarColor: "warning",
+                        },
+                    });
+                    dispatch({
+                        type: SET_LOADING_FALSE,
+                    });
+                }
+                );
         }
     };
 

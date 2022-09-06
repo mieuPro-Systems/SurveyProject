@@ -54,12 +54,12 @@ const ModalLandDetailsContent = (props) => {
             supervisorId:
               landDetail.supervisorId.length > 1
                 ? landDetail.supervisorId
-                : "NA",
-            ownerId: landDetail.ownerId.length > 1 ? landDetail.ownerId : "NA",
+                : "None",
+            ownerId: landDetail.ownerId.length > 1 ? landDetail.ownerId : "None",
             landId: landDetail.landId,
             category: "Available for Lease",
             area: landDetail.area,
-            addons: landDetail.addons === "None" ? "NA" : landDetail.addons,
+            addons: landDetail.addons,
           });
           slNo += 1;
         }

@@ -24,6 +24,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  CLEAR_FARMER_DETAILS,
   SET_CURRENT_USER,
   SET_LOADING_FALSE,
   SET_LOADING_TRUE,
@@ -119,6 +120,8 @@ export default function DrawerComponent() {
   const EmployeeRoutes = ["addfarmer", "viewfarmer"];
 
   const { loggedInAs } = useSelector((state) => state.auth);
+  const { farmers } = useSelector((state) => state.farmer);
+  // console.log("farmerID state", farmers?.farmerDetails.farmerId)
 
   // console.log("sd", loggedInAs);
 
@@ -176,6 +179,7 @@ export default function DrawerComponent() {
     });
   };
 
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -196,20 +200,51 @@ export default function DrawerComponent() {
           <Typography variant="h6" noWrap component="div">
             FaFaCo.
           </Typography>
-          <div style={{ marginRight: 5, float: "right", marginLeft: "auto" }}>
+          <div
+            style={{
+              display: "flex",
+              float: "right",
+              position: "absolute",
+              right: "10px",
+              padding: "25px"
+            }}
+          >
+            {(farmers?.farmerDetails?.farmerId) ? (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  marginTop: "15px",
+                  marginRight: "20px"
+                }}
+              >
+                <p style={{ fontSize: "11px" }}>Farmer Name: {farmers.farmerDetails.farmerName}</p>
+                <p style={{ fontSize: "11px", marginTop: "-5px" }}>
+                  Farmer ID: {farmers.farmerDetails.farmerId}
+                </p>
+              </div>
+            ) : null}
+            <p
+              style={{
+                fontSize: "11px",
+                width: "40px",
+                marginLeft: "10px",
+                marginTop: "10px",
+              }}
+            >
+              Logged in as {loggedInAs}
+            </p>
             <IconButton
               color="inherit"
               aria-label="open drawer"
               onClick={logoutClickHandler}
               edge="end"
-              style={{ marginRight: 5, float: "right", marginLeft: "auto" }}
               sx={{
                 ...(open && { display: "none" }),
               }}
             >
               <LogoutIcon />
             </IconButton>
-            <p style={{ fontSize: "11px" }}>Logged in as {loggedInAs}</p>
           </div>
         </Toolbar>
       </AppBar>
@@ -242,6 +277,9 @@ export default function DrawerComponent() {
                   navigate(SideRoutes[index]);
                 }
                 setColor(index);
+                dispatch({
+                  type: CLEAR_FARMER_DETAILS
+                })
               }}
             >
               <ListItemIcon

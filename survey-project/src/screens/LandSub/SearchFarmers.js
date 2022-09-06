@@ -16,7 +16,6 @@ import {
   SET_LOADING_TRUE,
 } from "../../actions/types";
 import ModalLandDetailsContent from "./ModalLandDetailsContent";
-import { Link } from "react-router-dom";
 
 const SearchFarmers = () => {
   const [searchText, setSearchText] = useState("");

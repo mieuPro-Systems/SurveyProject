@@ -19,7 +19,7 @@ import Paper from "@mui/material/Paper";
 import { useLocation, useNavigate } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
-import { SET_LABOUR_DETAILS, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
+import { SET_LABOUR_DETAILS, SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import axiosInstance from "../utils/axiosInstance";
 
 const theme = createTheme();
@@ -97,23 +97,40 @@ const LabourDetails = () => {
       type: SET_LABOUR_DETAILS,
       payload: ConfiguredData,
     });
+    const postData = {
+      labourDetails: ConfiguredData,
+    };
     if (chipData.length > 0) {
       console.log("Reduc labour", farmers);
-      const postData = {
-        labourDetails: ConfiguredData,
-      };
+      // const postData = {
+      //   labourDetails: ConfiguredData,
+      // };
       console.log("postData", postData);
       if (state.update === false) {
+        dispatch({
+          type: SET_LOADING_TRUE,
+        });
         axiosInstance
           .post("/labour/create", postData)
           .then((res) => {
             if (res.status === 200) {
               console.log("Uploaded Successfully(LabourDetails)", res.data);
               navigate('/dashboard/farmerinfo')
+              dispatch({
+                type: SET_SHOW_SNACKBAR_TRUE,
+                payload: {
+                  snackBarMessage: "Labour Details Added Successfully",
+                  snackBarColor: "success",
+                },
+              });
+              dispatch({
+                type: SET_LOADING_FALSE,
+              });
             }
 
             if (res.status === 400) {
               console.log("error for jeyendran", res.data);
+              navigate('/dashboard/farmerinfo')
               dispatch({
                 type: SET_SHOW_SNACKBAR_TRUE,
                 payload: {
@@ -121,10 +138,14 @@ const LabourDetails = () => {
                   snackBarColor: "warning",
                 },
               });
+              dispatch({
+                type: SET_LOADING_FALSE,
+              });
             }
           })
           .catch((err) => {
             console.log("LabourDetails", err);
+            navigate('/dashboard/farmerinfo')
             dispatch({
               type: SET_SHOW_SNACKBAR_TRUE,
               payload: {
@@ -132,40 +153,66 @@ const LabourDetails = () => {
                 snackBarColor: "warning",
               },
             });
-          });
-      } else if (state.update === true) {
-        axiosInstance
-          .put("/labour/", postData)
-          .then((res) => {
-            if (res.status === 200) {
-              console.log("Updated Successfully(LabourDetails)", res.data);
-              console.log("Labour update ", { ...farmerDetailForUpdate, labourDetails: ConfiguredData })
-              navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, labourDetails: ConfiguredData } })
-            }
-
-            if (res.status === 400) {
-              console.log("error for jeyendran", res.data);
-              dispatch({
-                type: SET_SHOW_SNACKBAR_TRUE,
-                payload: {
-                  snackBarMessage: "Error while adding Labour details",
-                  snackBarColor: "warning",
-                },
-              });
-            }
-          })
-          .catch((err) => {
-            console.log("LabourDetails", err);
             dispatch({
-              type: SET_SHOW_SNACKBAR_TRUE,
-              payload: {
-                snackBarMessage: "Error while adding Labour details",
-                snackBarColor: "warning",
-              },
+              type: SET_LOADING_FALSE,
             });
           });
       }
     }
+    if (state.update === true) {
+      dispatch({
+        type: SET_LOADING_TRUE,
+      });
+      axiosInstance
+        .put("/labour/", postData)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Updated Successfully(LabourDetails)", res.data);
+            console.log("Labour update ", { ...farmerDetailForUpdate, labourDetails: ConfiguredData })
+            navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, labourDetails: ConfiguredData } })
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Labour Details Added Successfully",
+                snackBarColor: "success",
+              },
+            });
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+          }
+
+          if (res.status === 400) {
+            console.log("error for jeyendran", res.data);
+            navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+            dispatch({
+              type: SET_SHOW_SNACKBAR_TRUE,
+              payload: {
+                snackBarMessage: "Error while adding Labour details",
+                snackBarColor: "warning",
+              },
+            });
+            dispatch({
+              type: SET_LOADING_FALSE,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log("LabourDetails", err);
+          navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+          dispatch({
+            type: SET_SHOW_SNACKBAR_TRUE,
+            payload: {
+              snackBarMessage: "Error while adding Labour details",
+              snackBarColor: "warning",
+            },
+          });
+          dispatch({
+            type: SET_LOADING_FALSE,
+          });
+        });
+    }
+
   };
 
   const handleChange = (e) => {

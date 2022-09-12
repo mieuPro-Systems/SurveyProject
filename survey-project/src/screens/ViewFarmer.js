@@ -9,7 +9,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux/es/exports";
-import { SET_ALL_FARMERS, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
+import { SET_ALL_FARMERS, SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import AlertDialog from "../components/common/Modal";
 
 const ViewFarmers = () => {
@@ -288,22 +288,30 @@ const ViewFarmers = () => {
   };
 
   useEffect(() => {
-    const fetchUser = () => {
-      axiosInstance
-        .get("/farmer/all")
-        .then((res) => {
-          console.log("Response for getting farmers", res);
-          dispatch({
-            type: SET_ALL_FARMERS,
-            payload: res.data,
-          });
-          setFarmersDataToRender(addedFarmers);
-        })
-        .catch((err) =>
-          console.error("Error in getting farmer", err.response.data)
-        );
-    };
-    fetchUser();
+    dispatch({
+      type: SET_LOADING_TRUE
+    });
+    axiosInstance
+      .get("/farmer/all")
+      .then((res) => {
+        console.log("Response for getting farmers", res);
+        dispatch({
+          type: SET_ALL_FARMERS,
+          payload: res.data,
+        });
+        setFarmersDataToRender(addedFarmers);
+        dispatch({
+          type: SET_LOADING_FALSE
+        });
+      })
+      .catch((err) => {
+        console.error("Error in getting farmer", err.response.data)
+        dispatch({
+          type: SET_LOADING_FALSE
+        });
+      }
+      );
+    // fetchUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

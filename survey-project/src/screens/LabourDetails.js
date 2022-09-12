@@ -359,7 +359,13 @@ const LabourDetails = () => {
             <Grid sm={3} marginRight={10}>
               <Button
                 fullWidth
-                onClick={() => navigate("/dashboard/farmerinfo")}
+                onClick={() => {
+                  if (state.update) {
+                    navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                  } else {
+                    navigate("/dashboard/farmerinfo")
+                  }
+                }}
                 variant="contained"
                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
               >

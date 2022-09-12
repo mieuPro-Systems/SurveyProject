@@ -28,6 +28,7 @@ import PetsIcon from "@mui/icons-material/Pets";
 import { SET_LIVESTOCK_DETAILS, SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import axiosInstance from "../utils/axiosInstance";
 import validateLiveStockInput from "../Validation/LiveStock";
+import Tables from "../components/screens/Tables";
 
 const theme = createTheme();
 
@@ -41,6 +42,8 @@ const LiveStockDetails = () => {
   const location = useLocation();
   const { state } = location;
   const { farmerDetailForUpdate } = state
+  const Headers = ["Place", "Type", "Breed", "Name", "Count", "Season"]
+  const Keys = ["place", "type", "breed", "name", "count", "season"]
   console.log("livestock details state", state);
 
   const handleChange = (e) => {
@@ -371,77 +374,20 @@ const LiveStockDetails = () => {
         </Container>
         <Container maxWidth="lg">
           <div>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell align="center">S.No</StyledTableCell>
-                    <StyledTableCell align="center">Place</StyledTableCell>
-                    <StyledTableCell align="center">Type</StyledTableCell>
-                    <StyledTableCell align="center">Breed</StyledTableCell>
-                    <StyledTableCell align="center">Name</StyledTableCell>
-                    <StyledTableCell align="center">
-                      Count (Nos)
-                    </StyledTableCell>
-                    <StyledTableCell align="center">Season</StyledTableCell>
-                    <StyledTableCell align="center"></StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {LiveStocks.length > 0 &&
-                    LiveStocks.map((LiveStock, index) => (
-                      <StyledTableRow key={index + 1}>
-                        <StyledTableCell
-                          align="center"
-                          component="th"
-                          scope="row"
-                        >
-                          {index + 1}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {LiveStock.place}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {LiveStock.type}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {LiveStock.breed}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {LiveStock.name}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {LiveStock.count}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
-                          {LiveStock.season}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="left"
-                          onClick={() => {
-                            setLiveStocks((prevValues) =>
-                              prevValues.filter(
-                                (value, prevIndex) => prevIndex !== index
-                              )
-                            );
-                          }}
-                        >
-                          {<HighlightOffIcon style={{ cursor: "pointer" }} />}
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                </TableBody>
-              </Table>
-              {LiveStocks.length === 0 && (
-                <p style={{ textAlign: "center" }}>No records Added</p>
-              )}
-            </TableContainer>
+            <Tables header={Headers} body={LiveStocks} statevariable={LiveStocks}
+              setstatevariable={setLiveStocks} keys={Keys} />
           </div>
           <Grid container style={{ justifyContent: "center" }}>
             <Grid item sm={3} marginRight={10}>
               <Button
                 fullWidth
-                onClick={() => navigate("/dashboard/farmerinfo")}
+                onClick={() => {
+                  if (state.update) {
+                    navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                  } else {
+                    navigate("/dashboard/farmerinfo")
+                  }
+                }}
                 variant="contained"
                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
               >

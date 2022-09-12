@@ -33,7 +33,8 @@ const AddFarmer = () => {
   const navigate = useNavigate();
   const location = useLocation();
   // console.log("location.state", location.state);
-  const { update, farmerDetails } = location.state;
+  const { update, farmerDetailForUpdate } = location.state;
+  const farmerDetails = update ? farmerDetailForUpdate.farmerDetails : ""
   console.log("update", update, "farmerDetails: ", farmerDetails);
   const [farmerData, setFarmerData] = useState({
     farmerName: update ? farmerDetails.farmerName : "",
@@ -124,7 +125,7 @@ const AddFarmer = () => {
                 type: SET_FARMER_DETAILS,
                 payload: { ...farmerData, farmerId: res.data.farmerId },
               });
-              navigate("/dashboard/farmerinfo");
+              navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, farmerDetails: { ...farmerData, farmerId: farmerDetails.farmerId } } })
               dispatch({
                 type: SET_LOADING_FALSE,
               });
@@ -137,6 +138,17 @@ const AddFarmer = () => {
               });
             } else {
               console.error("Error in adding updating farmer");
+              navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate } })
+              dispatch({
+                type: SET_SHOW_SNACKBAR_TRUE,
+                payload: {
+                  snackBarMessage: `Error while Updating Farmer Detail`,
+                  snackBarColor: "warning",
+                },
+              });
+              dispatch({
+                type: SET_LOADING_FALSE,
+              });
             }
           })
           .catch((err) => {

@@ -28,6 +28,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
 import validateBuyInput from "../Validation/BuyValidation";
+import Tables from "../components/screens/Tables";
 
 const theme = createTheme();
 
@@ -43,6 +44,8 @@ const Buy = () => {
     const location = useLocation();
     const { state } = location;
     const { farmerDetailForUpdate } = state
+    const Headers = ["Requirement", "Name", "Brand/Variety", "Quantity", "Date"]
+    const Keys = ["requirement", "name", "brandOrVariety", "quantity", "date"]
     console.log("buy details state", state);
 
     const handleSubmit = (e) => {
@@ -115,6 +118,7 @@ const Buy = () => {
             dispatch({
                 type: SET_LOADING_TRUE
             });
+            postData.farmerId = state.farmerId
             axiosInstance
                 .put("/buy/", postData)
                 .then((res) => {
@@ -349,7 +353,9 @@ const Buy = () => {
                         </Grid>
                     </Box>
                     <div>
-                        <TableContainer component={Paper}>
+                        <Tables header={Headers} body={BuyDetail} statevariable={BuyDetail}
+                            setstatevariable={setBuyDetail} keys={Keys} />
+                        {/* <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                                 <TableHead>
                                     <TableRow>
@@ -381,13 +387,19 @@ const Buy = () => {
                                 </TableBody>
                             </Table>
                             {BuyDetail.length === 0 && <p style={{ textAlign: 'center' }}>No records  Added</p>}
-                        </TableContainer>
+                        </TableContainer> */}
                     </div>
                     <Grid container style={{ justifyContent: "center" }}>
                         <Grid sm={3} marginRight={10}>
                             <Button
                                 fullWidth
-                                onClick={() => navigate('/dashboard/farmerinfo')}
+                                onClick={() => {
+                                    if (state.update) {
+                                        navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                                    } else {
+                                        navigate("/dashboard/farmerinfo")
+                                    }
+                                }}
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
                             >

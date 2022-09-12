@@ -5,7 +5,7 @@ const Navbar = () => {
   return (
     <div>
       <div className="navBar container">
-        <div className="navLogo">FaFaCo.</div>
+        <div className="navLogo">FaFaCo</div>
         <div className="navLink navLinks">
           <a href="/#">Home</a>
           <a href="/#">Documents</a>

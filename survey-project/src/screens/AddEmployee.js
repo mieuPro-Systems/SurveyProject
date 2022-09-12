@@ -124,6 +124,10 @@ export default function AddEmployeeScreen() {
                   color="success"
                   error={error?.firstName !== undefined}
                   helperText={error.firstName}
+                  onInput={(e) => {
+                    setError({})
+                    e.target.value = (e.target.value).toString().slice(0, 40);
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -136,6 +140,10 @@ export default function AddEmployeeScreen() {
                   color="success"
                   error={error?.lastName !== undefined}
                   helperText={error.lastName}
+                  onInput={(e) => {
+                    setError({})
+                    e.target.value = (e.target.value).toString().slice(0, 40);
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -149,6 +157,10 @@ export default function AddEmployeeScreen() {
                   color="success"
                   error={error?.userName !== undefined}
                   helperText={error.userName}
+                  onInput={(e) => {
+                    setError({})
+                    e.target.value = (e.target.value).toString().slice(0, 40);
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -162,6 +174,7 @@ export default function AddEmployeeScreen() {
                   color="success"
                   type="number"
                   onInput={(e) => {
+                    setError({})
                     e.target.value = Math.max(0, parseInt(e.target.value))
                       .toString()
                       .slice(0, 11);
@@ -180,6 +193,10 @@ export default function AddEmployeeScreen() {
                   color="success"
                   error={error?.email !== undefined}
                   helperText={error.email}
+                  onInput={(e) => {
+                    setError({})
+                    e.target.value = (e.target.value).toString().slice(0, 40);
+                  }}
                 />
               </Grid>
             </Grid>

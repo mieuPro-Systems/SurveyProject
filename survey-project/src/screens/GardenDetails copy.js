@@ -25,51 +25,55 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
-import { SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SELL_DETAILS, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import moment from "moment";
-import SellIcon from "@mui/icons-material/Sell";
-import validateSellInput from "../Validation/SellValidation";
+import { SET_GARDEN_DETAILS, SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
+import YardIcon from "@mui/icons-material/Yard";
+import validateGardenInput from "../Validation/Garden";
 import Tables from "../components/screens/Tables";
+import { PutRequest } from "../utils/axiosHandler"
 
 const theme = createTheme();
 
-const Sell = () => {
+
+const GardenDetails = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { farmers } = useSelector((state) => state.farmer);
+    const [GardenDetail, setGardenDetail] = useState([]);
+    const [Type, setType] = useState("");
+    const [Organic, setOrganic] = useState("");
+    const [Error, setError] = useState({});
     const location = useLocation();
     const { state } = location;
     const { farmerDetailForUpdate } = state
-    const [SellDetail, setSellDetail] = useState([]);
-    const [Datevalue, setDateValue] = useState(null);
-    const [Organic, setOrganic] = useState("");
-    const [Error, setError] = useState({});
-    const Headers = ["Product Name", "Variety", "Organic", "Quantity", "Price", "Date"]
-    const Keys = ["productName", "variety", "organic", "quantity", "price", "date"]
+    const Headers = ["Type", "Name", "Variety", "Brand", "Area", "Age", "Count", "Organic", "Selling Period"]
+    const Keys = ["type", "name", "variety", "brand", "area", "age", "count", "organic", "sellingPeriod"]
+    console.log("Garden details state", state);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const postData = {
-            sellDetails: SellDetail,
+            gardenDetails: GardenDetail,
         };
-        if (SellDetail.length > 0) {
+        const postInfo = {
+            route: "",
+            message: "Garden Details"
+        }
+        if (GardenDetail.length > 0) {
             dispatch({
                 type: SET_LOADING_TRUE,
             });
             dispatch({
-                type: SET_SELL_DETAILS,
-                payload: SellDetail,
+                type: SET_GARDEN_DETAILS,
+                payload: GardenDetail,
             });
+            console.log("farmersredux", farmers);
             // const postData = {
-            //     sellDetails: SellDetail,
+            //     gardenDetails: GardenDetail,
             // };
             console.log("postdata", postData);
             if (state.update === false) {
                 axiosInstance
-                    .post("/sell/product", postData)
+                    .post("/garden/create", postData)
                     .then((res) => {
                         if (res.status === 200) {
                             console.log("Uploaded Successfully", res.data);
@@ -77,7 +81,7 @@ const Sell = () => {
                             dispatch({
                                 type: SET_SHOW_SNACKBAR_TRUE,
                                 payload: {
-                                    snackBarMessage: "Sell Details Added Successfully",
+                                    snackBarMessage: "Garden Details Added Successfully",
                                     snackBarColor: "success",
                                 },
                             });
@@ -91,7 +95,7 @@ const Sell = () => {
                             dispatch({
                                 type: SET_SHOW_SNACKBAR_TRUE,
                                 payload: {
-                                    snackBarMessage: "Error while adding Sell details",
+                                    snackBarMessage: "Error while adding Garden details",
                                     snackBarColor: "warning",
                                 },
                             });
@@ -106,7 +110,7 @@ const Sell = () => {
                         dispatch({
                             type: SET_SHOW_SNACKBAR_TRUE,
                             payload: {
-                                snackBarMessage: "Error while adding Sell details",
+                                snackBarMessage: "Error while adding Garden details",
                                 snackBarColor: "warning",
                             },
                         });
@@ -118,21 +122,21 @@ const Sell = () => {
             }
         }
         if (state.update === true) {
-            dispatch({
-                type: SET_LOADING_TRUE,
-            });
             postData.farmerId = state.farmerId
+            // postInfo.route = '/garden'
+            // const Response = PutRequest(postInfo, postData)
+            // console.log("Post Request", Response)
             axiosInstance
-                .put("/sell/", postData)
+                .put("/garden/", postData)
                 .then((res) => {
                     if (res.status === 200) {
-                        console.log("Updated Successfully", res.data);
-                        console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
-                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, sellDetails: SellDetail } })
+                        console.log("Uploaded Successfully", res.data);
+                        console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
+                        navigate('/dashboard/viewprofile', { state: { ...farmerDetailForUpdate, gardenDetails: GardenDetail } })
                         dispatch({
                             type: SET_SHOW_SNACKBAR_TRUE,
                             payload: {
-                                snackBarMessage: "Sell Details Added Successfully",
+                                snackBarMessage: "Garden Details Added Successfully",
                                 snackBarColor: "success",
                             },
                         });
@@ -142,12 +146,12 @@ const Sell = () => {
                     }
                     if (res.status === 400) {
                         console.log("Error", res.data);
-                        console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
+                        console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
                         navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
                         dispatch({
                             type: SET_SHOW_SNACKBAR_TRUE,
                             payload: {
-                                snackBarMessage: "Error while adding Sell details",
+                                snackBarMessage: "Error while adding Garden details",
                                 snackBarColor: "warning",
                             },
                         });
@@ -157,13 +161,13 @@ const Sell = () => {
                     }
                 })
                 .catch((err) => {
-                    console.log("Error while Updating liveStock details", err)
-                    console.log("Sell update ", { ...farmerDetailForUpdate, sellDetails: SellDetail })
+                    console.log("Error while Uploading liveStock details", err)
+                    console.log("Garden update ", { ...farmerDetailForUpdate, gardenDetails: GardenDetail })
                     navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
                     dispatch({
                         type: SET_SHOW_SNACKBAR_TRUE,
                         payload: {
-                            snackBarMessage: "Error while adding Sell details",
+                            snackBarMessage: "Error while adding Garden details",
                             snackBarColor: "warning",
                         },
                     });
@@ -176,33 +180,34 @@ const Sell = () => {
     };
 
     const addtotable = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         const data = new FormData(e.currentTarget);
-        const formattedDate = moment(Datevalue.$d).format('DD/MM/YYYY')
-        const SellData = {
+        const GardenData = {
             farmerId: state.update ? state.farmerId : farmers.farmerDetails.farmerId,
-            productName: data.get("productname"),
-            variety: data.get("variety"),
+            type: data.get("gardentype"),
+            name: data.get("gardenname"),
+            variety: data.get("gardenvariety"),
+            brand: data.get("brand"),
+            area: data.get("area"),
+            age: data.get("age"),
             organic: data.get("organic"),
-            quantity: data.get("quantity"),
-            price: data.get("price"),
-            date: formattedDate,
+            count: data.get("count"),
+            sellingPeriod: data.get("sellingperiod"),
         };
-        const { isValid, errors } = validateSellInput(SellData);
+        const { isValid, errors } = validateGardenInput(GardenData);
+
         if (isValid) {
-            // console.log("Object", Datevalue.$d)
-            console.log("Date", formattedDate)
-            setSellDetail([...SellDetail, SellData])
-            console.log("Sell items", SellData)
+            setGardenDetail([...GardenDetail, GardenData]);
+            console.log("GArden", GardenData);
         }
-        setError(errors)
-    }
+        setError(errors);
+    };
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
             backgroundColor: theme.palette.common.black,
             color: theme.palette.common.white,
-            fontSize: 13
+            fontSize: 13,
         },
         [`&.${tableCellClasses.body}`]: {
             fontSize: 14,
@@ -210,18 +215,18 @@ const Sell = () => {
     }));
 
     const StyledTableRow = styled(TableRow)(({ theme }) => ({
-        '&:nth-of-type(odd)': {
+        "&:nth-of-type(odd)": {
             backgroundColor: theme.palette.action.hover,
         },
         // hide last border
-        '&:last-child td, &:last-child th': {
+        "&:last-child td, &:last-child th": {
             border: 0,
         },
     }));
 
     useEffect(() => {
         if (state.update === true) {
-            setSellDetail(state.sellDetails);
+            setGardenDetail(state.gardenDetails);
         }
     }, []);
 
@@ -239,11 +244,11 @@ const Sell = () => {
                         }}
                     >
                         <Avatar sx={{ m: 1, bgcolor: "green" }}>
-                            <SellIcon />
+                            <YardIcon />
                         </Avatar>
                     </Box>
                     <Typography component="h1" variant="h5" marginBottom='10px' textAlign='center' >
-                        Add Your Product Details
+                        Add Garden Details
                     </Typography>
                     <Box
                         component="form"
@@ -252,16 +257,33 @@ const Sell = () => {
                     >
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={4}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="gardentype">Garden Type</InputLabel>
+                                    <Select
+                                        required
+                                        name='gardentype'
+                                        labelId="gardentype"
+                                        id="gardentype"
+                                        label="Garden Type"
+                                        onChange={(e) => setType(e.target.value)}
+                                        value={Type}
+                                    >
+                                        <MenuItem value={"HouseGarden"}>House Garden</MenuItem>
+                                        <MenuItem value={"FarmGarden"}>Farm Garden</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
                                 <TextField
-                                    autoComplete="productname"
-                                    name="productname"
+                                    autoComplete="gardenname"
+                                    name="gardenname"
                                     fullWidth
-                                    id="productname"
-                                    label="Product Name"
+                                    id="gardenname"
+                                    label="Name"
                                     color="success"
-                                    placeholder='Product Name'
-                                    error={Error?.productName !== undefined}
-                                    helperText={Error.productName}
+                                    placeholder='Name'
+                                    error={Error?.name !== undefined}
+                                    helperText={Error.name}
                                     onInput={(e) => {
                                         setError({})
                                         e.target.value = (e.target.value).toString().slice(0, 40);
@@ -270,10 +292,10 @@ const Sell = () => {
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <TextField
-                                    autoComplete="variety"
-                                    name="variety"
+                                    autoComplete="gardenvariety"
+                                    name="gardenvariety"
                                     fullWidth
-                                    id="variety"
+                                    id="gardenvariety"
                                     label="Variety"
                                     color="success"
                                     placeholder='Variety'
@@ -286,8 +308,79 @@ const Sell = () => {
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
+                                <TextField
+                                    autoComplete="brand"
+                                    name="brand"
+                                    fullWidth
+                                    id="brand"
+                                    label="Brand"
+                                    color="success"
+                                    placeholder='Brand'
+                                    error={Error?.brand !== undefined}
+                                    helperText={Error.brand}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    autoComplete="area"
+                                    name="area"
+                                    fullWidth
+                                    id="area"
+                                    label="Area"
+                                    color="success"
+                                    placeholder='in Acres'
+                                    type='number'
+                                    error={Error?.area !== undefined}
+                                    helperText={Error.area}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    autoComplete="age"
+                                    name="age"
+                                    fullWidth
+                                    id="age"
+                                    label="Age"
+                                    color="success"
+                                    placeholder='Age'
+                                    type='number'
+                                    error={Error?.age !== undefined}
+                                    helperText={Error.age}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    autoComplete="count"
+                                    name="count"
+                                    fullWidth
+                                    id="count"
+                                    label="Count"
+                                    color="success"
+                                    placeholder='count'
+                                    type='number'
+                                    error={Error?.count !== undefined}
+                                    helperText={Error.count}
+                                    onInput={(e) => {
+                                        setError({})
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
                                 <FormControl fullWidth>
-                                    <InputLabel id="organic">Organic</InputLabel>
+                                    <InputLabel id="typeofcrop">Organic</InputLabel>
                                     <Select
                                         required
                                         name='organic'
@@ -298,64 +391,31 @@ const Sell = () => {
                                         value={Organic}
                                     >
                                         <MenuItem value={"Yes"}>Yes</MenuItem>
-                                        <MenuItem value={"no"}>no</MenuItem>
+                                        <MenuItem value={"No"}>No</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <TextField
-                                    autoComplete="quantity"
-                                    name="quantity"
+                                    autoComplete="sellingperiod"
+                                    name="sellingperiod"
                                     fullWidth
-                                    id="quantity"
-                                    label="Quantity"
+                                    id="sellingperiod"
+                                    label="Selling Period"
                                     color="success"
-                                    placeholder='Quantity'
-                                    type="number"
+                                    placeholder='Selling Season'
+                                    error={Error?.sellingPeriod !== undefined}
+                                    helperText={Error.sellingPeriod}
                                     onInput={(e) => {
                                         setError({})
-                                        e.target.value = parseInt(Math.max(0, parseInt(e.target.value)).toString().slice(0, 5))
+                                        e.target.value = (e.target.value).toString().slice(0, 40);
                                     }}
-                                    error={Error?.quantity !== undefined}
-                                    helperText={Error.quantity}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <TextField
-                                    autoComplete="price"
-                                    name="price"
-                                    fullWidth
-                                    id="price"
-                                    label="Price"
-                                    color="success"
-                                    placeholder='in Rupees'
-                                    type="number"
-                                    onInput={(e) => {
-                                        setError({})
-                                        e.target.value = parseInt(Math.max(0, parseInt(e.target.value)).toString().slice(0, 10))
-                                    }}
-                                    error={Error?.price !== undefined}
-                                    helperText={Error.price}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker
-                                        label="Date"
-                                        value={Datevalue}
-                                        inputFormat="DD/MM/YYYY"
-                                        formatDate={(date) => moment(date).format('DD-MM-YYYY')}
-                                        onChange={(newValue) => {
-                                            setDateValue(newValue);
-                                        }}
-                                        renderInput={(params) => <TextField {...params} />}
-                                    />
-                                </LocalizationProvider>
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
-                                    <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Items :</p>
-                                    <Chip label={SellDetail.length} />
+                                    <p style={{ marginTop: '1px', marginRight: '7px', fontSize: '20px' }}>Total Entries :</p>
+                                    <Chip label={GardenDetail.length} />
                                 </div>
                             </Grid>
                             <Grid item xs={12} sm={3} className='mx-auto'>
@@ -371,43 +431,8 @@ const Sell = () => {
                         </Grid>
                     </Box>
                     <div>
-                        <Tables header={Headers} body={SellDetail} statevariable={SellDetail}
-                            setstatevariable={setSellDetail} keys={Keys} />
-                        {/* <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                                <TableHead>
-                                    <TableRow>
-                                        <StyledTableCell align='center'>S.No</StyledTableCell>
-                                        <StyledTableCell align='center'>Product Name</StyledTableCell>
-                                        <StyledTableCell align="center">Variety</StyledTableCell>
-                                        <StyledTableCell align="center">Organic</StyledTableCell>
-                                        <StyledTableCell align="center">Quantity</StyledTableCell>
-                                        <StyledTableCell align="center">Price</StyledTableCell>
-                                        <StyledTableCell align="center">Date</StyledTableCell>
-                                        <StyledTableCell align="center"></StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {SellDetail.length > 0 &&
-                                        SellDetail.map((item, index) => (
-                                            <StyledTableRow key={index + 1}>
-                                                <StyledTableCell align="center" component="th" scope="row">
-                                                    {index + 1}
-                                                </StyledTableCell>
-                                                <StyledTableCell align="center">{item.productName}</StyledTableCell>
-                                                <StyledTableCell align="center">{item.variety}</StyledTableCell>
-                                                <StyledTableCell align="center">{item.organic}</StyledTableCell>
-                                                <StyledTableCell align="center">{item.quantity}</StyledTableCell>
-                                                <StyledTableCell align="center">{item.price}</StyledTableCell>
-                                                <StyledTableCell align="center">{item.date}</StyledTableCell>
-                                                <StyledTableCell align="left" onClick={() => { setSellDetail(prevValues => prevValues.filter((value, prevIndex) => prevIndex !== index)) }}>
-                                                    {<HighlightOffIcon style={{ cursor: 'pointer' }} />}</StyledTableCell>
-                                            </StyledTableRow>
-                                        ))}
-                                </TableBody>
-                            </Table>
-                            {SellDetail.length === 0 && <p style={{ textAlign: 'center' }}>No records  Added</p>}
-                        </TableContainer> */}
+                        <Tables header={Headers} body={GardenDetail} statevariable={GardenDetail}
+                            setstatevariable={setGardenDetail} keys={Keys} />
                     </div>
                     <Grid container style={{ justifyContent: "center" }}>
                         <Grid sm={3} marginRight={10}>
@@ -439,8 +464,8 @@ const Sell = () => {
                     </Grid>
                 </Container>
             </ThemeProvider>
-        </div >
+        </div>
     )
 }
 
-export default Sell
+export default GardenDetails

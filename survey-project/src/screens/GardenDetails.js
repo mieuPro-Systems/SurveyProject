@@ -114,6 +114,9 @@ const GardenDetails = () => {
             }
         }
         if (state.update === true) {
+            dispatch({
+                type: SET_LOADING_TRUE,
+            });
             postData.farmerId = state.farmerId
             axiosInstance
                 .put("/garden/", postData)

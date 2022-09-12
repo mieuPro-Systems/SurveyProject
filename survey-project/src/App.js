@@ -21,7 +21,7 @@ import LiveStockScreen from "./screens/LiveStockDetails";
 import MachineDetailsScreen from "./screens/MachineDetails";
 import LabourDetailsScreen from "./screens/LabourDetails";
 import CropDetailsScreen from "./screens/CropDetails";
-import GardenDetailsScreen from "./screens/GardenDetails";
+import GardenDetailsScreen from "./screens/GardenDetails copy";
 import SearchFarmerScreen from "./screens/LandSub/SearchFarmers";
 import FarmerProfile from "./screens/FarmerProfile";
 import { SET_CURRENT_USER } from "./actions/types";

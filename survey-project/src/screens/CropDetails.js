@@ -28,6 +28,7 @@ import Chip from "@mui/material/Chip";
 import { SET_CROP_DETAILS, SET_LOADING_FALSE, SET_LOADING_TRUE, SET_SHOW_SNACKBAR_TRUE } from "../actions/types";
 import GrassIcon from "@mui/icons-material/Grass";
 import validateCropInput from "../Validation/Crop";
+import Tables from "../components/screens/Tables";
 
 const theme = createTheme();
 
@@ -45,6 +46,8 @@ const CropDetails = () => {
     const [Organic, setOrganic] = useState("")
     const [SeedType, setSeedType] = useState("")
     const [Error, setError] = useState({})
+    const Headers = ["Type", "Name", "Variety", "Brand", "Area", "Cropped At", "Organic", "Seeding Type", "Harvest Period"]
+    const Keys = ["type", "name", "variety", "brand", "area", "croppedAt", "organic", "seedingType", "harvestPeriod"]
 
 
     const handleSubmit = (e) => {
@@ -184,7 +187,7 @@ const CropDetails = () => {
             variety: data.get("cropvariety"),
             brand: data.get("brand"),
             area: data.get("area"),
-            croppedAt: data.get("cropppedat"),
+            croppedAt: data.get("croppedat"),
             organic: data.get("organic"),
             seedingType: data.get("seedingtype"),
             harvestPeriod: data.get("harvestperiod"),
@@ -351,11 +354,11 @@ const CropDetails = () => {
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <TextField
-                                    autoComplete="cropppedat"
-                                    name="cropppedat"
+                                    autoComplete="croppedat"
+                                    name="croppedat"
                                     fullWidth
-                                    id="cropppedat"
-                                    label="Croppped At"
+                                    id="croppedat"
+                                    label="Cropped At"
                                     color="success"
                                     placeholder='Starting Date'
                                     error={Error?.croppedAt !== undefined}
@@ -436,7 +439,9 @@ const CropDetails = () => {
                         </Grid>
                     </Box>
                     <div>
-                        <TableContainer component={Paper}>
+                        <Tables header={Headers} body={CropsDetail} statevariable={CropsDetail}
+                            setstatevariable={setCropsDetail} keys={Keys} />
+                        {/* <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                                 <TableHead>
                                     <TableRow>
@@ -476,13 +481,19 @@ const CropDetails = () => {
                                 </TableBody>
                             </Table>
                             {CropsDetail.length === 0 && <p style={{ textAlign: 'center' }}>No records  Added</p>}
-                        </TableContainer>
+                        </TableContainer> */}
                     </div>
                     <Grid container style={{ justifyContent: "center" }}>
                         <Grid sm={3} marginRight={10}>
                             <Button
                                 fullWidth
-                                onClick={() => navigate('/dashboard/farmerinfo')}
+                                onClick={() => {
+                                    if (state.update) {
+                                        navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                                    } else {
+                                        navigate("/dashboard/farmerinfo")
+                                    }
+                                }}
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
                             >

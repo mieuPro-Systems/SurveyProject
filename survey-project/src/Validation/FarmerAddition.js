@@ -8,9 +8,9 @@ export default function validateFarmerAddInput(data) {
     data.farmerName = !isEmpty(data.farmerName) ? data.farmerName : "";
     data.nickName = !isEmpty(data.nickName) ? data.nickName : "";
     data.fatherName = !isEmpty(data.fatherName) ? data.fatherName : "";
-    data.age = !isEmpty(data.age) ? data.age : "";
+    data.age = !isEmpty(data.age) ? data.age.toString() : "";
     data.gender = !isEmpty(data.gender) ? data.gender : "";
-    data.phoneNumber = !isEmpty(data.phoneNumber) ? data.phoneNumber : "";
+    data.phoneNumber = !isEmpty(data.phoneNumber.toString()) ? data.phoneNumber.toString() : "";
     data.residentialType = !isEmpty(data.residentialType) ? data.residentialType : "";
     data.state = !isEmpty(data.state) ? data.state : "";
     data.district = !isEmpty(data.district) ? data.district : "";
@@ -29,6 +29,7 @@ export default function validateFarmerAddInput(data) {
     if (Validators.isEmpty(data.fatherName)) {
         errors.fatherName = "Father name field is required";
     }
+    console.log("type", typeof (data.age))
     if (Validators.isEmpty(data.age)) {
         errors.age = "Age field is required";
     }

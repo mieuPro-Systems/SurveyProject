@@ -28,6 +28,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import validateMachineInput from "../Validation/Machine";
+import Tables from "../components/screens/Tables";
 
 const theme = createTheme();
 
@@ -45,6 +46,8 @@ const MachineDetails = () => {
     const location = useLocation();
     const { state } = location;
     const { farmerDetailForUpdate } = state
+    const Headers = ["Type", "Sub Type", "Attachment", "Brand", "Count", "Rental Basis", "Rent (in rs)"]
+    const Keys = ["type", "subType", "attachments", "brand", "count", "rentalBasis", "rent"]
     console.log("machine details state", state);
 
     const handleSubmit = (e) => {
@@ -440,7 +443,9 @@ const MachineDetails = () => {
                 </Container>
                 <Container maxWidth="md">
                     <div>
-                        <TableContainer component={Paper}>
+                        <Tables header={Headers} body={Machines} statevariable={Machines}
+                            setstatevariable={setMachines} keys={Keys} />
+                        {/* <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                                 <TableHead>
                                     <TableRow>
@@ -512,13 +517,19 @@ const MachineDetails = () => {
                             {Machines.length === 0 && (
                                 <p style={{ textAlign: "center" }}>No records Added</p>
                             )}
-                        </TableContainer>
+                        </TableContainer> */}
                     </div>
                     <Grid container style={{ justifyContent: "center" }}>
                         <Grid sm={3} marginRight={10}>
                             <Button
                                 fullWidth
-                                onClick={() => navigate("/dashboard/farmerinfo")}
+                                onClick={() => {
+                                    if (state.update) {
+                                        navigate('/dashboard/viewprofile', { state: farmerDetailForUpdate })
+                                    } else {
+                                        navigate("/dashboard/farmerinfo")
+                                    }
+                                }}
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
                             >

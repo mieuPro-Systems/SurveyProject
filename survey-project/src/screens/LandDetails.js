@@ -452,7 +452,14 @@ const LandDetails = () => {
             <Grid item sm={3} marginRight={10}>
               <Button
                 fullWidth
-                onClick={() => navigate("/dashboard/farmerinfo")}
+                onClick={() => {
+                  if (state.update) {
+                    console.log('after land update', { ...farmerUpdate, landDetails: landDetails })
+                    navigate('/dashboard/viewprofile', { state: { ...farmerUpdate, landDetails: landDetails } })
+                  } else {
+                    navigate("/dashboard/farmerinfo")
+                  }
+                }}
                 variant="contained"
                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
               >

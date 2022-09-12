@@ -14,17 +14,31 @@ const FarmerProfile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
   console.log('farmer update details', location.state);
-  const {
-    farmerDetails,
-    landDetails,
-    labourDetails,
-    livestockDetails,
-    machineDetails,
-    cropDetails,
-    gardenDetails,
-    sellDetails,
-    buyDetails,
-  } = location.state;
+  // const {
+  //   farmerDetails,
+  //   landDetails,
+  //   labourDetails,
+  //   livestockDetails,
+  //   machineDetails,
+  //   cropDetails,
+  //   gardenDetails,
+  //   sellDetails,
+  //   buyDetails,
+  // } = location.state;
+  const { state } = location
+  const farmerDetailForUpdate =
+  {
+    // farmerDetails: state?.update ? state.farmerUpdate : state.farmerDetails,
+    farmerDetails: state.farmerDetails,
+    landDetails: state.landDetails,
+    cropDetails: state.cropDetails,
+    labourDetails: state.labourDetails,
+    livestockDetails: state.livestockDetails,
+    machineDetails: state.machineDetails,
+    gardenDetails: state.gardenDetails,
+    buyDetails: state.buyDetails,
+    sellDetails: state.sellDetails
+  }
   // console.log("farmerDetails", farmerDetails);
 
   // useEffect(() => {
@@ -70,20 +84,20 @@ const FarmerProfile = () => {
                     className="rounded-circle img-fluid"
                     style={{ width: "100px" }}
                   />
-                  <h5 className="mt-3">{farmerDetails.farmerName}</h5>
-                  {farmerDetails.nickName && <h6>{farmerDetails.nickName}</h6>}
-                  {farmerDetails.phoneNumber && (
+                  <h5 className="mt-3">{farmerDetailForUpdate.farmerDetails.farmerName}</h5>
+                  {farmerDetailForUpdate.farmerDetails.nickName && <h6>{farmerDetailForUpdate.farmerDetails.nickName}</h6>}
+                  {farmerDetailForUpdate.farmerDetails.phoneNumber && (
                     <p className="text-muted mb-1">
-                      {farmerDetails.phoneNumber}
+                      {farmerDetailForUpdate.farmerDetails.phoneNumber}
                     </p>
                   )}
 
-                  <p className="">Farmer ID - {farmerDetails.farmerId}</p>
+                  <p className="">Farmer ID - {farmerDetailForUpdate.farmerDetails.farmerId}</p>
                   <button
                     className="btn btn-sm btn-success"
                     onClick={() =>
                       navigate("/dashboard/addFarmer", {
-                        state: { update: true, farmerDetails: farmerDetails },
+                        state: { update: true, farmerDetailForUpdate: farmerDetailForUpdate },
                       })
                     }
                   >
@@ -97,73 +111,73 @@ const FarmerProfile = () => {
                   <Stack className="mb-3 mx-3" spacing={1} direction="row">
                     <Chip
                       icon={
-                        farmerDetails.organic ? (
+                        farmerDetailForUpdate.farmerDetails.organic ? (
                           <CheckCircleOutlineOutlinedIcon />
                         ) : (
                           <CancelOutlinedIcon />
                         )
                       }
                       label="Organic Farming"
-                      color={farmerDetails.organic ? "success" : "error"}
-                      variant={farmerDetails.organic ? "" : "outlined"}
+                      color={farmerDetailForUpdate.farmerDetails.organic ? "success" : "error"}
+                      variant={farmerDetailForUpdate.farmerDetails.organic ? "" : "outlined"}
                     />
                     <Chip
                       icon={
-                        farmerDetails.singleSeed ? (
+                        farmerDetailForUpdate.farmerDetails.singleSeed ? (
                           <CheckCircleOutlineOutlinedIcon />
                         ) : (
                           <CancelOutlinedIcon />
                         )
                       }
                       label="Single Seedling"
-                      variant={farmerDetails.singleSeed ? "" : "outlined"}
-                      color={farmerDetails.singleSeed ? "success" : "error"}
+                      variant={farmerDetailForUpdate.farmerDetails.singleSeed ? "" : "outlined"}
+                      color={farmerDetailForUpdate.farmerDetails.singleSeed ? "success" : "error"}
                     />
                   </Stack>
                   <Stack className="mb-3 mx-3" spacing={1} direction="row">
                     <Chip
                       icon={
-                        farmerDetails.altCrop ? (
+                        farmerDetailForUpdate.farmerDetails.altCrop ? (
                           <CheckCircleOutlineOutlinedIcon />
                         ) : (
                           <CancelOutlinedIcon />
                         )
                       }
                       label="Alternative Crop"
-                      variant={farmerDetails.altCrop ? "" : "outlined"}
-                      color={farmerDetails.altCrop ? "success" : "error"}
+                      variant={farmerDetailForUpdate.farmerDetails.altCrop ? "" : "outlined"}
+                      color={farmerDetailForUpdate.farmerDetails.altCrop ? "success" : "error"}
                     />
                     <Chip
                       icon={
-                        farmerDetails.seedVariety ? (
+                        farmerDetailForUpdate.farmerDetails.seedVariety ? (
                           <CheckCircleOutlineOutlinedIcon />
                         ) : (
                           <CancelOutlinedIcon />
                         )
                       }
                       label="Seed Variety Advice"
-                      variant={farmerDetails.seedVariety ? "" : "outlined"}
-                      color={farmerDetails.seedVariety ? "success" : "error"}
+                      variant={farmerDetailForUpdate.farmerDetails.seedVariety ? "" : "outlined"}
+                      color={farmerDetailForUpdate.farmerDetails.seedVariety ? "success" : "error"}
                     />
                   </Stack>
                   <Stack className="mb-3 mx-3" spacing={1} direction="row">
                     <Chip
                       icon={
-                        farmerDetails.leaseOwnLand ? (
+                        farmerDetailForUpdate.farmerDetails.leaseOwnLand ? (
                           <CheckCircleOutlineOutlinedIcon />
                         ) : (
                           <CancelOutlinedIcon />
                         )
                       }
                       label="To lease Own land"
-                      variant={farmerDetails.leaseOwnLand ? "" : "outlined"}
-                      color={farmerDetails.leaseOwnLand ? "success" : "error"}
+                      variant={farmerDetailForUpdate.farmerDetails.leaseOwnLand ? "" : "outlined"}
+                      color={farmerDetailForUpdate.farmerDetails.leaseOwnLand ? "success" : "error"}
                     />
                   </Stack>
                   <Stack className="mb-3 mx-3" spacing={1} direction="row">
                     <Chip
                       icon={
-                        farmerDetails.farmRentedLand ? (
+                        farmerDetailForUpdate.farmerDetails.farmRentedLand ? (
                           <CheckCircleOutlineOutlinedIcon />
                         ) : (
                           <CancelOutlinedIcon />
@@ -171,8 +185,8 @@ const FarmerProfile = () => {
                       }
                       label="To Farm Rented 
                       Land"
-                      variant={farmerDetails.farmRentedLand ? "" : "outlined"}
-                      color={farmerDetails.farmRentedLand ? "success" : "error"}
+                      variant={farmerDetailForUpdate.farmerDetails.farmRentedLand ? "" : "outlined"}
+                      color={farmerDetailForUpdate.farmerDetails.farmRentedLand ? "success" : "error"}
                     />
                   </Stack>
                 </div>
@@ -187,8 +201,8 @@ const FarmerProfile = () => {
                     </div>
                     <div className="col-sm-9">
                       <p className="text-muted mb-0">
-                        {farmerDetails.farmerName
-                          ? farmerDetails.farmerName
+                        {farmerDetailForUpdate.farmerDetails.farmerName
+                          ? farmerDetailForUpdate.farmerDetails.farmerName
                           : "-"}
                       </p>
                     </div>
@@ -202,8 +216,8 @@ const FarmerProfile = () => {
                     <div className="col-sm-9">
                       <p className="text-muted mb-0">
                         {" "}
-                        {farmerDetails.fatherName
-                          ? farmerDetails.fatherName
+                        {farmerDetailForUpdate.farmerDetails.fatherName
+                          ? farmerDetailForUpdate.farmerDetails.fatherName
                           : "-"}
                       </p>
                     </div>
@@ -216,7 +230,7 @@ const FarmerProfile = () => {
                     </div>
                     <div className="col-sm-9">
                       <p className="text-muted mb-0">
-                        {farmerDetails.age ? farmerDetails.age : "-"}
+                        {farmerDetailForUpdate.farmerDetails.age ? farmerDetailForUpdate.farmerDetails.age : "-"}
                       </p>
                     </div>
                   </div>
@@ -228,9 +242,9 @@ const FarmerProfile = () => {
                     </div>
                     <div className="col-sm-9">
                       <p className="text-muted mb-0">
-                        {farmerDetails.gender
-                          ? farmerDetails.gender[0].toUpperCase() +
-                          farmerDetails.gender.slice(1).toLowerCase()
+                        {farmerDetailForUpdate.farmerDetails.gender
+                          ? farmerDetailForUpdate.farmerDetails.gender[0].toUpperCase() +
+                          farmerDetailForUpdate.farmerDetails.gender.slice(1).toLowerCase()
                           : "-"}
                       </p>
                     </div>
@@ -244,8 +258,8 @@ const FarmerProfile = () => {
                     <div className="col-sm-9">
                       <p className="text-muted mb-0">
                         {" "}
-                        {farmerDetails.phoneNumber
-                          ? farmerDetails.phoneNumber
+                        {farmerDetailForUpdate.farmerDetails.phoneNumber
+                          ? farmerDetailForUpdate.farmerDetails.phoneNumber
                           : "-"}
                       </p>
                     </div>
@@ -258,8 +272,8 @@ const FarmerProfile = () => {
                     <div className="col-sm-9">
                       <p className="text-muted mb-0">
                         {" "}
-                        {farmerDetails.whatsappNumber
-                          ? farmerDetails.whatsappNumber
+                        {farmerDetailForUpdate.farmerDetails.whatsappNumber
+                          ? farmerDetailForUpdate.farmerDetails.whatsappNumber
                           : "-"}
                       </p>
                     </div>
@@ -272,9 +286,9 @@ const FarmerProfile = () => {
                     </div>
                     <div className="col-sm-9">
                       <p className="text-muted mb-0">
-                        {farmerDetails.residentialType
-                          ? farmerDetails.residentialType[0].toUpperCase() +
-                          farmerDetails.residentialType.slice(1).toLowerCase()
+                        {farmerDetailForUpdate.farmerDetails.residentialType
+                          ? farmerDetailForUpdate.farmerDetails.residentialType[0].toUpperCase() +
+                          farmerDetailForUpdate.farmerDetails.residentialType.slice(1).toLowerCase()
                           : "-"}
                       </p>
                     </div>
@@ -291,33 +305,33 @@ const FarmerProfile = () => {
                           <tr>
                             <th scope="row">Village:</th>
                             <td>
-                              {farmerDetails.village
-                                ? farmerDetails.village
+                              {farmerDetailForUpdate.farmerDetails.village
+                                ? farmerDetailForUpdate.farmerDetails.village
                                 : "-"}
                             </td>
                             <th>Panchayat:</th>
                             <td>
-                              {farmerDetails.panchayat
-                                ? farmerDetails.panchayat
+                              {farmerDetailForUpdate.farmerDetails.panchayat
+                                ? farmerDetailForUpdate.farmerDetails.panchayat
                                 : "-"}
                             </td>
                           </tr>
                           <tr>
                             <th scope="row">Union:</th>
                             <td>
-                              {farmerDetails.union ? farmerDetails.union : "-"}
+                              {farmerDetailForUpdate.farmerDetails.union ? farmerDetailForUpdate.farmerDetails.union : "-"}
                             </td>
                             <th>District:</th>
                             <td>
-                              {farmerDetails.district
-                                ? farmerDetails.district
+                              {farmerDetailForUpdate.farmerDetails.district
+                                ? farmerDetailForUpdate.farmerDetails.district
                                 : "-"}
                             </td>
                           </tr>
                           <tr>
                             <th scope="row">State:</th>
                             <td colSpan="2">
-                              {farmerDetails.state ? farmerDetails.state : "-"}
+                              {farmerDetailForUpdate.farmerDetails.state ? farmerDetailForUpdate.farmerDetails.state : "-"}
                             </td>
                           </tr>
                         </tbody>
@@ -328,15 +342,15 @@ const FarmerProfile = () => {
               </div>
             </div>
             <FarmerProfileAccordion
-              farmerDetails={farmerDetails}
-              landDetails={landDetails}
-              cropDetails={cropDetails}
-              labourDetails={labourDetails}
-              machineDetails={machineDetails}
-              livestockDetails={livestockDetails}
-              gardenDetails={gardenDetails}
-              buyDetails={buyDetails}
-              sellDetails={sellDetails}
+              farmerDetails={farmerDetailForUpdate.farmerDetails}
+              landDetails={farmerDetailForUpdate.landDetails}
+              cropDetails={farmerDetailForUpdate.cropDetails}
+              labourDetails={farmerDetailForUpdate.labourDetails}
+              machineDetails={farmerDetailForUpdate.machineDetails}
+              livestockDetails={farmerDetailForUpdate.livestockDetails}
+              gardenDetails={farmerDetailForUpdate.gardenDetails}
+              buyDetails={farmerDetailForUpdate.buyDetails}
+              sellDetails={farmerDetailForUpdate.sellDetails}
             />
           </div>
         </div>

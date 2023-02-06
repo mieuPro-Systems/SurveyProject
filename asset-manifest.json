@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/SurveyProject/static/css/main.f199a123.css",
+    "main.js": "/SurveyProject/static/js/main.2b8343f3.js",
+    "static/js/787.62719024.chunk.js": "/SurveyProject/static/js/787.62719024.chunk.js",
+    "static/media/cow2.jpeg": "/SurveyProject/static/media/cow2.58c5ded0b52199a7cbe3.jpeg",
+    "static/media/cardbg.jpg": "/SurveyProject/static/media/cardbg.0d311b6045f691c47d02.jpg",
+    "static/media/defaultProfilePicuture.png": "/SurveyProject/static/media/defaultProfilePicuture.12e634acbe2711db4637.png",
+    "index.html": "/SurveyProject/index.html",
+    "main.f199a123.css.map": "/SurveyProject/static/css/main.f199a123.css.map",
+    "main.2b8343f3.js.map": "/SurveyProject/static/js/main.2b8343f3.js.map",
+    "787.62719024.chunk.js.map": "/SurveyProject/static/js/787.62719024.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f199a123.css",
+    "static/js/main.2b8343f3.js"
+  ]
+}

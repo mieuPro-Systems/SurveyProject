@@ -291,8 +291,9 @@ const ViewFarmers = () => {
     dispatch({
       type: SET_LOADING_TRUE
     });
+    const headers = { 'Access-Control-Allow-Origin': '*' }
     axiosInstance
-      .get("/farmer/all")
+      .get("/farmer/all", headers)
       .then((res) => {
         console.log("Response for getting farmers", res);
         dispatch({

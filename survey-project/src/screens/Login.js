@@ -257,6 +257,10 @@ export default function SignIn() {
               >
                 Sign In
               </Button>
+              {state.loggedInAs === 'Employee' ? <div><p>Don't have an account?<Button onClick={() =>
+                navigate("/employeesignup", {
+                  state: { loggedInAs: "Employee", type: "signUp" },
+                })}> Sign up</Button></p></div> : null}
             </Box>
           </Box>
           <Copyright sx={{ mt: 8, mb: 4 }} />

@@ -136,7 +136,7 @@ const PasswordChange = (props) => {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Change Password
+              Create Password
             </Typography>
             <p className="text-primary mt-3 fw-bold">{props.userName}</p>
             <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -199,7 +199,7 @@ const PasswordChange = (props) => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2, bgcolor: "green" }}
               >
-                Change Password
+                Create Password
               </Button>
             </Box>
           </Box>

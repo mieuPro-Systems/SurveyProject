@@ -23,6 +23,8 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+
 import {
   CLEAR_FARMER_DETAILS,
   SET_CURRENT_USER,
@@ -178,6 +180,10 @@ export default function DrawerComponent() {
       },
     });
   };
+
+  useEffect(() => {
+    navigate('viewfarmer')
+  }, [])
 
 
   return (

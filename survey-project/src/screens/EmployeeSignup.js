@@ -109,7 +109,7 @@ export default function EmployeeSignUp() {
         variant="contained"
         startIcon={<ArrowBackIosNewIcon />}
         color="success"
-        onClick={() => navigate("/")}
+        onClick={() => navigate(-1)}
         className="m-3"
       >
         Back

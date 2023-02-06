@@ -18,12 +18,12 @@ const Home = () => {
   return (
     <div className="app">
       <Navbar />
-      <div>
-        <p className="text1 float-end mr-3 ">உழவுக்கு வந்தனை செய்வோம்...!!!</p>
+      <div style={{ marginTop: '30px' }}>
+        <p className="text1 float-start mr-3">உழவுக்கு வந்தனை செய்வோம்...!!!</p>
       </div>
-      <div className="homecard">
+      {/* <div className="homecard">
         <Card />
-      </div>
+      </div> */}
     </div>
   );
 };
